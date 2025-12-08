@@ -1,3 +1,6 @@
+####################################
+Done :
+#####################################
 Banque :
 - Dépot/Retrait 
     - Calcul du taux (pourcentage/jour) = Prosperity(compris entre 0 et 10_000) / 50_000 => Prosperité à 10_000 = 0.2%/jour
@@ -18,16 +21,15 @@ Avantages :
 Altdorf : 
     - Argent : Corrompre les scribes pour mettre en valeur ses faits d'arme => 1 prestige journaliers/10000 gold offert
     - Or : XP dans le Skill Magic
-    - Platine : Augmenter les vents de magie max de 1, en échange d'or / tour
 
 Drakenhof : town_comp_SY1
-    - Argent : Acheter des point de skills
+    - Argent : Acheter des collecteurs d'âmes
     - Or : XP dans le Charm
-    - Platine : Acheter des points de focus + attribute (50_000 pour focus, 100_000 pour attribute)
 
 
-
-
+######################################################
+#Todo
+##########################################################
 
 
 Argent : 
@@ -45,13 +47,22 @@ Or
     - Bow : Halls of Araereth
     - Medecine : 
     - Tactics : Middenheim
-    - 
+    - Leadership : Aquitaine/Bretonnie ?
 
 Effets Secondaires
 Marieembroug : Acheter améliorations pour caravanes
 Couronne : Augmenter le nombre de compagnions
-Altdorf : 
+Altdorf : Augmenter vents de magie
 Middenheim : Augmenter le PartySize de 1
+Drakenhof : Acheter des points de focus + attribute (50_000 pour focus, 100_000 pour attribute)
 
+MainHero.HeroDevelopper.
+int 	UnspentFocusPoints[get, set]
+int 	UnspentAttributePoints[get, set]
 
 Capturé = On perd tout son argent 
+
+	- MarieEmbourg : Acheter des droits de péage (argent par caravane). + Négociants qui diminuent les charges des Workshops + Diminue frais de personnel
+		○ Marchands : + de gold : Augmenter liquidités => 20 000 -> 1000
+	
+Bretonie : Villages/Agriculture => Une foi le village détenu, déposer des prisonniers pour les recruter comme serfs, et générer du revenu.
