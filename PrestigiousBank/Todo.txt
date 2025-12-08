@@ -1,0 +1,57 @@
+Banque :
+- Dépot/Retrait 
+    - Calcul du taux (pourcentage/jour) = Prosperity(compris entre 0 et 10_000) / 50_000 => Prosperité à 10_000 = 0.2%/jour
+
+- Niveau :
+    - Bronze : argent déposé entre 0 et 99_999
+    - Argent : argent déposé entre 100k et 499_999
+    - Or : Argent déposé entre 500k et 999_999
+    - Platine : Au dessus
+
+Avantages :
+    - Bronze : Dépot/Retrait
+    - Argent : Avantage principal de la Banque
+    - Or : XP dans un skill selon la Banque
+    - Platine : Avantage secondaire de la Banque
+
+
+Altdorf : 
+    - Argent : Corrompre les scribes pour mettre en valeur ses faits d'arme => 1 prestige journaliers/10000 gold offert
+    - Or : XP dans le Skill Magic
+    - Platine : Augmenter les vents de magie max de 1, en échange d'or / tour
+
+Drakenhof : town_comp_SY1
+    - Argent : Acheter des point de skills
+    - Or : XP dans le Charm
+    - Platine : Acheter des points de focus + attribute (50_000 pour focus, 100_000 pour attribute)
+
+
+
+
+
+
+Argent : 
+Marieembroug : Acheter améliorations pour caravanes
+Couronne : Acheter chevalerie
+
+
+
+
+Or
+    - Trade : Marieembourg
+    - 2handed : Carroburg
+    - Gunpowder : Hergig
+    - Riding : Couronne
+    - Bow : Halls of Araereth
+    - Medecine : 
+    - Tactics : Middenheim
+    - 
+
+Effets Secondaires
+Marieembroug : Acheter améliorations pour caravanes
+Couronne : Augmenter le nombre de compagnions
+Altdorf : 
+Middenheim : Augmenter le PartySize de 1
+
+
+Capturé = On perd tout son argent 
