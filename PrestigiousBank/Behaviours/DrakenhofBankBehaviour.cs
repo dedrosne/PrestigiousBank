@@ -39,14 +39,28 @@ namespace PrestigiousBank
                         foreach (var town in Town.AllTowns)
                         {
                             if (town.StringId == _drakenhofTownID)
+                            {
                                 _bankDrakenhof = new DrakenhofBank(town.Settlement);
-
-                            break;
+                                break;
+                            }
+                                
                         }
 
                     }
 
-            }
+                }
+                if (_bankDrakenhof != null && _bankDrakenhof.Ville == null)
+                {
+                    foreach (var town in Town.AllTowns)
+                    {
+                        if (town.StringId == _drakenhofTownID)
+                        {
+                            _bankDrakenhof.Ville = town.Settlement;
+                            break;
+                        }
+
+                    }
+                }
                 return _bankDrakenhof;
 
             }
@@ -84,7 +98,7 @@ namespace PrestigiousBank
 
         private void OnSessionLaunched(CampaignGameStarter campaignGameStarter)
         {
-            DrakenhofBankMenu.RegisterBankMenu(campaignGameStarter);
+            new DrakenhofBankMenu().RegisterBankMenu(campaignGameStarter, BankDrakenhof);
         }
 
         private void DailyTickClan()
@@ -93,7 +107,7 @@ namespace PrestigiousBank
             if (Hero.MainHero.GetCultureSpecificCustomResource().StringId == "DarkEnergy")
                 Hero.MainHero.AddCultureSpecificCustomResource(BankDrakenhof.CalculateDarkEnergyInterests());
             //Ajout de l'XP
-            Hero.MainHero.AddSkillXp( DefaultSkills.Trade, BankDrakenhof.GetDailyTradeXP());
+            Hero.MainHero.AddSkillXp( DefaultSkills.Charm, BankDrakenhof.GetDailySkillXP());
         }
 
         /*
@@ -164,11 +178,11 @@ namespace PrestigiousBank
             {
                 if (dataStore.IsLoading)
                 {
-                    dataStore.SyncData<DrakenhofBank>("AltdorfBank", ref _bankDrakenhof);
+                    dataStore.SyncData<DrakenhofBank>("DrakenhofBank", ref _bankDrakenhof);
                 }
                 else
                 {
-                    dataStore.SyncData<DrakenhofBank>("AltdorfBank", ref _bankDrakenhof);
+                    dataStore.SyncData<DrakenhofBank>("DrakenhofBank", ref _bankDrakenhof);
                 }
             }
             catch

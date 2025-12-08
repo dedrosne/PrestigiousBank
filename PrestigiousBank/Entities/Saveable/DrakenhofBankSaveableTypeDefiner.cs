@@ -12,7 +12,7 @@ namespace PrestigiousBank
 
         protected override void DefineClassTypes()
         {
-            this.AddClassDefinition(typeof(AltdorfBank), 1);
+            this.AddClassDefinition(typeof(DrakenhofBank), 1);
             //this.AddClassDefinition(typeof(InsuredCaravan), 2);
             //this.AddClassDefinition(typeof(InsuredSettlement), 3);
         }

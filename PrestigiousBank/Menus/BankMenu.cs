@@ -24,41 +24,10 @@ namespace PrestigiousBank
         public Bank _bank;
         public static int _optionBankIndex = -2;
 
-
-        public void CreateOrUpdateGameMenuDesc(CampaignGameStarter campaignGameStarter)
-        {
-
-            string clientLevelString = _bank.GetCustomerLevelString();
-            int currentSolde = _bank.Solde;
-            float interestRatePercentage = _bank.CalculateInterestRate() * 100f;
-            // Bank Menu
-            campaignGameStarter.AddGameMenu(String.Format("{0}_bank_menu", _cityName),
-                String.Format("Bienvenue à la banque de {0}.\nNiveau du client : {1}\nSolde : {2}\nTaux d'intérêts : {3}%/jour",_cityName ,clientLevelString, currentSolde, interestRatePercentage.ToString("G3")),
-                null, TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
-
-            //AccountMenu
-            campaignGameStarter.AddGameMenu(String.Format("{0}_account", _cityName), 
-                String.Format("Solde : {0}\nTaux d'intérêts : {1}%/jour", currentSolde, interestRatePercentage.ToString("G3")), null, TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters); //TODOW
-
-            //Deposit Menu
-            campaignGameStarter.AddGameMenu(String.Format("{0}_bank_deposit", _cityName), 
-                String.Format("Solde : {0}\nTaux d'intérêts : {1}%/jour", currentSolde, interestRatePercentage.ToString("G3")), null, TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters); //TODOW
-
-            //Withdraw Menu
-            campaignGameStarter.AddGameMenu(String.Format("{0}_bank_withdraw", _cityName), 
-                String.Format("Solde : {0}\nTaux d'intérêts : {1}%/jour", 
-                currentSolde, 
-                interestRatePercentage.ToString("G3")), 
-                null, 
-                TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
-
-
-        }
-
-        public void RegisterBankMenu(CampaignGameStarter campaignGameStarter, ref Bank bank)
+        public virtual void RegisterBankMenu(CampaignGameStarter campaignGameStarter, Bank bank)
         {
             _bank = bank;
-            _cityID = bank.Ville.StringId;
+            _cityID = bank.Ville.Town.StringId;
             _cityName = bank.Ville.Name.Value;
 
             CreateOrUpdateGameMenuDesc(campaignGameStarter);
@@ -66,7 +35,15 @@ namespace PrestigiousBank
             campaignGameStarter.AddGameMenuOption("town",
                                                   String.Format("{0}_bank_menu", _cityName),
                                                   String.Format("Banque de {0}", _cityName),
-                                                  OnConditionDelegateAltdorfBank,
+                                                  args =>
+                                                  {
+                                                      args.optionLeaveType = GameMenuOption.LeaveType.OpenStash;
+                                                      InformationManager.DisplayMessage(new InformationMessage(String.Format("TownID : {0}", Settlement.CurrentSettlement.Town.StringId)));
+                                                      InformationManager.DisplayMessage(new InformationMessage(String.Format("TownID Prosperity : {0}", Settlement.CurrentSettlement.Town.Prosperity)));
+
+                                                      if (Settlement.CurrentSettlement.Town.StringId == _cityID) return true;
+                                                      else return false;
+                                                  },
                                                   _ => GameMenu.SwitchToMenu(String.Format("{0}_bank_menu", _cityName)),
                                                   isLeave: false,
                                                   _optionBankIndex);
@@ -89,6 +66,36 @@ namespace PrestigiousBank
                 isLeave: true);
         }
 
+        public virtual void CreateOrUpdateGameMenuDesc(CampaignGameStarter campaignGameStarter)
+        {
+
+            string clientLevelString = _bank.GetCustomerLevelString();
+            int currentSolde = _bank.Solde;
+            float interestRatePercentage = _bank.CalculateInterestRate() * 100f;
+            // Bank Menu
+            campaignGameStarter.AddGameMenu(String.Format("{0}_bank_menu", _cityName),
+                String.Format("Bienvenue à la banque de {0}.\nNiveau du client : {1}\nSolde : {2}\nTaux d'intérêts : {3}%/jour", _cityName, clientLevelString, currentSolde, interestRatePercentage.ToString("G3")),
+                null, TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
+
+            //AccountMenu
+            campaignGameStarter.AddGameMenu(String.Format("{0}_account", _cityName),
+                String.Format("Solde : {0}\nTaux d'intérêts : {1}%/jour", currentSolde, interestRatePercentage.ToString("G3")), null, TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters); //TODOW
+
+            //Deposit Menu
+            campaignGameStarter.AddGameMenu(String.Format("{0}_bank_deposit", _cityName),
+                String.Format("Solde : {0}\nTaux d'intérêts : {1}%/jour", currentSolde, interestRatePercentage.ToString("G3")), null, TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters); //TODOW
+
+            //Withdraw Menu
+            campaignGameStarter.AddGameMenu(String.Format("{0}_bank_withdraw", _cityName),
+                String.Format("Solde : {0}\nTaux d'intérêts : {1}%/jour",
+                currentSolde,
+                interestRatePercentage.ToString("G3")),
+                null,
+                TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
+
+
+        }
+
 
 
         private void RegisterAccountMenuOptions(CampaignGameStarter campaignGameStarter)
@@ -104,7 +111,7 @@ namespace PrestigiousBank
                 a => { a.optionLeaveType = GameMenuOption.LeaveType.Trade; return true; },
                 _ => GameMenu.SwitchToMenu(String.Format("{0}_bank_withdraw", _cityName)),
                 isLeave: false);
-            registerWithdrawMenuOptions(campaignGameStarter);
+            RegisterWithdrawMenuOptions(campaignGameStarter);
             // Compte -> BankMenu
             campaignGameStarter.AddGameMenuOption(String.Format("{0}_account", _cityName), String.Format("{0}_account_back", _cityName), "Retour",
                 a => { a.optionLeaveType = GameMenuOption.LeaveType.Leave; return true; },
@@ -160,7 +167,7 @@ namespace PrestigiousBank
         }
 
 
-        private bool IsAbleToDeposit(int amount)
+        public bool IsAbleToDeposit(int amount)
         {
             return Hero.MainHero.Gold >= amount;
         }
@@ -179,7 +186,7 @@ namespace PrestigiousBank
         #endregion
 
         #region Withdraw
-        private void registerWithdrawMenuOptions(CampaignGameStarter campaignGameStarter)
+        private void RegisterWithdrawMenuOptions(CampaignGameStarter campaignGameStarter)
         {
             int[] qties = { 100, 1000, 10000, 100000 };
             int i = 0;
@@ -206,11 +213,11 @@ namespace PrestigiousBank
             campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_withdraw", _cityName), String.Format("{0}_bank_withdraw_all", _cityName), "Tout retirer",
                     a => {
                         a.optionLeaveType = GameMenuOption.LeaveType.Trade;
-                        a.IsEnabled = AltdorfBankCampaignBehavior.BankAltdorf.Solde > 0;
-                        a.Tooltip = AltdorfBankCampaignBehavior.BankAltdorf.Solde > 0 ? null : new TextObject("Pas assez de solde", null);
+                        a.IsEnabled = _bank.Solde > 0;
+                        a.Tooltip = _bank.Solde > 0 ? null : new TextObject("Pas assez de solde", null);
                         return true;
                     },
-                    _ => WithdrawGold(AltdorfBankCampaignBehavior.BankAltdorf.Solde, campaignGameStarter),
+                    _ => WithdrawGold(_bank.Solde, campaignGameStarter),
                     isLeave: false,
                     i, true);
             //Leave
@@ -222,16 +229,16 @@ namespace PrestigiousBank
 
         private bool IsAbleToWithdraw(int amount)
         {
-            return AltdorfBankCampaignBehavior.BankAltdorf.Solde >= amount;
+            return _bank.Solde >= amount;
         }
 
         private void WithdrawGold(int amount, CampaignGameStarter campaignGameStarter)
         {
-            if (AltdorfBankCampaignBehavior.BankAltdorf.Solde < amount) { return; }
+            if (_bank.Solde < amount) { return; }
 
-            AltdorfBankCampaignBehavior.BankAltdorf.Solde -= amount;
+            _bank.Solde -= amount;
             Hero.MainHero.ChangeHeroGold(amount);
-            InformationManager.DisplayMessage(new InformationMessage(String.Format("Retrait de {0} validé.\nNouvelle solde de compte : {1}", amount, AltdorfBankCampaignBehavior.BankAltdorf.Solde), Color.FromUint(0xFFBBAA00)));
+            InformationManager.DisplayMessage(new InformationMessage(String.Format("Retrait de {0} validé.\nNouvelle solde de compte : {1}", amount, _bank.Solde), Color.FromUint(0xFFBBAA00)));
             GameMenu.SwitchToMenu(String.Format("{0}_bank_withdraw", _cityName));
             CreateOrUpdateGameMenuDesc(campaignGameStarter);
             //Campaign.Current.CurrentMenuContext.Refresh();//Don't work to refresh
@@ -240,17 +247,6 @@ namespace PrestigiousBank
 
         #endregion
 
-
-
-        private bool OnConditionDelegateAltdorfBank(MenuCallbackArgs args)
-        {
-            args.optionLeaveType = GameMenuOption.LeaveType.OpenStash;
-            InformationManager.DisplayMessage(new InformationMessage(String.Format("TownID : {0}", Settlement.CurrentSettlement.Town.StringId)));
-            InformationManager.DisplayMessage(new InformationMessage(String.Format("TownID Prosperity : {0}", Settlement.CurrentSettlement.Town.Prosperity)));
-            
-            if (Settlement.CurrentSettlement.Town.StringId == _cityID) return true;
-            else return false;
-        }
 
 
     }

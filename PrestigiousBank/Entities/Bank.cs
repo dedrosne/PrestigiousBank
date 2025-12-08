@@ -47,27 +47,7 @@ namespace PrestigiousBank
 
         public Settlement Ville
         {
-            get
-            {
-                if (_ville == null)
-                {
-                    if (Town.AllTowns != null)
-                    {
-                        foreach (var town in Town.AllTowns)
-                        {
-                            if (town.StringId == AltdorfBankCampaignBehavior._altdorfTownID)
-                            {
-                                _ville = town.Settlement;
-                                break;
-                            }
-                        }
-
-                    }
-
-                }
-                return _ville;
-
-            }
+            get { return _ville; }
             set
             {
                 _ville = value;
@@ -109,8 +89,8 @@ namespace PrestigiousBank
 
         public int GetCustomerLevel()
         {
-            if (Solde < 99_999) return 1;
-            if (Solde < 499_999) return 2;
+            if (Solde < 49_999) return 1;
+            if (Solde < 199_999) return 2;
             if (Solde < 999_999) return 3;
             else return 4;
         }
@@ -124,10 +104,10 @@ namespace PrestigiousBank
             else return "Platine";
         }
 
-        public int GetDailyTradeXP()
+        public int GetDailySkillXP()
         {
-            //TradeXP = 1XP/100or pour tout or au dessus de 500_000
-            return Math.Max((Solde - 500000) / 100, 0);
+            //TradeXP = 1XP/100or pour tout or au dessus de 200_000. Max 5000/jour
+            return Math.Min(Math.Max((Solde - 200_000) / 100, 0),5000);
         }
 
 

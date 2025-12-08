@@ -39,14 +39,27 @@ namespace PrestigiousBank
                         foreach (var town in Town.AllTowns)
                         {
                             if (town.StringId == _altdorfTownID)
+                            {
                                 _bankAltdorf = new AltdorfBank(town.Settlement);
+                                break;
+                            }
+                                
+                        }
 
+                    }
+                }
+                if (_bankAltdorf != null && _bankAltdorf.Ville == null)
+                {
+                    foreach (var town in Town.AllTowns)
+                    {
+                        if (town.StringId == _altdorfTownID)
+                        {
+                            _bankAltdorf.Ville = town.Settlement;
                             break;
                         }
 
                     }
-
-            }
+                }
                 return _bankAltdorf;
 
             }
@@ -84,7 +97,7 @@ namespace PrestigiousBank
 
         private void OnSessionLaunched(CampaignGameStarter campaignGameStarter)
         {
-            AltdorfBankMenu.RegisterBankMenu(campaignGameStarter);
+            new AltdorfBankMenu().RegisterBankMenu(campaignGameStarter, BankAltdorf);
         }
 
         private void DailyTickClan()
@@ -93,7 +106,7 @@ namespace PrestigiousBank
             if (Hero.MainHero.GetCultureSpecificCustomResource().StringId == "Prestige")
                 Hero.MainHero.AddCultureSpecificCustomResource(BankAltdorf.CalculatePrestigiousInterests());
             //Ajout de l'XP
-            Hero.MainHero.AddSkillXp( DefaultSkills.Leadership,BankAltdorf.GetDailyTradeXP());
+            Hero.MainHero.AddSkillXp( DefaultSkills.Leadership,BankAltdorf.GetDailySkillXP());
         }
 
         /*
