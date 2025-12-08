@@ -6,9 +6,9 @@ Banque :
     - Calcul du taux (pourcentage/jour) = Prosperity(compris entre 0 et 10_000) / 50_000 => Prosperité à 10_000 = 0.2%/jour
 
 - Niveau :
-    - Bronze : argent déposé entre 0 et 99_999
-    - Argent : argent déposé entre 100k et 499_999
-    - Or : Argent déposé entre 500k et 999_999
+    - Bronze : argent déposé entre 0 et 49_999
+    - Argent : argent déposé entre 50k et 199_999
+    - Or : Argent déposé entre 200k et 499_999
     - Platine : Au dessus
 
 Avantages :
@@ -21,11 +21,19 @@ Avantages :
 Altdorf : 
     - Argent : Corrompre les scribes pour mettre en valeur ses faits d'arme => 1 prestige journaliers/10000 gold offert
     - Or : XP dans le Skill Magic
+    
 
 Drakenhof : town_comp_SY1
-    - Argent : Acheter des collecteurs d'âmes
+    - Argent :
     - Or : XP dans le Charm
+    - Platine : Acheter des points de focus + attribute (50_000 pour focus, 100_000 pour attribute)
 
+
+######################################################
+#In Progress
+##########################################################
+Altdorf
+- Platine : Augmenter vents de magie
 
 ######################################################
 #Todo
@@ -35,8 +43,8 @@ Drakenhof : town_comp_SY1
 Argent : 
 Marieembroug : Acheter améliorations pour caravanes
 Couronne : Acheter chevalerie
-
-
+Drakenhof : Acheter des collecteurs d'âmes
+    - Acheter une crypte
 
 
 Or
@@ -52,13 +60,9 @@ Or
 Effets Secondaires
 Marieembroug : Acheter améliorations pour caravanes
 Couronne : Augmenter le nombre de compagnions
-Altdorf : Augmenter vents de magie
 Middenheim : Augmenter le PartySize de 1
-Drakenhof : Acheter des points de focus + attribute (50_000 pour focus, 100_000 pour attribute)
+Ville du nord : Endurcicement : Augmenter HP de 1
 
-MainHero.HeroDevelopper.
-int 	UnspentFocusPoints[get, set]
-int 	UnspentAttributePoints[get, set]
 
 Capturé = On perd tout son argent 
 
@@ -66,3 +70,7 @@ Capturé = On perd tout son argent
 		○ Marchands : + de gold : Augmenter liquidités => 20 000 -> 1000
 	
 Bretonie : Villages/Agriculture => Une foi le village détenu, déposer des prisonniers pour les recruter comme serfs, et générer du revenu.
+
+
+Chez les nains : Endurance de forge qui se régénère
++ d'Endurance

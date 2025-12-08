@@ -27,7 +27,7 @@ namespace PrestigiousBank
             int prestigiousInterests = ((AltdorfBank)_bank).CalculatePrestigiousInterests();
 
             //Prestigious Account Menu
-            campaignGameStarter.AddGameMenu("Altdorf_bank_prestigious_account", 
+            campaignGameStarter.AddGameMenu(String.Format("{0}_bank_prestigious_account",_cityID), 
                 String.Format("Fortune investie : {0}\nScribes corrompus : {1}", prestigiousSolde, prestigiousInterests), 
                 null, 
                 TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
@@ -40,12 +40,12 @@ namespace PrestigiousBank
 
 
             // Bank Menu -> Prestigious Account
-            campaignGameStarter.AddGameMenuOption("Altdorf_bank_menu", "Altdorf_bank_prestigious_account", "Soutenir la bureaucratie",
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_menu", _cityID), String.Format("{0}_bank_prestigious_account", _cityID), "Soutenir la bureaucratie",
                 a => { a.optionLeaveType = GameMenuOption.LeaveType.OpenStash;
                     a.Tooltip = ((AltdorfBank)_bank).GetCustomerLevel() > 1 ? null : new TextObject("Niveau de client Argent requis", null);
                     a.IsEnabled = ((AltdorfBank)_bank).GetCustomerLevel() > 1;
                     return true; },
-                _ => GameMenu.SwitchToMenu("Altdorf_bank_prestigious_account"),
+                _ => GameMenu.SwitchToMenu(String.Format("{0}_bank_prestigious_account", _cityID)),
                 isLeave: false);
             RegisterPrestigiousAccountMenuOptions(campaignGameStarter);
             
@@ -61,7 +61,7 @@ namespace PrestigiousBank
             int i = 0;
             foreach (int qty in qties)
             {
-                campaignGameStarter.AddGameMenuOption("Altdorf_bank_prestigious_account", String.Format("Altdorf_bank_prestigious_account_{0}", qty), String.Format("Offrir {0} pièces", qty),
+                campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_prestigious_account", _cityID), String.Format("{0}_bank_prestigious_account_{1}",_cityID, qty), String.Format("Offrir {0} pièces", qty),
                     a => {
                         a.optionLeaveType = GameMenuOption.LeaveType.Bribe;
                         a.IsEnabled = IsAbleToDeposit(qty);
@@ -77,7 +77,7 @@ namespace PrestigiousBank
             }
 
             //Deposit All
-            campaignGameStarter.AddGameMenuOption("Altdorf_bank_prestigious_account", "Altdorf_bank_prestigious_account_all", "Tout offrir",
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_prestigious_account", _cityID), String.Format("{0}_bank_prestigious_account_all", _cityID), "Tout offrir",
                     a => {
                         a.optionLeaveType = GameMenuOption.LeaveType.Bribe;
                         a.IsEnabled = Hero.MainHero.Gold > 0;
@@ -88,10 +88,10 @@ namespace PrestigiousBank
                     isLeave: false,
                     i, isRepeatable: true);
             //Leave
-            campaignGameStarter.AddGameMenuOption("Altdorf_bank_prestigious_account", "Altdorf_bank_prestigious_account_back", "Retour",
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_prestigious_account", _cityID), String.Format("{0}_bank_prestigious_account_back", _cityID), "Retour",
                 a => { a.optionLeaveType = GameMenuOption.LeaveType.Leave; return true; },
-                _ => GameMenu.SwitchToMenu("Altdorf_bank_menu"),
-                isLeave: true, 6, isRepeatable: false);
+                _ => GameMenu.SwitchToMenu(String.Format("{0}_bank_menu", _cityID)),
+                isLeave: true, index: 999, isRepeatable: false);
         }
 
         private void DepositPrestigiousAccount(int amount, CampaignGameStarter campaignGameStarter)
@@ -101,7 +101,7 @@ namespace PrestigiousBank
             AltdorfBankCampaignBehavior.BankAltdorf.prestigiousAccountSolde += amount;
             Hero.MainHero.ChangeHeroGold(-amount);
             InformationManager.DisplayMessage(new InformationMessage(String.Format("Cadeau de {0} accepté.\nNombre de corrompus : {1}", amount, AltdorfBankCampaignBehavior.BankAltdorf.CalculatePrestigiousInterests()), Color.FromUint(0xFFBBAA00)));
-            GameMenu.SwitchToMenu("altdorf_bank_prestigious_account");
+            GameMenu.SwitchToMenu(String.Format("{0}_bank_prestigious_account", _cityID));
             CreateOrUpdateGameMenuDesc(campaignGameStarter);
             SoundEvent.PlaySound2D(SoundEvent.GetEventIdFromString("event:/ui/notification/coins_negative"));
         }

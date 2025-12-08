@@ -255,15 +255,16 @@
     <Compile Include="Entities\CityBanks\AltdorfBank.cs" />
     <Compile Include="Entities\Saveable\DrakenhofBankSaveableTypeDefiner.cs" />
     <Compile Include="Entities\Saveable\AltdorfBankSaveableTypeDefiner.cs" />
-    <Compile Include="Menus\DrakenhofBankMenu.cs" />
-    <Compile Include="Menus\AltdorfBankMenu.cs" />
+    <Compile Include="Menus\CityBankMenus\DrakenhofBankMenu.cs" />
+    <Compile Include="Menus\CityBankMenus\AltdorfBankMenu.cs" />
     <Compile Include="Menus\BankMenu.cs" />
     <Compile Include="PrestigiousBank.cs" />
     <Compile Include="Processor\PrestigiousFinanceModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Menus\CityBankMenus\" />
+    <Content Include="Todo.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

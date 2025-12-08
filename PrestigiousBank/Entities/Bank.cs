@@ -91,7 +91,7 @@ namespace PrestigiousBank
         {
             if (Solde < 49_999) return 1;
             if (Solde < 199_999) return 2;
-            if (Solde < 999_999) return 3;
+            if (Solde < 499_999) return 3;
             else return 4;
         }
 

@@ -67,7 +67,7 @@ namespace PrestigiousBank
                 // ============================================================
                 // Initialization message (localization-safe)
                 // ============================================================
-
+                GameTexts.SetVariable("GOLD_ICON", "{=!}<img src=\"General\\Icons\\Coin@2x\" extend=\"8\">");
             }
             catch (Exception e)
             {

@@ -20,6 +20,7 @@ using TaleWorlds.LinQuick;
 using TaleWorlds.Localization;
 using TaleWorlds.ScreenSystem;
 using TOR_Core.Extensions;
+using TOR_Core.CharacterDevelopment;
 
 namespace PrestigiousBank
 {
@@ -106,7 +107,8 @@ namespace PrestigiousBank
             if (Hero.MainHero.GetCultureSpecificCustomResource().StringId == "Prestige")
                 Hero.MainHero.AddCultureSpecificCustomResource(BankAltdorf.CalculatePrestigiousInterests());
             //Ajout de l'XP
-            Hero.MainHero.AddSkillXp( DefaultSkills.Leadership,BankAltdorf.GetDailySkillXP());
+            Hero.MainHero.AddSkillXp( TORSkills.SpellCraft,BankAltdorf.GetDailySkillXP());
+            Hero.MainHero.GetExtendedInfo().MaxWindsOfMagic
         }
 
         /*
