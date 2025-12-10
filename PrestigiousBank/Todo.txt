@@ -75,7 +75,78 @@ Bretonie : Villages/Agriculture => Une foi le village détenu, déposer des pris
 Chez les nains : Endurance de forge qui se régénère
 + d'Endurance
 
+/////////////////////////WindsOfMagicIcon
 CustomResourceManager.GetResourceObject("WindsOfMagic").GetCustomResourceIconAsText());
 using TOR_Core.CampaignMechanics.CustomResources;
 
+///////////////////////////PartySize
 MobileParty party.Party.PartySizeLimit
+namespace TOR_Core.Models
+{
+    public class TORPartySizeModel : DefaultPartySizeLimitModel
+    {
+        public override ExplainedNumber GetPartyMemberSizeLimit(PartyBase party, bool includeDescriptions = false)
+        {
+}
+
+///////////////////////////////Max Health
+namespace TOR_Core.Models
+{
+    public class TORCharacterStatsModel : DefaultCharacterStatsModel
+    {
+        public override int MaxCharacterTier => 9;
+
+        public override ExplainedNumber MaxHitpoints(CharacterObject character, bool includeDescriptions = false)
+        {
+            var number = base.MaxHitpoints(character, includeDescriptions);
+            number = CalculateHitPoints(number, character);
+            return number;
+        }
+
+///////////////////////////////Companions
+/////Get companions :
+        private void OnPartyCreated(MobileParty party)
+        {
+            if(party != null && party.LeaderHero != null && party.LeaderHero.Clan != null && party.LeaderHero.Clan.Leader != null && party.LeaderHero.Clan.Leader == party.LeaderHero)
+            {
+                var companions = party.LeaderHero.Clan.Heroes.Where(x => x.IsAICompanion());
+                foreach(var companion in companions)
+                {
+                    if (!party.GetMemberHeroes().Contains(companion)) AddHeroToPartyAction.Apply(companion, party);
+                }
+            }
+        }
+
+///////CompanionLimit :
+namespace TOR_Core.Models
+{
+    class TORClanTierModel : DefaultClanTierModel
+    {
+        public override int GetPartyLimitForTier(Clan clan, int clanTierToCheck)
+        {
+            // Patch AI clans to have unlimited parties so that new lords aren't
+            // spawned without a party.
+            return Clan.PlayerClan.Equals(clan)
+                ? base.GetPartyLimitForTier(clan, clanTierToCheck)
+                : 9999;
+        }
+
+
+        public override int GetCompanionLimit(Clan clan)
+        {
+            int companionLimit = base.GetCompanionLimit(clan);
+
+            if (clan != Clan.PlayerClan) return companionLimit;
+
+            if (Hero.MainHero.HasAnyCareer())
+            {
+                var explainedNumber = new ExplainedNumber();
+                CareerHelper.ApplyBasicCareerPassives(Hero.MainHero, ref explainedNumber, PassiveEffectType.CompanionLimit, false);
+                companionLimit += (int)explainedNumber.ResultNumber;
+            }
+
+            return companionLimit;
+
+        }
+    }
+}
