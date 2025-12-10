@@ -29,6 +29,11 @@ Drakenhof : town_comp_SY1
     - Or : XP dans le Charm
     - Platine : Acheter des points de focus + attribute (50_000 pour focus, 100_000 pour attribute)
 
+Couronne :
+    - Argent : Chevalerie : 10000=>1 Chevalerie/jour
+    - Or : XP dans le skill Riding
+    - Platine : 
+
 
 ######################################################
 #In Progress
