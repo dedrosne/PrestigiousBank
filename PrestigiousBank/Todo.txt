@@ -21,6 +21,7 @@ Avantages :
 Altdorf : 
     - Argent : Corrompre les scribes pour mettre en valeur ses faits d'arme => 1 prestige journaliers/10000 gold offert
     - Or : XP dans le Skill Magic
+    - Platine : Augmenter vents de magie : Engager des canalysateur. 1 canalysateur pour 5000g, puis 10g/jour, pour 1 mana max
     
 
 Drakenhof : town_comp_SY1
@@ -33,7 +34,7 @@ Drakenhof : town_comp_SY1
 #In Progress
 ##########################################################
 Altdorf
-- Platine : Augmenter vents de magie
+
 
 ######################################################
 #Todo
@@ -61,8 +62,11 @@ Effets Secondaires
 Marieembroug : Acheter améliorations pour caravanes
 Couronne : Augmenter le nombre de compagnions
 Middenheim : Augmenter le PartySize de 1
-Ville du nord : Endurcicement : Augmenter HP de 1
-
+Ville du nord : Endurcicement : Augmenter HP de 1 / HP des compagnions ?
+Taux de blessure des troupes
+Recruitment rate of prisoners (comme 2eme perk de leadership)
+Travel Speed
+Drakenhof : Perks pour Compagnions ?
 
 Capturé = On perd tout son argent 
 

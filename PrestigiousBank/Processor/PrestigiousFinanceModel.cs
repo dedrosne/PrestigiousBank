@@ -80,14 +80,19 @@ namespace PrestigiousBank
             if (hero == null || string.IsNullOrEmpty(hero.StringId))
                 return;
 
+            //Altdorf
             AltdorfBankCampaignBehavior AltdorfBankBehavior = Campaign.Current?.GetCampaignBehavior<AltdorfBankCampaignBehavior>();
-
             if (AltdorfBankBehavior == null) return;
 
             int InterestsAltdorfBank = AltdorfBankCampaignBehavior.BankAltdorf.CalculateInterests();
             if (InterestsAltdorfBank != 0) 
                 result.Add(InterestsAltdorfBank, new TextObject("Banque d'Altdorf"));
+            if (AltdorfBankCampaignBehavior.BankAltdorf.ChannelerNumber != 0)
+            {
+                result.Add(-AltdorfBankCampaignBehavior.BankAltdorf.CalculateChannelerCostPerDay(), new TextObject("Canalysateurs d'Altdorf"));
+            }
 
+            //Drakenhof
             DrakenhofBankCampaignBehavior DrakenhofBankBehavior = Campaign.Current?.GetCampaignBehavior<DrakenhofBankCampaignBehavior>();
 
             if (DrakenhofBankBehavior == null) return;
@@ -95,6 +100,7 @@ namespace PrestigiousBank
             int InterestsDrakenhoffBank = DrakenhofBankCampaignBehavior.BankDrakenhof.CalculateInterests();
             if (InterestsDrakenhoffBank != 0)
                 result.Add(InterestsDrakenhoffBank, new TextObject("Banque de Drakenhof"));
+
 
 
         }

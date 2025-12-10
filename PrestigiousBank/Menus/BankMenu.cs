@@ -139,7 +139,7 @@ namespace PrestigiousBank
                 MBTextManager.SetTextVariable("AMOUNT", qty);
                 campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_deposit", _cityID), 
                     String.Format("{0}_bank_deposit_{1}",_cityID, qty), 
-                    "Déposer "+qties+" {GOLD_ICON}",
+                    "Déposer "+qty+" {GOLD_ICON}",
                     a => {
                         a.optionLeaveType = GameMenuOption.LeaveType.BribeAndEscape;
                         a.IsEnabled = IsAbleToDeposit(qty);
@@ -201,7 +201,7 @@ namespace PrestigiousBank
                 MBTextManager.SetTextVariable("AMOUNT", qty);
                 campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_withdraw", _cityID), 
                     String.Format("{0}_bank_withdraw_{1}",_cityID, qty),
-                    "Retirer "+qties+" {GOLD_ICON}",
+                    "Retirer "+qty+" {GOLD_ICON}",
                     a => {
                         a.optionLeaveType = GameMenuOption.LeaveType.Trade;
                         a.IsEnabled = IsAbleToWithdraw(qty);

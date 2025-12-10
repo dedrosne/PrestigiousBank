@@ -108,7 +108,6 @@ namespace PrestigiousBank
                 Hero.MainHero.AddCultureSpecificCustomResource(BankAltdorf.CalculatePrestigiousInterests());
             //Ajout de l'XP
             Hero.MainHero.AddSkillXp( TORSkills.SpellCraft,BankAltdorf.GetDailySkillXP());
-            Hero.MainHero.GetExtendedInfo().MaxWindsOfMagic
         }
 
         /*

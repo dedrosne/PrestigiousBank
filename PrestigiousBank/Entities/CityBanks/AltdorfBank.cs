@@ -12,16 +12,32 @@ namespace PrestigiousBank
     public class AltdorfBank : Bank
     {
         [SaveableProperty(2)]
-        public int prestigiousAccountSolde { get; set; }
+        public int PrestigiousAccountSolde { get; set; }
+
+        //1 Channeler = 1 Max de vent de magie en plus
+        [SaveableProperty(3)]
+        public int ChannelerNumber { get; set; }
+
+        public static int UpkeepPerChanneler = 10;
+        public static int PricePerChanneler = 4000;
 
         public AltdorfBank(Settlement ville) : base(ville)
         {
-            prestigiousAccountSolde = 0;
+            PrestigiousAccountSolde = 0;
+            ChannelerNumber = 0;
         }
+
+
 
         public int CalculatePrestigiousInterests()
         {
-           return (int)(prestigiousAccountSolde * (1f/10000f));
+           return (int)(PrestigiousAccountSolde * (1f/10000f));
+        }
+
+        public int CalculateChannelerCostPerDay()
+        {
+            //Prix par 
+            return ChannelerNumber*UpkeepPerChanneler;
         }
 
     }

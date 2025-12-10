@@ -1,4 +1,5 @@
 ﻿//using Birke.Models;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -32,6 +33,8 @@ namespace PrestigiousBank
         protected override void OnSubModuleLoad()
         {
             base.OnSubModuleLoad();
+            Harmony harmony = new Harmony("PrestigiousBank");
+            harmony.PatchAll();
         }
         protected override void OnGameStart(Game game, IGameStarter starter)
         {
