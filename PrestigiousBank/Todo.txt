@@ -74,3 +74,5 @@ Bretonie : Villages/Agriculture => Une foi le village détenu, déposer des pris
 
 Chez les nains : Endurance de forge qui se régénère
 + d'Endurance
+
+CustomResourceManager.GetResourceObject("WindsOfMagic").GetCustomResourceIconAsText());
