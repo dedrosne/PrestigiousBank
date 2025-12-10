@@ -14,6 +14,7 @@ using TaleWorlds.ObjectSystem;
 using TaleWorlds.Localization;
 using Messages.FromClient.ToLobbyServer;
 using TaleWorlds.Engine;
+using TOR_Core.CampaignMechanics.CustomResources;
 
 namespace PrestigiousBank
 {
@@ -36,7 +37,8 @@ namespace PrestigiousBank
 
             //Services de Magie
             campaignGameStarter.AddGameMenu(String.Format("{0}_bank_magic_services", _cityID),
-                String.Format("Canalysateurs embauchés : {0}\nCoût par jour : {1}", hiredChanneler, ChannelerCostPerDay),
+                "Canalysateurs embauchés : "+ hiredChanneler + CustomResourceManager.GetResourceObject("WindsOfMagic").GetCustomResourceIconAsText()+ 
+                "\nCoût par jour : "+ChannelerCostPerDay,
                 null,
                 TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
 
@@ -138,7 +140,8 @@ namespace PrestigiousBank
 
             //Hire Channeler
             campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_magic_services", _cityID), String.Format("{0}_bank_magic_services_hire", _cityID), 
-                "["+pricePerChanneler+ " {GOLD_ICON}] Embaucher un canalysateur :\n+1 Point de Vent de Magie Max || -"+upkeepChanneler+" {GOLD_ICON}/jour",
+                "["+pricePerChanneler+ " {GOLD_ICON}] Embaucher un canalysateur :\n+1 Max"+ CustomResourceManager.GetResourceObject("WindsOfMagic").GetCustomResourceIconAsText()+
+                "\nCout : "+upkeepChanneler+" {GOLD_ICON}/jour",
                 a => {
                     a.optionLeaveType = GameMenuOption.LeaveType.ShowMercy;
                     a.IsEnabled = Hero.MainHero.Gold > pricePerChanneler;

@@ -275,22 +275,28 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Behaviours\CouronneBankBehaviour.cs" />
     <Compile Include="Behaviours\DrakenhofBankBehaviour.cs" />
     <Compile Include="Behaviours\AltdorfBankBehaviour.cs" />
+    <Compile Include="Entities\CityBanks\CouronneBank.cs" />
     <Compile Include="Entities\CityBanks\DrakenhofBank.cs" />
     <Compile Include="Entities\Bank.cs" />
     <Compile Include="Entities\Configuration.cs" />
     <Compile Include="Entities\InsuredSettlement.cs" />
     <Compile Include="Entities\InsuredCaravan.cs" />
     <Compile Include="Entities\CityBanks\AltdorfBank.cs" />
+    <Compile Include="Entities\Saveable\CouronneBankSaveableTypeDefiner.cs" />
     <Compile Include="Entities\Saveable\DrakenhofBankSaveableTypeDefiner.cs" />
     <Compile Include="Entities\Saveable\AltdorfBankSaveableTypeDefiner.cs" />
     <Compile Include="Harmony\AltdorfBankPatch.cs" />
+    <Compile Include="Menus\CityBankMenus\CouronneBankMenu.cs" />
     <Compile Include="Menus\CityBankMenus\DrakenhofBankMenu.cs" />
     <Compile Include="Menus\CityBankMenus\AltdorfBankMenu.cs" />
     <Compile Include="Menus\BankMenu.cs" />
+    <Compile Include="Models\PrestigiousPartySizeModel.cs" />
+    <Compile Include="Models\PrestigiousCharacterStatsModel.cs" />
     <Compile Include="PrestigiousBank.cs" />
-    <Compile Include="Processor\PrestigiousFinanceModel.cs" />
+    <Compile Include="Models\PrestigiousFinanceModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

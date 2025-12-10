@@ -51,6 +51,7 @@ namespace PrestigiousBank
                 // ============================================================
                 campaignGameStarter.AddBehavior(new AltdorfBankCampaignBehavior());
                 campaignGameStarter.AddBehavior(new DrakenhofBankCampaignBehavior());
+                campaignGameStarter.AddBehavior(new CouronneBankCampaignBehavior());
 
                 // ============================================================
                 // Core models and processors

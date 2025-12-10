@@ -14,7 +14,7 @@ Banque :
 Avantages :
     - Bronze : Dépot/Retrait
     - Argent : Avantage principal de la Banque
-    - Or : XP dans un skill selon la Banque
+    - Or : XP dans un skill selon la Banque -> 1XP/100or pour tout or au dessus de 200_000. Max 5000/jour
     - Platine : Avantage secondaire de la Banque
 
 
@@ -33,7 +33,7 @@ Drakenhof : town_comp_SY1
 ######################################################
 #In Progress
 ##########################################################
-Altdorf
+
 
 
 ######################################################
@@ -55,7 +55,7 @@ Or
     - Riding : Couronne
     - Bow : Halls of Araereth
     - Medecine : 
-    - Tactics : Middenheim
+    - Tactics : Middenheim tow_comp_ML1
     - Leadership : Aquitaine/Bretonnie ?
 
 Effets Secondaires
@@ -67,6 +67,7 @@ Taux de blessure des troupes
 Recruitment rate of prisoners (comme 2eme perk de leadership)
 Travel Speed
 Drakenhof : Perks pour Compagnions ?
+PV du cheval
 
 Capturé = On perd tout son argent 
 
@@ -79,33 +80,11 @@ Bretonie : Villages/Agriculture => Une foi le village détenu, déposer des pris
 Chez les nains : Endurance de forge qui se régénère
 + d'Endurance
 
-/////////////////////////WindsOfMagicIcon
-CustomResourceManager.GetResourceObject("WindsOfMagic").GetCustomResourceIconAsText());
-using TOR_Core.CampaignMechanics.CustomResources;
 
-///////////////////////////PartySize
-MobileParty party.Party.PartySizeLimit
-namespace TOR_Core.Models
-{
-    public class TORPartySizeModel : DefaultPartySizeLimitModel
-    {
-        public override ExplainedNumber GetPartyMemberSizeLimit(PartyBase party, bool includeDescriptions = false)
-        {
-}
 
-///////////////////////////////Max Health
-namespace TOR_Core.Models
-{
-    public class TORCharacterStatsModel : DefaultCharacterStatsModel
-    {
-        public override int MaxCharacterTier => 9;
 
-        public override ExplainedNumber MaxHitpoints(CharacterObject character, bool includeDescriptions = false)
-        {
-            var number = base.MaxHitpoints(character, includeDescriptions);
-            number = CalculateHitPoints(number, character);
-            return number;
-        }
+
+
 
 ///////////////////////////////Companions
 /////Get companions :
@@ -121,7 +100,7 @@ namespace TOR_Core.Models
             }
         }
 
-///////CompanionLimit :
+///////CompanionLimit :--Impossible sans update du mod
 namespace TOR_Core.Models
 {
     class TORClanTierModel : DefaultClanTierModel
