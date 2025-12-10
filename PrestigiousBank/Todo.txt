@@ -76,3 +76,4 @@ Chez les nains : Endurance de forge qui se régénère
 + d'Endurance
 
 CustomResourceManager.GetResourceObject("WindsOfMagic").GetCustomResourceIconAsText());
+using TOR_Core.CampaignMechanics.CustomResources;
