@@ -173,3 +173,5 @@ override ExplainedNumber 	GetDailyHealingHpForHeroes (MobileParty party, bool in
 override int 	GetHeroesEffectedHealingAmount (Hero hero, float healingRate)
  
 override int 	GetBattleEndHealingAmount (MobileParty party, Hero hero)
+
+result = 1-((1-result) * (1-(NbDoctors/100f)))
