@@ -90,8 +90,8 @@ namespace PrestigiousBank
         public int GetCustomerLevel()
         {
             if (Solde < 49_999) return 1;
-            if (Solde < 199_999) return 2;
-            if (Solde < 499_999) return 3;
+            if (Solde < 149_999) return 2;
+            if (Solde < 299_999) return 3;
             else return 4;
         }
 

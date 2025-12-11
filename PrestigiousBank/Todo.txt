@@ -7,8 +7,8 @@ Banque :
 
 - Niveau :
     - Bronze : argent déposé entre 0 et 49_999
-    - Argent : argent déposé entre 50k et 199_999
-    - Or : Argent déposé entre 200k et 499_999
+    - Argent : argent déposé entre 50k et 149_999
+    - Or : Argent déposé entre 150k et 299_999
     - Platine : Au dessus
 
 Avantages :
