@@ -155,3 +155,21 @@ namespace TOR_Core.Models
 
             var result = base.GetSurvivalChance(party, character, damageType, canDamageKillEvenIfBlunt, enemyParty);
 
+Inherits TaleWorlds.CampaignSystem.ComponentInterfaces.PartyHealingModel.
+
+Public Member Functions
+override float 	GetSurgeryChance (PartyBase party)
+ 
+override float 	GetSiegeBombardmentHitSurgeryChance (PartyBase party)
+ 
+override float 	GetSurvivalChance (PartyBase party, CharacterObject character, DamageTypes damageType, bool canDamageKillEvenIfBlunt, PartyBase enemyParty=null)
+ 
+override int 	GetSkillXpFromHealingTroop (PartyBase party)
+ 
+override ExplainedNumber 	GetDailyHealingForRegulars (MobileParty party, bool includeDescriptions=false)
+ 
+override ExplainedNumber 	GetDailyHealingHpForHeroes (MobileParty party, bool includeDescriptions=false)
+ 
+override int 	GetHeroesEffectedHealingAmount (Hero hero, float healingRate)
+ 
+override int 	GetBattleEndHealingAmount (MobileParty party, Hero hero)
