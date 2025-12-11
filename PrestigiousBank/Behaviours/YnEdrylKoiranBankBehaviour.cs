@@ -20,57 +20,56 @@ using TaleWorlds.LinQuick;
 using TaleWorlds.Localization;
 using TaleWorlds.ScreenSystem;
 using TOR_Core.Extensions;
+using TOR_Core.CharacterDevelopment;
 
 namespace PrestigiousBank
 {
-    public class CouronneBankCampaignBehavior : CampaignBehaviorBase
+    public class YnEdrylKoiranBankCampaignBehavior : CampaignBehaviorBase
     {
-        public static string _CouronneTownID = "town_comp_CO1";
-        public static CouronneBank _bankCouronne = null;
-        //public static string BankMenuLinkText = "<a style=\"Link.Settlement\" href=\"event:Concept-str_game_objects_simple_bank\"><b>" + PrestigiousBank.Config.BankName + "</b></a>";
+        public static string townID = "town_comp_AL1";
+        public static YnEdrylKoiranBank _bank= null;
 
-        public static CouronneBank BankCouronne
+        public static YnEdrylKoiranBank YnEdrylKoiranBank
         {
             get
             {
-                if (_bankCouronne == null)
+                if (_bank == null)
                 {
                     if (Town.AllTowns != null) {
                         foreach (var town in Town.AllTowns)
                         {
-                            if (town.StringId == _CouronneTownID)
+                            if (town.StringId == townID)
                             {
-                                _bankCouronne = new CouronneBank(town.Settlement);
+                                _bank = new YnEdrylKoiranBank(town.Settlement);
                                 break;
                             }
                                 
                         }
 
                     }
-
                 }
-                if (_bankCouronne != null && _bankCouronne.Ville == null)
+                if (_bank != null && _bank.Ville == null)
                 {
                     foreach (var town in Town.AllTowns)
                     {
-                        if (town.StringId == _CouronneTownID)
+                        if (town.StringId == townID)
                         {
-                            _bankCouronne.Ville = town.Settlement;
+                            _bank.Ville = town.Settlement;
                             break;
                         }
 
                     }
                 }
-                return _bankCouronne;
+                return _bank;
 
             }
             set
             {
-                _bankCouronne = value;
+                _bank = value;
             }
         }
 
-        public CouronneBankCampaignBehavior() : base()
+        public YnEdrylKoiranBankCampaignBehavior() : base()
         {
             //MBTextManager.SetTextVariable("Birke_Bank_Encyclopedia_Main", PrestigiousBank.Config.BankName);
             //bankAltdorf = bankAltdorf;
@@ -98,17 +97,18 @@ namespace PrestigiousBank
 
         private void OnSessionLaunched(CampaignGameStarter campaignGameStarter)
         {
-            new CouronneBankMenu().RegisterBankMenu(campaignGameStarter, BankCouronne);
+            new YnEdrylKoiranBankMenu().RegisterBankMenu(campaignGameStarter, YnEdrylKoiranBank);
         }
 
         private void DailyTickClan()
         {
-            //Ajout de l'énergie noire
-            if (Hero.MainHero.GetCultureSpecificCustomResource().StringId == "Chivalry")
-                Hero.MainHero.AddCultureSpecificCustomResource(BankCouronne.CalculateChivalryInterests());
+            //Ajout de la ressource speciale
+            if (Hero.MainHero.GetCultureSpecificCustomResource().StringId == "ForestHarmony")
+                Hero.MainHero.AddCultureSpecificCustomResource(YnEdrylKoiranBank.CalculateForestHarmonyInterests());
             //Ajout de l'XP
-            Hero.MainHero.AddSkillXp( DefaultSkills.Riding, BankCouronne.GetDailySkillXP());
+            Hero.MainHero.AddSkillXp(DefaultSkills.Medicine, YnEdrylKoiranBank.GetDailySkillXP());
         }
+
 
         public override void SyncData(IDataStore dataStore)
         {
@@ -116,18 +116,17 @@ namespace PrestigiousBank
             {
                 if (dataStore.IsLoading)
                 {
-                    dataStore.SyncData<CouronneBank>("CouronneBank", ref _bankCouronne);
+                    dataStore.SyncData<YnEdrylKoiranBank>("YnEdrylKoiranBank", ref _bank);
                 }
                 else
                 {
-                    dataStore.SyncData<CouronneBank>("CouronneBank", ref _bankCouronne);
+                    dataStore.SyncData<YnEdrylKoiranBank>("YnEdrylKoiranBank", ref _bank);
                 }
             }
             catch
             {
             }
         }
-        
 
     }
 }

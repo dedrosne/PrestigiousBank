@@ -102,6 +102,27 @@ namespace PrestigiousBank
                 result.Add(InterestsDrakenhoffBank, new TextObject("Banque de Drakenhof"));
 
 
+            //YnEdrylKoiran
+            YnEdrylKoiranBankCampaignBehavior ynEdrylKoiranBankCampaignBehavior = Campaign.Current?.GetCampaignBehavior<YnEdrylKoiranBankCampaignBehavior>();
+
+            if (ynEdrylKoiranBankCampaignBehavior == null) return;
+
+            int InterestsYnEdrylKoiran = YnEdrylKoiranBankCampaignBehavior.YnEdrylKoiranBank.CalculateInterests();
+            if (InterestsYnEdrylKoiran != 0)
+                result.Add(InterestsYnEdrylKoiran, new TextObject("Banque d'Yn Edryl Koiran"));
+
+            int BlessingUpkeep = YnEdrylKoiranBankCampaignBehavior.YnEdrylKoiranBank.CalculateBlessingUpkeep();
+            if (BlessingUpkeep != 0) result.Add(BlessingUpkeep, new TextObject("Bénédiction d'Isha"));
+
+            //Couronne
+            CouronneBankCampaignBehavior CouronneBankCampaignBehavior = Campaign.Current?.GetCampaignBehavior<CouronneBankCampaignBehavior>();
+
+            if (CouronneBankCampaignBehavior == null) return;
+
+            int InterestsCouronne = CouronneBankCampaignBehavior.BankCouronne.CalculateInterests();
+            if (InterestsCouronne != 0)
+                result.Add(InterestsCouronne, new TextObject("Banque de Couronne"));
+
 
         }
     }

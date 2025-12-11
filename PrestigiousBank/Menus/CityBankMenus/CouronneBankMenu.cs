@@ -63,7 +63,7 @@ namespace PrestigiousBank
                     return true;
                 },
                 _ => GameMenu.SwitchToMenu(String.Format("{0}_bank_chivalry_account", _cityID)),
-                isLeave: false);
+                isLeave: false, index: 2);
             RegisterChivalryAccountMenuOptions(campaignGameStarter);
 
         }

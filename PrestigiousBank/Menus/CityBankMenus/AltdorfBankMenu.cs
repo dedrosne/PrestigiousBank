@@ -57,7 +57,7 @@ namespace PrestigiousBank
                     a.IsEnabled = ((AltdorfBank)_bank).GetCustomerLevel() > 1;
                     return true; },
                 _ => GameMenu.SwitchToMenu(String.Format("{0}_bank_prestigious_account", _cityID)),
-                isLeave: false);
+                isLeave: false, index: 2);
             RegisterPrestigiousAccountMenuOptions(campaignGameStarter);
 
             //Bank Menu -> Services de magie
@@ -70,7 +70,7 @@ namespace PrestigiousBank
                     return true;
                 },
                 _ => GameMenu.SwitchToMenu(String.Format("{0}_bank_magic_services", _cityID)),
-                isLeave: false);
+                isLeave: false, index: 3);
             RegisterMagicServicesMenuOptions(campaignGameStarter);
         }
 
@@ -144,8 +144,8 @@ namespace PrestigiousBank
                 "\nCout : "+upkeepChanneler+" {GOLD_ICON}/jour",
                 a => {
                     a.optionLeaveType = GameMenuOption.LeaveType.ShowMercy;
-                    a.IsEnabled = Hero.MainHero.Gold > pricePerChanneler;
-                    a.Tooltip = Hero.MainHero.Gold > pricePerChanneler ? null : new TextObject("Pas assez d'argent", null);
+                    a.IsEnabled = Hero.MainHero.Gold >= pricePerChanneler;
+                    a.Tooltip = Hero.MainHero.Gold >= pricePerChanneler ? null : new TextObject("Pas assez d'argent", null);
                     return true;
                 },
                 _ => HireChalleler(campaignGameStarter),
@@ -153,7 +153,7 @@ namespace PrestigiousBank
                 index: 1, isRepeatable: true);
 
             //Fire Channeler
-            campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_magic_services", _cityID), String.Format("{0}_bank_magic_services_hire", _cityID),
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_magic_services", _cityID), String.Format("{0}_bank_magic_services_fire", _cityID),
                 "Virer un canalysateur",
                 a => {
                     a.optionLeaveType = GameMenuOption.LeaveType.ShowMercy;
@@ -179,6 +179,7 @@ namespace PrestigiousBank
             Hero.MainHero.ChangeHeroGold(-AltdorfBank.PricePerChanneler);
             PrestigiousBank.LogMessage("Canalysateur embauché.\nEntretien total par jour : "+ ((AltdorfBank)_bank).CalculateChannelerCostPerDay());
             CreateOrUpdateGameMenuDesc(CampaignGameStarter);
+            GameMenu.SwitchToMenu(String.Format("{0}_bank_magic_services", _cityID));
         }
 
         private void FireChalleler(CampaignGameStarter CampaignGameStarter)
@@ -186,6 +187,7 @@ namespace PrestigiousBank
             ((AltdorfBank)_bank).ChannelerNumber -= 1;
             PrestigiousBank.LogMessage("Canalysateur viré.\nEntretien total par jour : " + ((AltdorfBank)_bank).CalculateChannelerCostPerDay());
             CreateOrUpdateGameMenuDesc(CampaignGameStarter);
+            GameMenu.SwitchToMenu(String.Format("{0}_bank_magic_services", _cityID));
         }
 
 

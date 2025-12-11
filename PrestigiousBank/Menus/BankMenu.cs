@@ -59,7 +59,7 @@ namespace PrestigiousBank
             campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_menu", _cityID), String.Format("{0}_account", _cityID), "Accéder au compte",
                 a => { a.optionLeaveType = GameMenuOption.LeaveType.OpenStash; return true; },
                 _ => GameMenu.SwitchToMenu(String.Format("{0}_account", _cityID)),
-                isLeave: false);
+                isLeave: false, index: 1);
             RegisterAccountMenuOptions(campaignGameStarter);
 
 
@@ -68,7 +68,7 @@ namespace PrestigiousBank
             campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_menu", _cityID), String.Format("{0}_bank_menu_back", _cityID), "Quitter la banque",
                 a => { a.optionLeaveType = GameMenuOption.LeaveType.Leave; return true; },
                 _ => GameMenu.SwitchToMenu("town"),
-                isLeave: true, index: 999);
+                isLeave: true, index: -1);
         }
 
         public virtual void CreateOrUpdateGameMenuDesc(CampaignGameStarter campaignGameStarter)

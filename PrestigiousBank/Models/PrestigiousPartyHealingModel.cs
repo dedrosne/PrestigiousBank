@@ -1,0 +1,29 @@
+﻿using PrestigiousBank;
+using System;
+using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.GameComponents;
+using TaleWorlds.CampaignSystem.Party;
+using TaleWorlds.Core;
+using TaleWorlds.Library;
+using TaleWorlds.Localization;
+using TOR_Core.Models;
+
+
+namespace PrestigiousBank
+{
+    public class PrestigiousPartyHealingModel : TORPartyHealingModel
+    {
+
+        public override float GetSurvivalChance(PartyBase party, CharacterObject character, DamageTypes damageType, bool canDamageKillEvenIfBlunt, PartyBase enemyParty = null)
+        {
+            var Result = base.GetSurvivalChance(party, character, damageType, canDamageKillEvenIfBlunt, enemyParty);
+
+            if (party != null && party.LeaderHero != null && party.LeaderHero == Hero.MainHero)
+            {
+                Result = 1 - ((1 - Result) * (1 - (YnEdrylKoiranBankCampaignBehavior.YnEdrylKoiranBank.BlessingAmount / 100f)));
+            }
+
+            return Result;
+        }
+    }
+}

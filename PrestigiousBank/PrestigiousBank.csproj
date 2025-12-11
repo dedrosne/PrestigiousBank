@@ -275,10 +275,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Behaviours\YnEdrylKoiranBankBehaviour.cs" />
     <Compile Include="Behaviours\CouronneBankBehaviour.cs" />
     <Compile Include="Behaviours\DrakenhofBankBehaviour.cs" />
     <Compile Include="Behaviours\AltdorfBankBehaviour.cs" />
     <Compile Include="Entities\CityBanks\CouronneBank.cs" />
+    <Compile Include="Entities\CityBanks\YnEdrylKoiranBank.cs" />
     <Compile Include="Entities\CityBanks\DrakenhofBank.cs" />
     <Compile Include="Entities\Bank.cs" />
     <Compile Include="Entities\Configuration.cs" />
@@ -286,13 +288,16 @@
     <Compile Include="Entities\InsuredCaravan.cs" />
     <Compile Include="Entities\CityBanks\AltdorfBank.cs" />
     <Compile Include="Entities\Saveable\CouronneBankSaveableTypeDefiner.cs" />
+    <Compile Include="Entities\Saveable\YnEdrylKoiranBankSaveableTypeDefiner.cs" />
     <Compile Include="Entities\Saveable\DrakenhofBankSaveableTypeDefiner.cs" />
     <Compile Include="Entities\Saveable\AltdorfBankSaveableTypeDefiner.cs" />
     <Compile Include="Harmony\AltdorfBankPatch.cs" />
     <Compile Include="Menus\CityBankMenus\CouronneBankMenu.cs" />
+    <Compile Include="Menus\CityBankMenus\YnEdrylKoiranBankMenu.cs" />
     <Compile Include="Menus\CityBankMenus\DrakenhofBankMenu.cs" />
     <Compile Include="Menus\CityBankMenus\AltdorfBankMenu.cs" />
     <Compile Include="Menus\BankMenu.cs" />
+    <Compile Include="Models\PrestigiousPartyHealingModel.cs" />
     <Compile Include="Models\PrestigiousPartySizeModel.cs" />
     <Compile Include="Models\PrestigiousCharacterStatsModel.cs" />
     <Compile Include="PrestigiousBank.cs" />

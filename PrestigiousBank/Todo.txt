@@ -24,15 +24,24 @@ Altdorf :
     - Platine : Augmenter vents de magie : Engager des canalysateur. 1 canalysateur pour 5000g, puis 10g/jour, pour 1 mana max
     
 
-Drakenhof : town_comp_SY1
+Drakenhof : 
     - Argent :
     - Or : XP dans le Charm
     - Platine : Acheter des points de focus + attribute (50_000 pour focus, 100_000 pour attribute)
 
-Couronne :
+Couronne : 
     - Argent : Chevalerie : 10000=>1 Chevalerie/jour
     - Or : XP dans le skill Riding
     - Platine : 
+
+
+Yn Edryl Koiran : 
+    - Argent : Harmonie de la foret : 10000=>1 Harmonie/jour
+    - Or : XP dans le skill Medecine
+    - Platine : Bénédiction d'Isha : Si une unité est sur le point de mourir, 1 point de bénédiction = 1% de chance qu'elle survive quand même. 100 points = 100%chance qu'elle survive.
+        Cout : 3000/point + Entretien : [Point de Bénédiction]²  => 50 points = 2500/jour d'entretien
+
+
 
 
 ######################################################
@@ -51,6 +60,12 @@ Marieembroug : Acheter améliorations pour caravanes
 Couronne : Acheter chevalerie
 Drakenhof : Acheter des collecteurs d'âmes
     - Acheter une crypte
+
+Middenheim : twon_comp_ML1
+
+Averheim : town_comp_AV1
+
+Nuln : town_comp_WI1
 
 
 Or
@@ -139,21 +154,6 @@ namespace TOR_Core.Models
     }
 }
 ////////////////////////////////////////////Wound
-namespace TOR_Core.Models
-{
-    /**
-     * ONLY applies for campaign map related events!
-     */
-    public class TORPartyHealingModel : DefaultPartyHealingModel
-    {
-        public override float GetSurvivalChance(PartyBase party, CharacterObject character, DamageTypes damageType, bool canDamageKillEvenIfBlunt, PartyBase enemyParty = null)
-        {
-            if (character.HasAttribute("Survivor"))
-            {
-                return 1;
-            }
-
-            var result = base.GetSurvivalChance(party, character, damageType, canDamageKillEvenIfBlunt, enemyParty);
 
 Inherits TaleWorlds.CampaignSystem.ComponentInterfaces.PartyHealingModel.
 
