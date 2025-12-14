@@ -62,6 +62,35 @@ Middenheim :
 #Todo
 ##########################################################
 
+Usine à Nuln : Construction 100_000 po
+
+Choisir la production :
+	- Pièces d'usinage => Augmente la production des workshop de la ville
+	- Pièces Armes => Obtient des gold à chaque fois qu'une unité est recrutée dans la ville. (Besoin de fer ?)
+	- Matetiaux de production => Augmenter la vitesse de construction des chantiers
+	- Truc pour augmenter la prosperité ?
+
+	- Alimentation en fer/Bois/Charbon :
+		Autre ville : Carrière de Fer
+		Autre ville : Bucheronnage 
+		Autre ville : Charbonnerie ?
+		Autre ville : Carrière d'Argent
+		Tout regrouper vers Nuln ?
+=> Esclaves pour productivité
+		1 tiers d'esclave = 1 point de productivité
+Procuctivité diminue de 5%/jour
+	
+	- 
+
+
+	- 
+	- Niveau de l'usine : Détermine le nombre de comptoirs qui peuvent être construits
+
+
+
+Dans toutes les villes : Possibilité de construire un comptoir de vente 25_000 => Etend les effets de son usine.
+	- Niveau du comptoir de vente : Effets à 50, 75 et 100%
+
 
 Argent : 
 Marieembroug : Acheter améliorations pour caravanes
