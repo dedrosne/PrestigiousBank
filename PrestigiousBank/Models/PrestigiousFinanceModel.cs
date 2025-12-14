@@ -111,8 +111,8 @@ namespace PrestigiousBank
             if (InterestsYnEdrylKoiran != 0)
                 result.Add(InterestsYnEdrylKoiran, new TextObject("Banque d'Yn Edryl Koiran"));
 
-            int BlessingUpkeep = YnEdrylKoiranBankCampaignBehavior.YnEdrylKoiranBank.CalculateBlessingUpkeep();
-            if (BlessingUpkeep != 0) result.Add(BlessingUpkeep, new TextObject("Bénédiction d'Isha"));
+            int IshaBlessingUpkeep = YnEdrylKoiranBankCampaignBehavior.YnEdrylKoiranBank.CalculateBlessingUpkeep();
+            if (IshaBlessingUpkeep != 0) result.Add(-IshaBlessingUpkeep, new TextObject("Bénédiction d'Isha"));
 
             //Couronne
             CouronneBankCampaignBehavior CouronneBankCampaignBehavior = Campaign.Current?.GetCampaignBehavior<CouronneBankCampaignBehavior>();
@@ -123,6 +123,28 @@ namespace PrestigiousBank
             if (InterestsCouronne != 0)
                 result.Add(InterestsCouronne, new TextObject("Banque de Couronne"));
 
+
+            //Averheim
+            AverheimBankCampaignBehavior AverheimBankCampaignBehavior = Campaign.Current?.GetCampaignBehavior<AverheimBankCampaignBehavior>();
+
+            if (AverheimBankCampaignBehavior == null) return;
+
+            int InterestsAverheim = AverheimBankCampaignBehavior.AverheimBank.CalculateInterests();
+            if (InterestsAverheim != 0)
+                result.Add(InterestsAverheim, new TextObject("Banque d'Averheim"));
+
+
+            //Middenheim
+            MiddenheimBankCampaignBehavior MiddenheimBankCampaignBehavior = Campaign.Current?.GetCampaignBehavior<MiddenheimBankCampaignBehavior>();
+
+            if (MiddenheimBankCampaignBehavior == null) return;
+
+            int InterestsMiddenheim = MiddenheimBankCampaignBehavior.MiddenheimBank.CalculateInterests();
+            if (InterestsMiddenheim != 0)
+                result.Add(InterestsMiddenheim, new TextObject("Banque de Middenheim"));
+
+            int PartyHelperUpkeep = MiddenheimBankCampaignBehavior.MiddenheimBank.CalculatePartyHelperUpkeep();
+            if (PartyHelperUpkeep != 0) result.Add(-PartyHelperUpkeep, new TextObject("Aides de camp de Middenheim"));
 
         }
     }

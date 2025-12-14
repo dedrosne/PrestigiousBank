@@ -23,7 +23,7 @@ namespace PrestigiousBank
         public string _cityName;
         public string _cityID;
         public Bank _bank;
-        public static int _optionBankIndex = -2;
+        public static int _optionBankIndex = -1;
 
         public virtual void RegisterBankMenu(CampaignGameStarter campaignGameStarter, Bank bank)
         {

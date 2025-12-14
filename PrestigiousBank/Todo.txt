@@ -42,7 +42,15 @@ Yn Edryl Koiran :
         Cout : 3000/point + Entretien : [Point de Bénédiction]²  => 50 points = 2500/jour d'entretien
 
 
+Averheim :
+    - Argent : Augmenter HP de 1. prix : 2000 + 500*déjà acheté
+    - Or : XP dans le skill athetics
+    - 
 
+Middenheim :
+    - Argent : Augmenter le PartySize de 1. Prix : 2000 + Entretien : 
+    - Or : XP dans le skill Tactics
+    - 
 
 ######################################################
 #In Progress
@@ -61,7 +69,7 @@ Couronne : Acheter chevalerie
 Drakenhof : Acheter des collecteurs d'âmes
     - Acheter une crypte
 
-Middenheim : twon_comp_ML1
+Middenheim : town_comp_ML1
 
 Averheim : town_comp_AV1
 
@@ -72,11 +80,10 @@ Or
     - Trade : Marieembourg
     - 2handed : Carroburg
     - Gunpowder : Hergig
-    - Riding : Couronne
     - Bow : Halls of Araereth
-    - Medecine : 
     - Tactics : Middenheim tow_comp_ML1
     - Leadership : Aquitaine/Bretonnie ?
+    - Athletics : Averheim
 
 Effets Secondaires
 Marieembroug : Acheter améliorations pour caravanes
@@ -88,6 +95,7 @@ Recruitment rate of prisoners (comme 2eme perk de leadership)
 Travel Speed
 Drakenhof : Perks pour Compagnions ?
 PV du cheval
+Recrutement des prisonniers plus rapide
 
 Capturé = On perd tout son argent 
 

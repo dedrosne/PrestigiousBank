@@ -275,11 +275,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Behaviours\AverheimBankBehaviour.cs" />
+    <Compile Include="Behaviours\MiddenheimBankBehaviour.cs" />
     <Compile Include="Behaviours\YnEdrylKoiranBankBehaviour.cs" />
     <Compile Include="Behaviours\CouronneBankBehaviour.cs" />
     <Compile Include="Behaviours\DrakenhofBankBehaviour.cs" />
     <Compile Include="Behaviours\AltdorfBankBehaviour.cs" />
     <Compile Include="Entities\CityBanks\CouronneBank.cs" />
+    <Compile Include="Entities\CityBanks\AverheimBank.cs" />
+    <Compile Include="Entities\CityBanks\MiddenheimBank.cs" />
     <Compile Include="Entities\CityBanks\YnEdrylKoiranBank.cs" />
     <Compile Include="Entities\CityBanks\DrakenhofBank.cs" />
     <Compile Include="Entities\Bank.cs" />
@@ -288,11 +292,15 @@
     <Compile Include="Entities\InsuredCaravan.cs" />
     <Compile Include="Entities\CityBanks\AltdorfBank.cs" />
     <Compile Include="Entities\Saveable\CouronneBankSaveableTypeDefiner.cs" />
+    <Compile Include="Entities\Saveable\MiddenheimBankSaveableTypeDefiner.cs" />
+    <Compile Include="Entities\Saveable\AverheimBankSaveableTypeDefiner.cs" />
     <Compile Include="Entities\Saveable\YnEdrylKoiranBankSaveableTypeDefiner.cs" />
     <Compile Include="Entities\Saveable\DrakenhofBankSaveableTypeDefiner.cs" />
     <Compile Include="Entities\Saveable\AltdorfBankSaveableTypeDefiner.cs" />
     <Compile Include="Harmony\AltdorfBankPatch.cs" />
     <Compile Include="Menus\CityBankMenus\CouronneBankMenu.cs" />
+    <Compile Include="Menus\CityBankMenus\AverheimBankMenu.cs" />
+    <Compile Include="Menus\CityBankMenus\MiddenheimBankMenu.cs" />
     <Compile Include="Menus\CityBankMenus\YnEdrylKoiranBankMenu.cs" />
     <Compile Include="Menus\CityBankMenus\DrakenhofBankMenu.cs" />
     <Compile Include="Menus\CityBankMenus\AltdorfBankMenu.cs" />

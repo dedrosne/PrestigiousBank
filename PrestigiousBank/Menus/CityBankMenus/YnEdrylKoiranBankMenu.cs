@@ -195,7 +195,7 @@ namespace PrestigiousBank
         private void IncreaseBlessing(CampaignGameStarter CampaignGameStarter)
         {
             ((YnEdrylKoiranBank)_bank).BlessingAmount += 1;
-            Hero.MainHero.ChangeHeroGold(-AltdorfBank.PricePerChanneler);
+            Hero.MainHero.ChangeHeroGold(-YnEdrylKoiranBank.PricePerBlessing);
             PrestigiousBank.LogMessage("Bénédiction d'Isha augmentée.\nEntretien total par jour : " + ((YnEdrylKoiranBank)_bank).CalculateBlessingUpkeep());
             CreateOrUpdateGameMenuDesc(CampaignGameStarter);
             GameMenu.SwitchToMenu(String.Format("{0}_bank_ishaBlessings", _cityID));

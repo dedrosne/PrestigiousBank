@@ -18,6 +18,13 @@ namespace PrestigiousBank
         {
             ExplainedNumber number = base.GetPartyMemberSizeLimit(party, includeDescriptions);
 
+            //Middenheim
+            MiddenheimBankCampaignBehavior MiddenheimBankCampaignBehavior = Campaign.Current?.GetCampaignBehavior<MiddenheimBankCampaignBehavior>();
+
+            if (MiddenheimBankCampaignBehavior == null || MiddenheimBankCampaignBehavior.MiddenheimBank is null) return number;
+            
+            
+            number.Add(MiddenheimBankCampaignBehavior.MiddenheimBank.PartyHelperCount, new TextObject("Aides de camp de Middenheim"));
             return number;
         }
     }

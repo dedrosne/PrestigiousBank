@@ -8,7 +8,7 @@ using TaleWorlds.SaveSystem;
 
 namespace PrestigiousBank
 {
-    [SaveableRootClass(99999996)]
+    [SaveableRootClass(99999995)]
     public class YnEdrylKoiranBank : Bank
     {
         [SaveableProperty(2)]

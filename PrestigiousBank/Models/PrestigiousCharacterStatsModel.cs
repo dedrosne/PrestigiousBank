@@ -16,7 +16,18 @@ namespace PrestigiousBank
 
         public override ExplainedNumber MaxHitpoints(CharacterObject character, bool includeDescriptions = false)
         {
+            
             var number = base.MaxHitpoints(character, includeDescriptions);
+
+            if (character.IsHero && character.HeroObject == Hero.MainHero)
+            {
+                //Middenheim
+                AverheimBankCampaignBehavior AverheimBankCampaignBehavior = Campaign.Current?.GetCampaignBehavior<AverheimBankCampaignBehavior>();
+                if (AverheimBankCampaignBehavior == null || AverheimBankCampaignBehavior.AverheimBank == null) return number;
+
+
+                number.Add(AverheimBankCampaignBehavior.AverheimBank.BlessingAmount, new TextObject("Bénédiction de Sigmar"));
+            }
             return number;
         }
 

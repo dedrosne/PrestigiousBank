@@ -53,6 +53,8 @@ namespace PrestigiousBank
                 campaignGameStarter.AddBehavior(new DrakenhofBankCampaignBehavior());
                 campaignGameStarter.AddBehavior(new CouronneBankCampaignBehavior());
                 campaignGameStarter.AddBehavior(new YnEdrylKoiranBankCampaignBehavior());
+                campaignGameStarter.AddBehavior(new MiddenheimBankCampaignBehavior());
+                campaignGameStarter.AddBehavior(new AverheimBankCampaignBehavior());
 
                 // ============================================================
                 // Core models and processors
@@ -62,7 +64,8 @@ namespace PrestigiousBank
                 //campaignGameStarter.AddModel(new BankProsperityModel());
                 starter.AddModel((ClanFinanceModel)new PrestigiousFinanceModel());
                 starter.AddModel((PartyHealingModel)new PrestigiousPartyHealingModel());
-
+                starter.AddModel((CharacterStatsModel)new PrestigiousCharacterStatsModel());
+                starter.AddModel((PartySizeLimitModel)new PrestigiousPartySizeModel());
                 // ============================================================
                 // Bank menus
                 // ============================================================
