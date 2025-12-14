@@ -277,6 +277,7 @@
   <ItemGroup>
     <Compile Include="Behaviours\AverheimBankBehaviour.cs" />
     <Compile Include="Behaviours\MiddenheimBankBehaviour.cs" />
+    <Compile Include="Behaviours\NulnFactoryBehaviour.cs" />
     <Compile Include="Behaviours\YnEdrylKoiranBankBehaviour.cs" />
     <Compile Include="Behaviours\CouronneBankBehaviour.cs" />
     <Compile Include="Behaviours\DrakenhofBankBehaviour.cs" />
@@ -291,6 +292,8 @@
     <Compile Include="Entities\InsuredSettlement.cs" />
     <Compile Include="Entities\InsuredCaravan.cs" />
     <Compile Include="Entities\CityBanks\AltdorfBank.cs" />
+    <Compile Include="Entities\NulnFactory.cs" />
+    <Compile Include="Entities\Saveable\NulnFactorySaveableTypeDefiner.cs" />
     <Compile Include="Entities\Saveable\CouronneBankSaveableTypeDefiner.cs" />
     <Compile Include="Entities\Saveable\MiddenheimBankSaveableTypeDefiner.cs" />
     <Compile Include="Entities\Saveable\AverheimBankSaveableTypeDefiner.cs" />
@@ -305,6 +308,7 @@
     <Compile Include="Menus\CityBankMenus\DrakenhofBankMenu.cs" />
     <Compile Include="Menus\CityBankMenus\AltdorfBankMenu.cs" />
     <Compile Include="Menus\BankMenu.cs" />
+    <Compile Include="Menus\NulnFactoryMenu.cs" />
     <Compile Include="Models\PrestigiousPartyHealingModel.cs" />
     <Compile Include="Models\PrestigiousPartySizeModel.cs" />
     <Compile Include="Models\PrestigiousCharacterStatsModel.cs" />

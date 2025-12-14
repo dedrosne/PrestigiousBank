@@ -55,6 +55,7 @@ namespace PrestigiousBank
                 campaignGameStarter.AddBehavior(new YnEdrylKoiranBankCampaignBehavior());
                 campaignGameStarter.AddBehavior(new MiddenheimBankCampaignBehavior());
                 campaignGameStarter.AddBehavior(new AverheimBankCampaignBehavior());
+                campaignGameStarter.AddBehavior(new NulnFactoryCampaignBehavior());
 
                 // ============================================================
                 // Core models and processors

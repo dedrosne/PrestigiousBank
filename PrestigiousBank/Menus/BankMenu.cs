@@ -43,9 +43,6 @@ namespace PrestigiousBank
                                                   args =>
                                                   {
                                                       args.optionLeaveType = GameMenuOption.LeaveType.OpenStash;
-                                                      InformationManager.DisplayMessage(new InformationMessage(String.Format("TownID : {0}", Settlement.CurrentSettlement.Town.StringId)));
-                                                      InformationManager.DisplayMessage(new InformationMessage(String.Format("TownID Prosperity : {0}", Settlement.CurrentSettlement.Town.Prosperity)));
-
                                                       if (Settlement.CurrentSettlement.Town.StringId == _cityID) return true;
                                                       else return false;
                                                   },

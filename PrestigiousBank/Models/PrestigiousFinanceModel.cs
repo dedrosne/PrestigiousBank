@@ -146,6 +146,16 @@ namespace PrestigiousBank
             int PartyHelperUpkeep = MiddenheimBankCampaignBehavior.MiddenheimBank.CalculatePartyHelperUpkeep();
             if (PartyHelperUpkeep != 0) result.Add(-PartyHelperUpkeep, new TextObject("Aides de camp de Middenheim"));
 
+            //Nuln Factory
+            NulnFactoryCampaignBehavior NulnFactoryCampaignBehavior = Campaign.Current?.GetCampaignBehavior<NulnFactoryCampaignBehavior>();
+
+            if (NulnFactoryCampaignBehavior == null) return;
+            if (NulnFactoryCampaignBehavior.NulnFactory.Benefits != 0)
+            {
+                result.Add(NulnFactoryCampaignBehavior.NulnFactory.Benefits, new TextObject("Usine de Nuln"));
+            }
+            ;
+
         }
     }
 }
