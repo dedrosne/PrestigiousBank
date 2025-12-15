@@ -185,6 +185,8 @@ namespace TOR_Core.Models
 Inventaire personnel :
 var itemRoster = MobileParty.MainParty.ItemRoster
 
+https://apidoc.bannerlord.com/v/1.2.7/class_tale_worlds_1_1_campaign_system_1_1_inventory_1_1_inventory_manager.html
+
         private void OpenScrollShop()
         {
             ItemRoster roster = new ItemRoster();
