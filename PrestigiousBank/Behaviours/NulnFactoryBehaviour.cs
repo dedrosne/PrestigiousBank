@@ -22,6 +22,7 @@ using TaleWorlds.ScreenSystem;
 using TOR_Core.Extensions;
 using TOR_Core.CharacterDevelopment;
 using PrestigiousBank.Entities;
+using System.Runtime.InteropServices;
 
 namespace PrestigiousBank
 {
@@ -82,7 +83,7 @@ namespace PrestigiousBank
         public override void RegisterEvents()
         {
             CampaignEvents.OnSessionLaunchedEvent.AddNonSerializedListener((object)this, new Action<CampaignGameStarter>(this.OnSessionLaunched));
-
+            CampaignEvents.SettlementEntered.AddNonSerializedListener(this, new Action<MobileParty, Settlement, Hero>(this.SettlementEntered));
             CampaignEvents.DailyTickEvent.AddNonSerializedListener(this, this.DailyTickClan);
             CampaignEvents.OnTroopRecruitedEvent.AddNonSerializedListener(this, new Action<Hero, Settlement, Hero, CharacterObject, int>(this.OnTroopRecruitedEvent));
             CampaignEvents.HourlyTickEvent.AddNonSerializedListener(this, HourlyTickEvent);
@@ -91,7 +92,7 @@ namespace PrestigiousBank
 
         private void OnSessionLaunched(CampaignGameStarter campaignGameStarter)
         {
-            //new NulnFactoryBankMenu().RegisterBankMenu(campaignGameStarter, NulnFactory);
+            new NulnFactoryMenu().RegisterFactoryMenu(campaignGameStarter, NulnFactory);
         }
 
         private void DailyTickClan()
@@ -103,6 +104,7 @@ namespace PrestigiousBank
         public void OnTroopRecruitedEvent(Hero recruiter, Settlement settlement, Hero recruitmentSource, CharacterObject troop, int amount)
         {
             if (NulnFactory.Level == 0) return;
+            if (NulnFactory.chosenProduction != NulnFactory.PossibleProduction.Weapon) return;
             if (recruiter == null) return;
             if (settlement == null) return;
             if (settlement.Town == null) return;
@@ -116,10 +118,19 @@ namespace PrestigiousBank
         {
             var time = Campaign.CurrentTime;
 
-            if ((int)time % 24 == 9)
+            if ((int)time % 24 == 13)
             {
+                NulnFactory.PreviousDayBenefits = NulnFactory.Benefits;
                 NulnFactory.Benefits = 0;
             }
+        }
+
+        public void SettlementEntered(MobileParty mobileParty, Settlement settlement, Hero hero)
+        {
+            if (hero != Hero.MainHero) return;
+            if (settlement.IsTown) PrestigiousBank.LogMessage("SettlementID : " + settlement.StringId);
+            if (settlement.IsVillage) PrestigiousBank.LogMessage("SettlementID : " + settlement.StringId);
+            if (settlement.IsCastle) PrestigiousBank.LogMessage("SettlementID : " +settlement.StringId);
         }
 
         public override void SyncData(IDataStore dataStore)

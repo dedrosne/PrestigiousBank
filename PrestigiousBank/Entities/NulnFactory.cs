@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TaleWorlds.CampaignSystem.Roster;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.SaveSystem;
 
@@ -19,6 +20,15 @@ namespace PrestigiousBank.Entities
 
         [SaveableProperty(2)]
         public int Benefits {get;set; }
+
+        [SaveableProperty(3)]
+        public int PreviousDayBenefits { get; set; }
+
+        [SaveableProperty(4)]
+        private ItemRoster ItemStash { get; set; }
+
+        [SaveableProperty(5)]
+        public int WorkStrenght { get; set; }
 
         public Settlement _ville;
 
@@ -46,13 +56,17 @@ namespace PrestigiousBank.Entities
 
         public enum PossibleProduction { MachiningPart, Weapon, ConstructionMaterials }
 
-        public PossibleProduction chosenProduction = NulnFactory.PossibleProduction.MachiningPart;
+        public PossibleProduction chosenProduction;
 
         public NulnFactory(Settlement ville) 
         {
             Level = 0;  
             Ville = ville;
-            
+            chosenProduction = PossibleProduction.Weapon;
+            Benefits = 0;
+            PreviousDayBenefits = 0;
+            ItemStash = new ItemRoster();
+            WorkStrenght = 0;
         }
 
         public int GetDailySkillXP()
@@ -62,9 +76,14 @@ namespace PrestigiousBank.Entities
 
         public int CalculatePriceToLevelUp()
         {
-            return InitialPrice * (Level + 1)^2;
+            return InitialPrice * (Level + 1);
         }
 
+        public ItemRoster GetItemStash()
+        {
+            if (ItemStash == null) ItemStash = new ItemRoster();
+            return ItemStash;
+        }
 
     }
 }

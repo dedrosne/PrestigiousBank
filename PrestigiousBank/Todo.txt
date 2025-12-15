@@ -54,6 +54,10 @@ Middenheim :
 Usine à Nuln : Construction 50_000 po
 Cout d'upgrade : Level² * 50_000 po
 	- Armes => Obtient des gold à chaque fois qu'une unité est recrutée dans la ville. (Besoin de fer ?)
+                Consommation 2 fer/1 Bois/3 Charbon / Niveau
+=> Esclaves pour productivité
+		1 tiers d'esclave = 1 point de productivité
+
 
 ######################################################
 #In Progress
@@ -68,20 +72,20 @@ Cout d'upgrade : Level² * 50_000 po
 Usine de Nuln
 
 Choisir la production :
-	- Pièces d'usinage => Augmente la production des workshop de la ville. 05/10/15/20/25% des gold des workshops de la ville
-
+	- Pièces d'usinage => Augmente la production des workshop de la ville de ses propres workshop ou pour les autres 05/10/15/20/25% des gold des workshops de la ville
+        Consommation 3 fer/3 bois/1 Charbon
 	- Matetiaux de production => Augmenter la vitesse de construction des chantiers
-	- Augmenter la prosperité ?
+        Consommation 1 fer/4 bois/1Charbon
+	- Augmenter la prosperité ? => Outils de production ? Nourriture ?
 
 	- Alimentation en fer/Bois/Charbon :
-		Autre ville : Carrière de Fer
+		Autre ville : Carrière de Fer : Hugeldal
 		Autre ville : Bucheronnage 
 		Autre ville : Charbonnerie ?
-		Autre ville : Carrière d'Argent
+		Autre ville : Carrière d'Argent : Rohrhausen
 		Tout regrouper vers Nuln ?
-=> Esclaves pour productivité
-		1 tiers d'esclave = 1 point de productivité
-Procuctivité diminue de 5%/jour
+
+Procuctivité diminue de 5%/jour, min 10 points
 
 	- Niveau de l'usine : Détermine le nombre de comptoirs qui peuvent être construits
 
@@ -333,3 +337,7 @@ using TaleWorlds.CampaignSystem.Actions;
             return nearbySettlements.MinBy(
                 settlement => Campaign.Current.Models.MapDistanceModel.GetDistance(party, settlement));
         }
+
+/////////////////////////////////////////////////////////        Assurance Caravane :
+ MobileParty leftParty = new MobileParty();
+leftParty.IgnoreByOtherPartiesTill(CampaignTime time)

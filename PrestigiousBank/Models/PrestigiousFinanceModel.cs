@@ -152,7 +152,7 @@ namespace PrestigiousBank
             if (NulnFactoryCampaignBehavior == null) return;
             if (NulnFactoryCampaignBehavior.NulnFactory.Benefits != 0)
             {
-                result.Add(NulnFactoryCampaignBehavior.NulnFactory.Benefits, new TextObject("Usine de Nuln"));
+                result.Add(NulnFactoryCampaignBehavior.NulnFactory.PreviousDayBenefits, new TextObject("Usine de Nuln"));
             }
             ;
 
