@@ -110,7 +110,7 @@ Marieembroug : Acheter améliorations pour caravanes
 Couronne : Augmenter le nombre de compagnions
 Averheim : HP des compagnions ?
 Recruitment rate of prisoners (comme 2eme perk de leadership)
-Travel Speed
+Paravon : Travel Speed => Acheter des pégases [+0.01 TravelSpeed pour 8_000]
 Drakenhof : Perks pour Compagnions ?
 PV du cheval
 
