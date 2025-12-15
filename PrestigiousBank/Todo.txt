@@ -312,3 +312,24 @@ using TaleWorlds.CampaignSystem.Actions;
             }
 
         }
+
+//////////////////////////////////////////////////////Distance entre deux éléments de la map
+
+        public static Settlement FindNearestSettlement(MobileParty party, float radius, Func<Settlement, bool> condition = null)
+        {
+            LocatableSearchData<Settlement> locatableSearchData = Settlement.StartFindingLocatablesAroundPosition(party.Position2D, radius);
+            List<Settlement> nearbySettlements = new List<Settlement>();
+            for (Settlement settlement = Settlement.FindNextLocatable(ref locatableSearchData); settlement != null; settlement = Settlement.FindNextLocatable(ref locatableSearchData))
+            {
+                nearbySettlements.Add(settlement);
+            }
+            if (condition != null)
+            {
+                nearbySettlements = nearbySettlements.FindAll(x => condition(x));
+            }
+            if (nearbySettlements.Count == 0) return null;
+            // The list of nearbySettlements is unordered, thus we need to find the
+            // settlement with minimum distance.
+            return nearbySettlements.MinBy(
+                settlement => Campaign.Current.Models.MapDistanceModel.GetDistance(party, settlement));
+        }
