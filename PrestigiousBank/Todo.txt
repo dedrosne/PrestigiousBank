@@ -114,6 +114,8 @@ Paravon : Travel Speed => Acheter des pégases [+0.01 TravelSpeed pour 8_000]
 Drakenhof : Perks pour Compagnions ?
 PV du cheval
 
+Altdorf : possibilité d'imposer la paix entre factions de l'empire + imposer guerre contre faction hors empire contre 1000 de prestige
+
 Capturé = On perd tout son argent 
 
 	- MarieEmbourg : Acheter des droits de péage (argent par caravane). + Meilleurs prix pour caravanes, assurance pour Caravane, etc
