@@ -50,7 +50,10 @@ Averheim :
 Middenheim :
     - Argent : Augmenter le PartySize de 1. Prix : 2000 + Entretien : 
     - Or : XP dans le skill Tactics
-    - 
+
+Usine à Nuln : Construction 50_000 po
+Cout d'upgrade : Level² * 50_000 po
+	- Armes => Obtient des gold à chaque fois qu'une unité est recrutée dans la ville. (Besoin de fer ?)
 
 ######################################################
 #In Progress
@@ -62,13 +65,13 @@ Middenheim :
 #Todo
 ##########################################################
 
-Usine à Nuln : Construction 100_000 po
+Usine de Nuln
 
 Choisir la production :
-	- Pièces d'usinage => Augmente la production des workshop de la ville
-	- Pièces Armes => Obtient des gold à chaque fois qu'une unité est recrutée dans la ville. (Besoin de fer ?)
+	- Pièces d'usinage => Augmente la production des workshop de la ville. 05/10/15/20/25% des gold des workshops de la ville
+
 	- Matetiaux de production => Augmenter la vitesse de construction des chantiers
-	- Truc pour augmenter la prosperité ?
+	- Augmenter la prosperité ?
 
 	- Alimentation en fer/Bois/Charbon :
 		Autre ville : Carrière de Fer
@@ -79,30 +82,20 @@ Choisir la production :
 => Esclaves pour productivité
 		1 tiers d'esclave = 1 point de productivité
 Procuctivité diminue de 5%/jour
-	
-	- 
 
-
-	- 
 	- Niveau de l'usine : Détermine le nombre de comptoirs qui peuvent être construits
 
 
 
-Dans toutes les villes : Possibilité de construire un comptoir de vente 25_000 => Etend les effets de son usine.
+Dans toutes les villes : Possibilité de construire un comptoir de vente 25_000 => Etend les effets de son usine. Beson de plus de matériaux ?
 	- Niveau du comptoir de vente : Effets à 50, 75 et 100%
 
 
 Argent : 
 Marieembroug : Acheter améliorations pour caravanes
-Couronne : Acheter chevalerie
+
 Drakenhof : Acheter des collecteurs d'âmes
     - Acheter une crypte
-
-Middenheim : town_comp_ML1
-
-Averheim : town_comp_AV1
-
-Nuln : town_comp_WI1
 
 
 Or
@@ -110,25 +103,20 @@ Or
     - 2handed : Carroburg
     - Gunpowder : Hergig
     - Bow : Halls of Araereth
-    - Tactics : Middenheim tow_comp_ML1
     - Leadership : Aquitaine/Bretonnie ?
-    - Athletics : Averheim
 
 Effets Secondaires
 Marieembroug : Acheter améliorations pour caravanes
 Couronne : Augmenter le nombre de compagnions
-Middenheim : Augmenter le PartySize de 1
-Ville du nord : Endurcicement : Augmenter HP de 1 / HP des compagnions ?
-Taux de blessure des troupes
+Averheim : HP des compagnions ?
 Recruitment rate of prisoners (comme 2eme perk de leadership)
 Travel Speed
 Drakenhof : Perks pour Compagnions ?
 PV du cheval
-Recrutement des prisonniers plus rapide
 
 Capturé = On perd tout son argent 
 
-	- MarieEmbourg : Acheter des droits de péage (argent par caravane). + Négociants qui diminuent les charges des Workshops + Diminue frais de personnel
+	- MarieEmbourg : Acheter des droits de péage (argent par caravane). + Meilleurs prix pour caravanes, assurance pour Caravane, etc
 		○ Marchands : + de gold : Augmenter liquidités => 20 000 -> 1000
 	
 Bretonie : Villages/Agriculture => Une foi le village détenu, déposer des prisonniers pour les recruter comme serfs, et générer du revenu.
@@ -190,25 +178,88 @@ namespace TOR_Core.Models
         }
     }
 }
-////////////////////////////////////////////Wound
 
-Inherits TaleWorlds.CampaignSystem.ComponentInterfaces.PartyHealingModel.
 
-Public Member Functions
-override float 	GetSurgeryChance (PartyBase party)
- 
-override float 	GetSiegeBombardmentHitSurgeryChance (PartyBase party)
- 
-override float 	GetSurvivalChance (PartyBase party, CharacterObject character, DamageTypes damageType, bool canDamageKillEvenIfBlunt, PartyBase enemyParty=null)
- 
-override int 	GetSkillXpFromHealingTroop (PartyBase party)
- 
-override ExplainedNumber 	GetDailyHealingForRegulars (MobileParty party, bool includeDescriptions=false)
- 
-override ExplainedNumber 	GetDailyHealingHpForHeroes (MobileParty party, bool includeDescriptions=false)
- 
-override int 	GetHeroesEffectedHealingAmount (Hero hero, float healingRate)
- 
-override int 	GetBattleEndHealingAmount (MobileParty party, Hero hero)
 
-result = 1-((1-result) * (1-(NbDoctors/100f)))
+////////////////////////////////////////////Gestion d'inventaire
+Inventaire personnel :
+var itemRoster = MobileParty.MainParty.ItemRoster
+
+        private void OpenScrollShop()
+        {
+            ItemRoster roster = new ItemRoster();
+
+            MBObjectManager.Instance.GetObjectTypeList<ItemObject>()
+                .Where(item => item.IsInventoryUsable() && item.GetTraits().Any(trait => trait.OnInventoryUseScript.InventoryScriptName.Contains("SkillBookScript")))
+                .ToList()
+                .ForEach(item => roster.Add(new ItemRosterElement(item, MBRandom.RandomInt(1, 5))));
+
+            InventoryScreenHelper.OpenScreenAsTrade(roster, Settlement.CurrentSettlement.Town);
+        }
+
+            var emptyRoster = new ItemRoster();
+            InventoryScreenHelper.OpenScreenAsReceiveItems(emptyRoster, new TextObject("Give Items to the Big boss"), () => AfterDonation(currentRosterWithEquipment));
+
+        void OpenForSpending()
+        {
+            var currentRoster = new ItemRoster(Hero.MainHero.PartyBelongedTo.ItemRoster);
+            var currentRosterWithEquipment = new ItemRoster();
+            var equipment = Hero.MainHero.GetHeroEquipment();
+
+            foreach (var item in currentRoster)
+            {
+                if (item.EquipmentElement.Item == null) continue;
+                currentRosterWithEquipment.AddToCounts(item.EquipmentElement.Item, item.Amount);
+            }
+
+            foreach (var item in equipment)
+            {
+                if (item == null) continue;
+                currentRosterWithEquipment.AddToCounts(item, 1);
+            }
+
+            var emptyRoster = new ItemRoster();
+            InventoryScreenHelper.OpenScreenAsReceiveItems(emptyRoster, new TextObject("Give Items to the Big boss"), () => AfterDonation(currentRosterWithEquipment));
+
+            void AfterDonation(ItemRoster beforeTransferRoster)
+            {
+                var roster = beforeTransferRoster;
+                var currentRoster = new ItemRoster();
+
+                foreach (var item in Hero.MainHero.PartyBelongedTo.ItemRoster)
+                {
+                    currentRoster.Add(item);
+                }
+
+                var equipment = Hero.MainHero.GetHeroEquipment();
+
+                foreach (var item in equipment)
+                {
+                    if (item == null) continue;
+                    currentRoster.AddToCounts(item, 1);
+                }
+
+                var difference = new ItemRoster();
+                foreach (var item in roster)
+                {
+                    if (currentRoster.FindIndexOfElement(item.EquipmentElement) != -1)
+                    {
+                        continue;
+                    }
+                    difference.Add(item);
+                }
+
+                var rawTeefValue = difference.Sum(item => item.EquipmentElement.Item.Value);
+
+                var teef = rawTeefValue / ItemExchange;
+                if (teef > 0)
+                {
+                    Hero.MainHero.AddCultureSpecificCustomResource(teef);
+                    TORCampaignEvents.Instance.OnTeefTransferred(Hero.MainHero, rawTeefValue);
+                }
+            }
+
+///////////////////////////////////Gestion des Workshops
+town.Workshops
+workshop.ChangeGold(workshop.Expense * 0.15f);=> Diminue les dépenses. A appliquer sur un dailyTick
+
