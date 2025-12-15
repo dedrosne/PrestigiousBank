@@ -265,3 +265,48 @@ https://apidoc.bannerlord.com/v/1.2.7/class_tale_worlds_1_1_campaign_system_1_1_
 town.Workshops
 workshop.ChangeGold(workshop.Expense * 0.15f);=> Diminue les dépenses. A appliquer sur un dailyTick
 
+
+//////////////////////////////////////Relation royaumes
+using TaleWorlds.CampaignSystem.Actions;
+            void ForceWar(List<InquiryElement> inquiryElements)
+            {
+                var kingdom1 = (Kingdom)inquiryElements[0].Identifier;
+                var kingdom2 = (Kingdom)inquiryElements[1].Identifier;
+
+                if (MBRandom.RandomFloat < 0.5f)
+                {
+                    DeclareWarAction.ApplyByDefault(kingdom1, kingdom2);
+                }
+                else
+                {
+                    DeclareWarAction.ApplyByDefault(kingdom2,kingdom1);
+                }
+
+
+
+//////////////////////////////////////////////////////Apprendre des nouveaux Lores. Même si pas possible ?
+        void LearnNewLoresPrompt()
+        {
+            List<InquiryElement> list = [];
+
+            var lores = LoreObject.GetAll();
+
+            lores = lores.WhereQ(X => !X.DisabledForCultures.Contains(TORConstants.Cultures.EONIR)&& X.ID!="DarkMagic" && !Hero.MainHero.HasKnownLore(X.ID)).ToList();
+
+            foreach (var lore in lores)
+            {
+                list.Add(new InquiryElement(lore,lore.Name,null,true,"Learn new lore"));
+            }
+            
+            var inquirydata = new MultiSelectionInquiryData("Force Peace", "Select a new lore to learn ( maximum 3)", list, true, 1, 1, "Confirm", "Cancel", SelectLore, null,"",true);
+            MBInformationManager.ShowMultiSelectionInquiry(inquirydata, true);
+
+            void SelectLore(List<InquiryElement> inquiryElements)
+            {
+                var newlore =(LoreObject) inquiryElements[0].Identifier;
+                
+                Hero.MainHero.AddKnownLore(newlore.ID);
+                Hero.MainHero.AddCultureSpecificCustomResource(-500);
+            }
+
+        }
