@@ -108,6 +108,7 @@ Level 4 50=>15
 Level 5 75=>25
 
 
+
 1 force de travail =~10g
 1 bois = 1fT
 1 charbon = 2 bois + 1fT

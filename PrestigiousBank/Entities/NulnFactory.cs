@@ -12,23 +12,57 @@ namespace PrestigiousBank.Entities
     [SaveableRootClass(99999992)]
     public class NulnFactory
     {
-        public static int InitialPrice = 50_000;
+        public static int InitialFactoryPrice = 50_000;
+        public static int InitialRessourcePrice = 25_000;
 
         //Level=0 => Not yet bought  || Max level = 5
         [SaveableProperty(1)]
-        public int Level {  get; set; }
+        public int FactoryLevel {  get; set; }
 
         [SaveableProperty(2)]
-        public int Benefits {get;set; }
+        public int WoodLevel {get;set;}
 
         [SaveableProperty(3)]
-        public int PreviousDayBenefits { get; set; }
+        public int CharcoalLevel {get;set;}
 
         [SaveableProperty(4)]
-        private ItemRoster ItemStash { get; set; }
+        public int IronLevel {get;set;}
 
         [SaveableProperty(5)]
+        public int ClayLevel {get;set;}
+
+        [SaveableProperty(6)]
+        public int SilverLevel {get;set;}
+
+        [SaveableProperty(7)]
+        public int Benefits {get;set; }
+
+        [SaveableProperty(8)]
+        public int PreviousDayBenefits { get; set; }
+
+        [SaveableProperty(9)]
+        private ItemRoster ItemStash { get; set; }
+
+        [SaveableProperty(10)]
         public int WorkStrenght { get; set; }
+
+        [SaveableProperty(11)]
+        public int SelectedFactoryLevel {  get; set; }
+
+        [SaveableProperty(12)]
+        public int SelectedWoodLevel {get;set;}
+
+        [SaveableProperty(13)]
+        public int SelectedCharcoalLevel {get;set;}
+
+        [SaveableProperty(14)]
+        public int SelectedIronLevel {get;set;}
+
+        [SaveableProperty(15)]
+        public int SelectedClayLevel {get;set;}
+
+        [SaveableProperty(16)]
+        public int SelectedSilverLevel {get;set;}
 
         public Settlement _ville;
 
@@ -54,13 +88,46 @@ namespace PrestigiousBank.Entities
             { 9 ,5000 }
         };
 
+        //{SelectedWoodLevel, (WorkStrenght, Production)}
+        public static Dictionary<int, (int WorkStrenght,int Production)> WoodProductionAndWorkStrenghtPerLevel 
+        = new Dictionary<int, (int WorkStrenght,int Production)>
+        {
+            { 1 ,(1,1) },
+            { 2 ,(4,5) },
+            { 3 ,(8,10) },
+            { 4 ,(12,20) },
+            { 5 ,(25,50) }
+        };
+
+        //{SelectedCharcoalLevel, (WoodConsumption, WorkStrenght, Production)}
+        public static Dictionary<int, (int WorkStrenght,int Production)> CharcoalProductionWoodAndWorkStrenghtPerLevel 
+        = new Dictionary<int, (int WoodConsumption,int WorkStrenght,int Production)>
+        {
+            { 1 ,(2,1,1) },
+            { 2 ,(9,4,5) },
+            { 3 ,(16,8,10) },
+            { 4 ,(20,12,15) },
+            { 5 ,(25,25,25) }
+        };
+
+        //{SelectedIronLevel, (WorkStrenght, Production)}
+        public static Dictionary<int, (int WorkStrenght,int Production)> IronProductionAndWorkStrenghtPerLevel 
+        = new Dictionary<int, (int WorkStrenght,int Production)>
+        {
+            { 1 ,(5,1) },
+            { 2 ,(22,5) },
+            { 3 ,(40,10) },
+            { 4 ,(50,15) },
+            { 5 ,(75,25) }
+        };
+
         public enum PossibleProduction { MachiningPart, Weapon, ConstructionMaterials }
 
         public PossibleProduction chosenProduction;
 
         public NulnFactory(Settlement ville) 
         {
-            Level = 0;  
+            FactoryLevel = 0;  
             Ville = ville;
             chosenProduction = PossibleProduction.Weapon;
             Benefits = 0;
@@ -74,15 +141,77 @@ namespace PrestigiousBank.Entities
             return 1;
         }
 
-        public int CalculatePriceToLevelUp()
+        public int CalculatePriceToLevelUpFactory()
         {
-            return InitialPrice * (Level + 1);
+            return InitialFactoryPrice * (FactoryLevel + 1);
+        }
+
+        public int CalculatePriceToLevelUpRessource(int CurrentLevel)
+        {
+            return (CurrentLevel+1)*InitialRessourcePrice;
         }
 
         public ItemRoster GetItemStash()
         {
             if (ItemStash == null) ItemStash = new ItemRoster();
             return ItemStash;
+        }
+
+        public ItemObject GetMinimumItemNumberInStash(List<ItemObject> list)
+        {
+            ItemObject minNumberItem = list[0];//TODO
+            int minNumber = 9999;
+            foreach (ItemObject item in list)
+            {
+                if (ItemStash.GetNumberPerItem(item) < minNumber)
+                {
+                    minNumberItem = item;
+                    minNumber = ItemStash.GetNumberPerItem(item);
+                }
+            }
+
+            return minNumberItem;
+        }
+
+        public void TryToProduceWood()
+        {
+            int ToProduce = WoodProductionAndWorkStrenghtPerLevel.Item[SelectedWoodLevel].Production;
+            int RequiredWorkStrenght = WoodProductionAndWorkStrenghtPerLevel.Item[SelectedWoodLevel].WorkStrenght;
+
+            if (WorkStrenght < RequiredWorkStrenght) return;
+            else
+            {
+                WorkStrenght-=RequiredWorkStrenght;
+                ItemStash.AddItem(Wood);//TODO Add wood in stash
+            }
+        }
+
+        public void TryToProduceCharcoal()
+        {
+            int ToProduce = CharcoalProductionWoodAndWorkStrenghtPerLevel.Item[SelectedCharcoalLevel].Production;
+            int RequiredWorkStrenght = CharcoalProductionWoodAndWorkStrenghtPerLevel.Item[SelectedCharcoalLevel].WorkStrenght;
+            int RequiredWood = CharcoalProductionWoodAndWorkStrenghtPerLevel.Item[SelectedCharcoalLevel].WoodConsumption;
+
+            if (WorkStrenght < RequiredWorkStrenght || ItemStash.WoodQty < RequiredWood) return;
+            else
+            {
+                WorkStrenght-=RequiredWorkStrenght;
+                ItemStash.RemoveItem(Wood);//TODO R
+                ItemStash.AddItem(Charcoal);//TODO Add Charcoal in stash
+            }
+        }
+
+        public void TryToProduceIron()
+        {
+            int ToProduce = IronProductionAndWorkStrenghtPerLevel.Item[SelectedIronLevel].Production;
+            int RequiredWorkStrenght = IronProductionAndWorkStrenghtPerLevel.Item[SelectedIronLevel].WorkStrenght;
+
+            if (WorkStrenght < RequiredWorkStrenght) return;
+            else
+            {
+                WorkStrenght-=RequiredWorkStrenght;
+                ItemStash.AddItem(Wood);//TODO Add Iron in stash
+            }
         }
 
     }
