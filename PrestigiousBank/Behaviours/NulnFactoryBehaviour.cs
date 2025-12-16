@@ -99,17 +99,18 @@ namespace PrestigiousBank
         {
             //Ajout de l'XP
             Hero.MainHero.AddSkillXp(DefaultSkills.Engineering, NulnFactory.GetDailySkillXP());
+            NulnFactory.TryToProduceWood();
         }
 
         public void OnTroopRecruitedEvent(Hero recruiter, Settlement settlement, Hero recruitmentSource, CharacterObject troop, int amount)
         {
-            if (NulnFactory.Level == 0) return;
+            if (NulnFactory.FactoryLevel == 0) return;
             if (NulnFactory.chosenProduction != NulnFactory.PossibleProduction.Weapon) return;
             if (recruiter == null) return;
             if (settlement == null) return;
             if (settlement.Town == null) return;
             if (settlement.Town.StringId != townID) return;
-            int valueGained = NulnFactory.ValuePerTiers[troop.Tier] * amount * NulnFactory.Level;
+            int valueGained = NulnFactory.ValuePerTiers[troop.Tier] * amount * NulnFactory.FactoryLevel;
              NulnFactory.Benefits += valueGained;
 
         }

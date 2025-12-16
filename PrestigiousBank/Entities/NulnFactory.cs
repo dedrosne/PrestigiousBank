@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Roster;
 using TaleWorlds.CampaignSystem.Settlements;
+using TaleWorlds.Core;
 using TaleWorlds.SaveSystem;
 
 namespace PrestigiousBank.Entities
@@ -100,7 +103,7 @@ namespace PrestigiousBank.Entities
         };
 
         //{SelectedCharcoalLevel, (WoodConsumption, WorkStrenght, Production)}
-        public static Dictionary<int, (int WorkStrenght,int Production)> CharcoalProductionWoodAndWorkStrenghtPerLevel 
+        public static Dictionary<int, (int WoodConsumption, int WorkStrenght,int Production)> CharcoalProductionWoodAndWorkStrenghtPerLevel 
         = new Dictionary<int, (int WoodConsumption,int WorkStrenght,int Production)>
         {
             { 1 ,(2,1,1) },
@@ -138,7 +141,7 @@ namespace PrestigiousBank.Entities
 
         public int GetDailySkillXP()
         {
-            return 1;
+            return 500*FactoryLevel+100*WoodLevel+100*CharcoalLevel+100*IronLevel+100*ClayLevel*100*SilverLevel;
         }
 
         public int CalculatePriceToLevelUpFactory()
@@ -163,10 +166,10 @@ namespace PrestigiousBank.Entities
             int minNumber = 9999;
             foreach (ItemObject item in list)
             {
-                if (ItemStash.GetNumberPerItem(item) < minNumber)
+                if (GetItemStash().GetItemNumber(item) < minNumber)
                 {
                     minNumberItem = item;
-                    minNumber = ItemStash.GetNumberPerItem(item);
+                    minNumber = GetItemStash().GetItemNumber(item);
                 }
             }
 
@@ -175,42 +178,44 @@ namespace PrestigiousBank.Entities
 
         public void TryToProduceWood()
         {
-            int ToProduce = WoodProductionAndWorkStrenghtPerLevel.Item[SelectedWoodLevel].Production;
-            int RequiredWorkStrenght = WoodProductionAndWorkStrenghtPerLevel.Item[SelectedWoodLevel].WorkStrenght;
+            int ToProduce = WoodProductionAndWorkStrenghtPerLevel[SelectedWoodLevel].Production;
+            int RequiredWorkStrenght = WoodProductionAndWorkStrenghtPerLevel[SelectedWoodLevel].WorkStrenght;
 
             if (WorkStrenght < RequiredWorkStrenght) return;
             else
             {
                 WorkStrenght-=RequiredWorkStrenght;
-                ItemStash.AddItem(Wood);//TODO Add wood in stash
+                GetItemStash().Add(new ItemRosterElement(DefaultItems.HardWood, ToProduce));
+                PrestigiousBank.LogMessage("Bois produit :" + ToProduce);
             }
         }
 
         public void TryToProduceCharcoal()
         {
-            int ToProduce = CharcoalProductionWoodAndWorkStrenghtPerLevel.Item[SelectedCharcoalLevel].Production;
-            int RequiredWorkStrenght = CharcoalProductionWoodAndWorkStrenghtPerLevel.Item[SelectedCharcoalLevel].WorkStrenght;
-            int RequiredWood = CharcoalProductionWoodAndWorkStrenghtPerLevel.Item[SelectedCharcoalLevel].WoodConsumption;
+            int ToProduce = CharcoalProductionWoodAndWorkStrenghtPerLevel[SelectedCharcoalLevel].Production;
+            int RequiredWorkStrenght = CharcoalProductionWoodAndWorkStrenghtPerLevel[SelectedCharcoalLevel].WorkStrenght;
+            int RequiredWood = CharcoalProductionWoodAndWorkStrenghtPerLevel[SelectedCharcoalLevel].WoodConsumption;
 
-            if (WorkStrenght < RequiredWorkStrenght || ItemStash.WoodQty < RequiredWood) return;
+
+            if (WorkStrenght < RequiredWorkStrenght || GetItemStash().GetItemNumber(item: new ItemObject(DefaultItems.HardWood)) < RequiredWood)   return;
             else
             {
                 WorkStrenght-=RequiredWorkStrenght;
-                ItemStash.RemoveItem(Wood);//TODO R
-                ItemStash.AddItem(Charcoal);//TODO Add Charcoal in stash
+                GetItemStash().Remove(new ItemRosterElement(DefaultItems.HardWood, RequiredWood));
+                GetItemStash().Add(new ItemRosterElement(DefaultItems.Charcoal, ToProduce));
             }
         }
 
         public void TryToProduceIron()
         {
-            int ToProduce = IronProductionAndWorkStrenghtPerLevel.Item[SelectedIronLevel].Production;
-            int RequiredWorkStrenght = IronProductionAndWorkStrenghtPerLevel.Item[SelectedIronLevel].WorkStrenght;
+            int ToProduce = IronProductionAndWorkStrenghtPerLevel[SelectedIronLevel].Production;
+            int RequiredWorkStrenght = IronProductionAndWorkStrenghtPerLevel[SelectedIronLevel].WorkStrenght;
 
             if (WorkStrenght < RequiredWorkStrenght) return;
             else
             {
                 WorkStrenght-=RequiredWorkStrenght;
-                ItemStash.AddItem(Wood);//TODO Add Iron in stash
+                GetItemStash().Add(new ItemRosterElement(DefaultItems.IronOre, ToProduce));
             }
         }
 
