@@ -52,7 +52,7 @@ Middenheim :
     - Or : XP dans le skill Tactics
 
 Usine à Nuln : Construction 50_000 po
-Cout d'upgrade : Level² * 50_000 po
+Cout d'upgrade : Level * 50_000 po
 	- Armes => Obtient des gold à chaque fois qu'une unité est recrutée dans la ville. (Besoin de fer ?)
                 Consommation 2 fer/1 Bois/3 Charbon / Niveau
 => Esclaves pour productivité
@@ -76,7 +76,7 @@ Choisir la production :
         Consommation 3 fer/3 bois/1 Charbon
 	- Matetiaux de production => Augmenter la vitesse de construction des chantiers
         Consommation 1 fer/4 bois/1Charbon
-	- Augmenter la prosperité ? => Outils de production ? Nourriture ?
+	- Augmenter la prosperité ? => Outils de production ? Nourriture ? => Argent qui produit des pièces ? => beaucoup de gold mais diminue la prosperité
 
 	- Alimentation en fer/Bois/Charbon :
 		Autre ville : Carrière de Fer : Hugeldal
@@ -85,14 +85,59 @@ Choisir la production :
 		Autre ville : Carrière d'Argent : Rohrhausen
 		Tout regrouper vers Nuln ?
 
-Procuctivité diminue de 5%/jour, min 10 points
+Force de travail/extraction ? => Solutionne quelle ressource produire en prio
+Bois : 
+Level 1 1=>1
+Level 2 4=>5
+Level 3 8=>10
+Level 4 12=>20
+Level 5 25=>50
+
+Charbon :
+Level 1 : 1fT+2bois =>1
+Level 2 : 4fT+9bois =>5
+Level 3 : 8fT+16bois =>10
+Level 4 : 12fT+20bois =>15
+Level 5 : 25fT+25bois =>25
+
+Fer :
+Level 1 5=>1
+Level 2 22=>5
+Level 3 40=>10
+Level 4 50=>15
+Level 5 75=>25
+
+
+1 force de travail =~10g
+1 bois = 1fT
+1 charbon = 2 bois + 1fT
+1 fer = 5 fT
+1 Argile = 1fT
+1 Argent = 15fT
+
+Initialement : 
+
+50 bois => 25 charbon + 25 bois =>
+
+Possibilité activer/désactiver production, et choisir niveau d'extraction
+
+Levelup extraction => Plus de capacité/jour ? Cout baissé en fT ? => LES DEUX !
+Prix Atelier Extraction : 25 000 / niveau
+
+
+
+Calcul production/jour :
+
 
 	- Niveau de l'usine : Détermine le nombre de comptoirs qui peuvent être construits
 
 
 
-Dans toutes les villes : Possibilité de construire un comptoir de vente 25_000 => Etend les effets de son usine. Beson de plus de matériaux ?
+Dans toutes les villes : Possibilité de construire un comptoir de vente 30_000 => Etend les effets de son usine. Beson de plus de matériaux ?
 	- Niveau du comptoir de vente : Effets à 50, 75 et 100%
+	- => Possibilité d'accéder aux fonctionnalités de Nuln dans la ville du comptoir
++ 1 comptoir construisable => Acheter un permis pour 50_000g supplémentaires. Disponible une fois l'usine niveau max
+
 
 
 Argent : 
@@ -338,6 +383,31 @@ using TaleWorlds.CampaignSystem.Actions;
                 settlement => Campaign.Current.Models.MapDistanceModel.GetDistance(party, settlement));
         }
 
-/////////////////////////////////////////////////////////        Assurance Caravane :
+///////////////////////////////////////////////////////// Assurance Caravane :
  MobileParty leftParty = new MobileParty();
 leftParty.IgnoreByOtherPartiesTill(CampaignTime time)
+
+/////////////////////////////////////////////  Stamina recovery
+            CampaignEvents.HourlyTickPartyEvent.AddNonSerializedListener(this, HourlyPartyEvent);
+        }
+
+        private void HourlyPartyEvent(MobileParty party)
+        {
+            if (!party.IsMainParty) return;
+
+            if (party.CurrentSettlement != null) return;
+            if (Hero.MainHero.HasCareerChoice("ForgefireBurningPassive3"))
+            {
+                var campaignBehavior = Campaign.Current.GetCampaignBehavior<ICraftingCampaignBehavior>();
+
+                foreach (var hero in party.GetMemberHeroes())
+                {
+                    var stamina = campaignBehavior.GetHeroCraftingStamina(hero);
+                    var max = campaignBehavior.GetMaxHeroCraftingStamina(hero);
+                    if (stamina >= max)
+                        return;
+                    var value = Math.Min(max, stamina + 4);
+                    campaignBehavior.SetHeroCraftingStamina(hero, value);
+                }
+            }
+        }
