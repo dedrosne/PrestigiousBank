@@ -51,7 +51,7 @@ namespace PrestigiousBank
 
             //Town -> Acheter l'usine
             campaignGameStarter.AddGameMenuOption("town",
-                                                  String.Format("{0}_nulnFactory_menu", _cityID),
+                                                  String.Format("{0}_nulnFactoryBuy_menu", _cityID),
                                                   "["+NulnFactory.InitialFactoryPrice+"{GOLD_ICON}] Acheter une usine à Nuln",
                                                   args =>
                                                   {
@@ -136,7 +136,7 @@ namespace PrestigiousBank
             RegisterRawMaterialsProductionMenuOptions(campaignGameStarter);
 
 
-            //Quitter la banque
+            //Quitter l'usine
             campaignGameStarter.AddGameMenuOption(String.Format("{0}_nulnFactory_menu", _cityID), String.Format("{0}_nulnFactory_menu_back", _cityID), "Quitter l'usine",
                 a => { a.optionLeaveType = GameMenuOption.LeaveType.Leave; return true; },
                 _ => GameMenu.SwitchToMenu("town"),
@@ -205,12 +205,11 @@ namespace PrestigiousBank
                 production0.Value,
                 a => { a.optionLeaveType = GameMenuOption.LeaveType.HostileAction; return true; },
                 _ => {
-                    prodActuelle = NulnFactory.PossibleProduction.Weapon;
-                    _nulnFactory.chosenProduction = prodActuelle;
+                    if (_nulnFactory.chosenProduction == NulnFactory.PossibleProduction.Weapon) return;
+                    prodActuelle = _nulnFactory.TryChangeProduction(NulnFactory.PossibleProduction.Weapon);;
                     SetProductionText();
                     GameMenu.SwitchToMenu(String.Format("{0}_productionChoice", _cityID));
                     CreateOrUpdateGameMenuDesc(campaignGameStarter);
-                    PrestigiousBank.LogMessage("Production lancée : Armes");
                 },
                 isLeave: false);
 
@@ -218,12 +217,11 @@ namespace PrestigiousBank
                 production1.Value,
                 a => { a.optionLeaveType = GameMenuOption.LeaveType.StagePrisonBreak; return true; },
                 _ => {
-                    prodActuelle = NulnFactory.PossibleProduction.MachiningPart;
-                    _nulnFactory.chosenProduction = prodActuelle;
+                    if (_nulnFactory.chosenProduction == NulnFactory.PossibleProduction.MachiningPart) return;
+                    prodActuelle = _nulnFactory.TryChangeProduction(NulnFactory.PossibleProduction.MachiningPart);
                     SetProductionText();
                     GameMenu.SwitchToMenu(String.Format("{0}_productionChoice", _cityID));
                     CreateOrUpdateGameMenuDesc(campaignGameStarter);
-                    PrestigiousBank.LogMessage("Production lancée : Pièces d'usinage");
                 },
                 isLeave: false);
 
@@ -341,6 +339,7 @@ namespace PrestigiousBank
                     SoundEvent.PlaySound2D(SoundEvent.GetEventIdFromString("event:/ui/notification/coins_negative"));
                     _nulnFactory.CharcoalLevel+=1;
                     _nulnFactory.SelectedCharcoalLevel = _nulnFactory.CharcoalLevel;
+                    SetCharcoalProductionText();
                     CreateOrUpdateGameMenuDesc(campaignGameStarter);
                     GameMenu.SwitchToMenu("_rawMaterials_menu");
                 },
@@ -359,6 +358,7 @@ namespace PrestigiousBank
                     GameMenu.SwitchToMenu(String.Format("{0}_charcoalProduction", _cityID));
                 },
                 isLeave: false);
+            RegisterCharcoalProductionMenuOptions(campaignGameStarter);
 
             //By an iron mine => +1 level for mineFactory
             campaignGameStarter.AddGameMenuOption(String.Format("{0}_rawMaterials_menu", _cityID), String.Format("{0}_buy_IronProduction", _cityID),
@@ -375,6 +375,7 @@ namespace PrestigiousBank
                     SoundEvent.PlaySound2D(SoundEvent.GetEventIdFromString("event:/ui/notification/coins_negative"));
                     _nulnFactory.IronLevel+=1;
                     _nulnFactory.SelectedIronLevel = _nulnFactory.IronLevel;
+                    SetIronProductionText();
                     CreateOrUpdateGameMenuDesc(campaignGameStarter);
                     GameMenu.SwitchToMenu("_rawMaterials_menu");
                 },
@@ -393,6 +394,7 @@ namespace PrestigiousBank
                     GameMenu.SwitchToMenu(String.Format("{0}_ironProduction", _cityID));
                 },
                 isLeave: false);
+            RegisterIronProductionMenuOptions(campaignGameStarter);
 
             //Leave
             campaignGameStarter.AddGameMenuOption(String.Format("{0}_rawMaterials_menu", _cityID), String.Format("{0}_rawMaterials_menu_back", _cityID), "Retour",
@@ -564,6 +566,337 @@ namespace PrestigiousBank
             TextObject levelUpText = new TextObject("["+_nulnFactory.CalculatePriceToLevelUpRessource(_nulnFactory.WoodLevel)+"{GOLD_ICON}] Améliorer la scierie");
             GameTexts.SetVariable("NULNWOODPRODUCTIONTEXTUP", levelUpText);
         }
+
+        public void RegisterCharcoalProductionMenuOptions(CampaignGameStarter campaignGameStarter)
+        {
+            
+            var charcoalProduction0 = new TextObject("{NULNCHARCOALPRODUCTIONTEXT0}");
+            var charcoalProduction1 = new TextObject("{NULNCHARCOALPRODUCTIONTEXT1}");
+            var charcoalProduction2 = new TextObject("{NULNCHARCOALPRODUCTIONTEXT2}");
+            var charcoalProduction3 = new TextObject("{NULNCHARCOALPRODUCTIONTEXT3}");
+            var charcoalProduction4 = new TextObject("{NULNCHARCOALPRODUCTIONTEXT4}");
+            var charcoalProduction5 = new TextObject("{NULNCHARCOALPRODUCTIONTEXT5}");
+            var charcoalProductionLevelUp = new TextObject("{NULNCHARCOALPRODUCTIONTEXTUP}");
+            SetCharcoalProductionText();
+            //Désactivé ==> SelectedLevel = 0
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_charcoalProduction", _cityID), String.Format("{0}_charcoalProduction_0", _cityID),
+                charcoalProduction0.Value,
+                a => {
+                    a.optionLeaveType = GameMenuOption.LeaveType.HostileAction; //TODO
+                    a.Tooltip = new TextObject("Désactiver la production. \nPas de consommation de main d'oeuvre");
+                    return true;
+                },
+                _ => {
+                    _nulnFactory.SelectedCharcoalLevel = 0;
+                    SetCharcoalProductionText();
+                    GameMenu.SwitchToMenu(String.Format("{0}_charcoalProduction", _cityID));
+                    CreateOrUpdateGameMenuDesc(campaignGameStarter);
+                    PrestigiousBank.LogMessage("Production de charbon désactivée");
+                },
+                isLeave: false);
+
+            //Niveau 1 ==> SelectedLevel = 1
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_charcoalProduction", _cityID), String.Format("{0}_charcoalProduction_1", _cityID),
+                charcoalProduction1.Value,
+                a => {
+                    a.optionLeaveType = GameMenuOption.LeaveType.HostileAction; //TODO
+                    a.Tooltip = new TextObject("Production de charbon :"+NulnFactory.CharcoalProductionAndWorkStrenghtPerLevel[1].Production+
+                    "\nMain d'oeuvre nécessaire :" + NulnFactory.CharcoalProductionAndWorkStrenghtPerLevel[1].WorkStrenght)+
+                    "\nConsommation de bois :"+ NulnFactory.CharcoalProductionAndWorkStrenghtPerLevel[1].WoodConsumption;
+                    return true;
+                },
+                _ => {
+                    _nulnFactory.SelectedCharcoalLevel = 1;
+                    SetCharcoalProductionText();
+                    GameMenu.SwitchToMenu(String.Format("{0}_charcoalProduction", _cityID));
+                    CreateOrUpdateGameMenuDesc(campaignGameStarter);
+                    PrestigiousBank.LogMessage("Production de bois au niveau 1");
+                },
+                isLeave: false);
+
+            //Niveau 2 ==> SelectedLevel = 2
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_charcoalProduction", _cityID), String.Format("{0}_charcoalProduction_2", _cityID),
+                charcoalProduction2.Value,
+                a => {
+                    a.optionLeaveType = GameMenuOption.LeaveType.HostileAction; //TODO
+                    a.Tooltip = new TextObject("Production de bois :" +NulnFactory.CharcoalProductionAndWorkStrenghtPerLevel[2].Production+
+                    "\nMain d'oeuvre nécessaire :"+NulnFactory.CharcoalProductionAndWorkStrenghtPerLevel[2].WorkStrenght)+
+                    "\nConsommation de bois :"+ NulnFactory.CharcoalProductionAndWorkStrenghtPerLevel[2].WoodConsumption;
+                    return _nulnFactory.CharcoalLevel>=2;
+                },
+                _ => {
+                    _nulnFactory.SelectedCharcoalLevel = 2;
+                    SetCharcoalProductionText();
+                    GameMenu.SwitchToMenu(String.Format("{0}_charcoalProduction", _cityID));
+                    CreateOrUpdateGameMenuDesc(campaignGameStarter);
+                    PrestigiousBank.LogMessage("Production de bois au niveau 2");
+                },
+                isLeave: false);
+            //Niveau 3 ==> SelectedLevel = 3
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_charcoalProduction", _cityID), String.Format("{0}_charcoalProduction_3", _cityID),
+                charcoalProduction3.Value,
+                a => {
+                    a.optionLeaveType = GameMenuOption.LeaveType.HostileAction; //TODO
+                    a.Tooltip = new TextObject("Production de bois :" +NulnFactory.CharcoalProductionAndWorkStrenghtPerLevel[3].Production+
+                    "\nMain d'oeuvre nécessaire :"+NulnFactory.CharcoalProductionAndWorkStrenghtPerLevel[3].WorkStrenght)+
+                    "\nConsommation de bois :"+ NulnFactory.CharcoalProductionAndWorkStrenghtPerLevel[3].WoodConsumption;
+                    return _nulnFactory.CharcoalLevel>=3;
+                },
+                _ => {
+                    _nulnFactory.SelectedCharcoalLevel = 3;
+                    SetCharcoalProductionText();
+                    GameMenu.SwitchToMenu(String.Format("{0}_charcoalProduction", _cityID));
+                    CreateOrUpdateGameMenuDesc(campaignGameStarter);
+                    PrestigiousBank.LogMessage("Production de bois au niveau 3");
+                },
+                isLeave: false);
+            //Niveau 4 ==> SelectedLevel = 4
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_charcoalProduction", _cityID), String.Format("{0}_charcoalProduction_4", _cityID),
+                charcoalProduction4.Value,
+                a => {
+                    a.optionLeaveType = GameMenuOption.LeaveType.HostileAction; //TODO
+                    a.Tooltip = new TextObject("Production de bois :" +NulnFactory.CharcoalProductionAndWorkStrenghtPerLevel[4].Production+
+                    "\nMain d'oeuvre nécessaire :"+NulnFactory.CharcoalProductionAndWorkStrenghtPerLevel[4].WorkStrenght)+
+                    "\nConsommation de bois :"+ NulnFactory.CharcoalProductionAndWorkStrenghtPerLevel[4].WoodConsumption;
+                    return _nulnFactory.CharcoalLevel>=4;
+                },
+                _ => {
+                    _nulnFactory.SelectedCharcoalLevel = 4;
+                    SetCharcoalProductionText();
+                    GameMenu.SwitchToMenu(String.Format("{0}_charcoalProduction", _cityID));
+                    CreateOrUpdateGameMenuDesc(campaignGameStarter);
+                    PrestigiousBank.LogMessage("Production de bois au niveau 4");
+                },
+                isLeave: false);
+            //Niveau 5 ==> SelectedLevel = 5
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_charcoalProduction", _cityID), String.Format("{0}_charcoalProduction_5", _cityID),
+                charcoalProduction5.Value,
+                a => {
+                    a.optionLeaveType = GameMenuOption.LeaveType.HostileAction; //TODO
+                    a.Tooltip = new TextObject("Production de bois :" +NulnFactory.CharcoalProductionAndWorkStrenghtPerLevel[5].Production+
+                    "\nMain d'oeuvre nécessaire :"+NulnFactory.CharcoalProductionAndWorkStrenghtPerLevel[5].WorkStrenght)+
+                    "\nConsommation de bois :"+ NulnFactory.CharcoalProductionAndWorkStrenghtPerLevel[5].WoodConsumption;
+                    return _nulnFactory.CharcoalLevel>=5;
+                },
+                _ => {
+                    _nulnFactory.SelectedCharcoalLevel = 5;
+                    SetCharcoalProductionText();
+                    GameMenu.SwitchToMenu(String.Format("{0}_charcoalProduction", _cityID));
+                    CreateOrUpdateGameMenuDesc(campaignGameStarter);
+                    PrestigiousBank.LogMessage("Production de bois au niveau 5");
+                },
+                isLeave: false);
+
+            //Level UP
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_charcoalProduction", _cityID), String.Format("{0}_charcoalProduction_levelup", _cityID),
+                charcoalProductionLevelUp.Value,
+                a => {
+                    a.optionLeaveType = GameMenuOption.LeaveType.HostileAction; //TODO
+                    a.IsEnabled = Hero.MainHero.Gold >=_nulnFactory.CalculatePriceToLevelUpRessource(_nulnFactory.CharcoalLevel);
+                    a.Tooltip = Hero.MainHero.Gold >=_nulnFactory.CalculatePriceToLevelUpRessource(_nulnFactory.CharcoalLevel)?null:new TextObject("Pas assez d'or");
+                    return _nulnFactory.CharcoalLevel<5;
+                },
+                _ => {
+                    Hero.MainHero.ChangeHeroGold(-_nulnFactory.CalculatePriceToLevelUpRessource(_nulnFactory.CharcoalLevel));
+                    SoundEvent.PlaySound2D(SoundEvent.GetEventIdFromString("event:/ui/notification/coins_negative"));
+                    _nulnFactory.CharcoalLevel+=1;
+                    _nulnFactory.SelectedCharcoalLevel = _nulnFactory.CharcoalLevel;
+                    SetCharcoalProductionText();
+                    GameMenu.SwitchToMenu(String.Format("{0}_charcoalProduction", _cityID));
+                    CreateOrUpdateGameMenuDesc(campaignGameStarter);
+                    PrestigiousBank.LogMessage("Amélioration de la scierie");
+                },
+                isLeave: false);
+
+
+            //Leave
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_charcoalProduction", _cityID), String.Format("{0}_charcoalProduction_back", _cityID), "Retour",
+                a => { a.optionLeaveType = GameMenuOption.LeaveType.Leave; return true; },
+                _ => GameMenu.SwitchToMenu(String.Format("{0}_rawMaterials_menu", _cityID)),
+                isLeave: true, index: 999);
+        }
+
+        public void SetCharcoalProductionText()
+        {
+            TextObject textObject = new TextObject("");
+            for (var i = 0; i < 6; i++)
+            {
+                if (i==0) textObject = new TextObject("Désactivé");
+                else textObject = new TextObject("Niveau "+i);
+
+                if (_nulnFactory.SelectedCharcoalLevel == i)
+                {
+                    textObject = new TextObject($"[{textObject.Value}]");
+                }
+                GameTexts.SetVariable("NULNCHARCOALPRODUCTIONTEXT"+i, textObject);
+            }
+            TextObject levelUpText = new TextObject("["+_nulnFactory.CalculatePriceToLevelUpRessource(_nulnFactory.CharcoalLevel)+"{GOLD_ICON}] Améliorer le four à charbon");
+            GameTexts.SetVariable("NULNCHARCOALPRODUCTIONTEXTUP", levelUpText);
+        }
+
+        public void RegisterIronProductionMenuOptions(CampaignGameStarter campaignGameStarter)
+        {
+            
+            var ironProduction0 = new TextObject("{NULNIRONPRODUCTIONTEXT0}");
+            var ironProduction1 = new TextObject("{NULNIRONPRODUCTIONTEXT1}");
+            var ironProduction2 = new TextObject("{NULNIRONPRODUCTIONTEXT2}");
+            var ironProduction3 = new TextObject("{NULNIRONPRODUCTIONTEXT3}");
+            var ironProduction4 = new TextObject("{NULNIRONPRODUCTIONTEXT4}");
+            var ironProduction5 = new TextObject("{NULNIRONPRODUCTIONTEXT5}");
+            var ironProductionLevelUp = new TextObject("{NULNIRONPRODUCTIONTEXTUP}");
+            SetIronProductionText();
+            //Désactivé ==> SelectedLevel = 0
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_ironProduction", _cityID), String.Format("{0}_ironProduction_0", _cityID),
+                ironProduction0.Value,
+                a => {
+                    a.optionLeaveType = GameMenuOption.LeaveType.HostileAction; //TODO
+                    a.Tooltip = new TextObject("Désactiver la production. \nPas de consommation de main d'oeuvre");
+                    return true;
+                },
+                _ => {
+                    _nulnFactory.SelectedIronLevel = 0;
+                    SetIronProductionText();
+                    GameMenu.SwitchToMenu(String.Format("{0}_ironProduction", _cityID));
+                    CreateOrUpdateGameMenuDesc(campaignGameStarter);
+                    PrestigiousBank.LogMessage("Production de bois désactivée");
+                },
+                isLeave: false);
+
+            //Niveau 1 ==> SelectedLevel = 1
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_ironProduction", _cityID), String.Format("{0}_ironProduction_1", _cityID),
+                ironProduction1.Value,
+                a => {
+                    a.optionLeaveType = GameMenuOption.LeaveType.HostileAction; //TODO
+                    a.Tooltip = new TextObject("Production de bois :"+NulnFactory.IronProductionAndWorkStrenghtPerLevel[1].Production+
+                    "\nMain d'oeuvre nécessaire :" + NulnFactory.IronProductionAndWorkStrenghtPerLevel[1].WorkStrenght);
+                    return true;
+                },
+                _ => {
+                    _nulnFactory.SelectedIronLevel = 1;
+                    SetIronProductionText();
+                    GameMenu.SwitchToMenu(String.Format("{0}_ironProduction", _cityID));
+                    CreateOrUpdateGameMenuDesc(campaignGameStarter);
+                    PrestigiousBank.LogMessage("Production de bois au niveau 1");
+                },
+                isLeave: false);
+
+            //Niveau 2 ==> SelectedLevel = 2
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_ironProduction", _cityID), String.Format("{0}_ironProduction_2", _cityID),
+                ironProduction2.Value,
+                a => {
+                    a.optionLeaveType = GameMenuOption.LeaveType.HostileAction; //TODO
+                    a.Tooltip = new TextObject("Production de bois :" +NulnFactory.IronProductionAndWorkStrenghtPerLevel[2].Production+
+                    "\nMain d'oeuvre nécessaire :"+NulnFactory.IronProductionAndWorkStrenghtPerLevel[2].WorkStrenght);
+                    return _nulnFactory.IronLevel>=2;
+                },
+                _ => {
+                    _nulnFactory.SelectedIronLevel = 2;
+                    SetIronProductionText();
+                    GameMenu.SwitchToMenu(String.Format("{0}_ironProduction", _cityID));
+                    CreateOrUpdateGameMenuDesc(campaignGameStarter);
+                    PrestigiousBank.LogMessage("Production de bois au niveau 2");
+                },
+                isLeave: false);
+            //Niveau 3 ==> SelectedLevel = 3
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_ironProduction", _cityID), String.Format("{0}_ironProduction_3", _cityID),
+                ironProduction3.Value,
+                a => {
+                    a.optionLeaveType = GameMenuOption.LeaveType.HostileAction; //TODO
+                    a.Tooltip = new TextObject("Production de bois :" +NulnFactory.IronProductionAndWorkStrenghtPerLevel[3].Production+
+                    "\nMain d'oeuvre nécessaire :"+NulnFactory.IronProductionAndWorkStrenghtPerLevel[3].WorkStrenght);
+                    return _nulnFactory.IronLevel>=3;
+                },
+                _ => {
+                    _nulnFactory.SelectedIronLevel = 3;
+                    SetIronProductionText();
+                    GameMenu.SwitchToMenu(String.Format("{0}_ironProduction", _cityID));
+                    CreateOrUpdateGameMenuDesc(campaignGameStarter);
+                    PrestigiousBank.LogMessage("Production de bois au niveau 3");
+                },
+                isLeave: false);
+            //Niveau 4 ==> SelectedLevel = 4
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_ironProduction", _cityID), String.Format("{0}_ironProduction_4", _cityID),
+                ironProduction4.Value,
+                a => {
+                    a.optionLeaveType = GameMenuOption.LeaveType.HostileAction; //TODO
+                    a.Tooltip = new TextObject("Production de bois :" +NulnFactory.IronProductionAndWorkStrenghtPerLevel[4].Production+
+                    "\nMain d'oeuvre nécessaire :"+NulnFactory.IronProductionAndWorkStrenghtPerLevel[4].WorkStrenght);
+                    return _nulnFactory.IronLevel>=4;
+                },
+                _ => {
+                    _nulnFactory.SelectedIronLevel = 4;
+                    SetIronProductionText();
+                    GameMenu.SwitchToMenu(String.Format("{0}_ironProduction", _cityID));
+                    CreateOrUpdateGameMenuDesc(campaignGameStarter);
+                    PrestigiousBank.LogMessage("Production de bois au niveau 4");
+                },
+                isLeave: false);
+            //Niveau 5 ==> SelectedLevel = 5
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_ironProduction", _cityID), String.Format("{0}_ironProduction_5", _cityID),
+                ironProduction5.Value,
+                a => {
+                    a.optionLeaveType = GameMenuOption.LeaveType.HostileAction; //TODO
+                    a.Tooltip = new TextObject("Production de bois :" +NulnFactory.IronProductionAndWorkStrenghtPerLevel[5].Production+
+                    "\nMain d'oeuvre nécessaire :"+NulnFactory.IronProductionAndWorkStrenghtPerLevel[5].WorkStrenght);
+                    return _nulnFactory.IronLevel>=5;
+                },
+                _ => {
+                    _nulnFactory.SelectedIronLevel = 5;
+                    SetIronProductionText();
+                    GameMenu.SwitchToMenu(String.Format("{0}_ironProduction", _cityID));
+                    CreateOrUpdateGameMenuDesc(campaignGameStarter);
+                    PrestigiousBank.LogMessage("Production de bois au niveau 5");
+                },
+                isLeave: false);
+
+            //Level UP
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_ironProduction", _cityID), String.Format("{0}_ironProduction_levelup", _cityID),
+                ironProductionLevelUp.Value,
+                a => {
+                    a.optionLeaveType = GameMenuOption.LeaveType.HostileAction; //TODO
+                    a.IsEnabled = Hero.MainHero.Gold >=_nulnFactory.CalculatePriceToLevelUpRessource(_nulnFactory.IronLevel);
+                    a.Tooltip = Hero.MainHero.Gold >=_nulnFactory.CalculatePriceToLevelUpRessource(_nulnFactory.IronLevel)?null:new TextObject("Pas assez d'or");
+                    return _nulnFactory.IronLevel<5;
+                },
+                _ => {
+                    Hero.MainHero.ChangeHeroGold(-_nulnFactory.CalculatePriceToLevelUpRessource(_nulnFactory.IronLevel));
+                    SoundEvent.PlaySound2D(SoundEvent.GetEventIdFromString("event:/ui/notification/coins_negative"));
+                    _nulnFactory.IronLevel+=1;
+                    _nulnFactory.SelectedIronLevel = _nulnFactory.IronLevel;
+                    SetIronProductionText();
+                    GameMenu.SwitchToMenu(String.Format("{0}_ironProduction", _cityID));
+                    CreateOrUpdateGameMenuDesc(campaignGameStarter);
+                    PrestigiousBank.LogMessage("Amélioration de la scierie");
+                },
+                isLeave: false);
+
+
+            //Leave
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_ironProduction", _cityID), String.Format("{0}_ironProduction_back", _cityID), "Retour",
+                a => { a.optionLeaveType = GameMenuOption.LeaveType.Leave; return true; },
+                _ => GameMenu.SwitchToMenu(String.Format("{0}_rawMaterials_menu", _cityID)),
+                isLeave: true, index: 999);
+        }
+
+
+        public void SetIronProductionText()
+        {
+            TextObject textObject = new TextObject("");
+            for (var i = 0; i < 6; i++)
+            {
+                if (i==0) textObject = new TextObject("Désactivé");
+                else textObject = new TextObject("Niveau "+i);
+
+                if (_nulnFactory.SelectedIronLevel == i)
+                {
+                    textObject = new TextObject($"[{textObject.Value}]");
+                }
+                GameTexts.SetVariable("NULNWOODPRODUCTIONTEXT"+i, textObject);
+            }
+            TextObject levelUpText = new TextObject("["+_nulnFactory.CalculatePriceToLevelUpRessource(_nulnFactory.IronLevel)+"{GOLD_ICON}] Améliorer la scierie");
+            GameTexts.SetVariable("NULNWOODPRODUCTIONTEXTUP", levelUpText);
+        }
+
 
 
         #endregion

@@ -52,40 +52,19 @@ Middenheim :
     - Or : XP dans le skill Tactics
 
 Usine à Nuln : Construction 50_000 po
-Cout d'upgrade : Level * 50_000 po
+Cout d'upgrade : Level * 50_000 po | Max Level 5
 	- Armes => Obtient des gold à chaque fois qu'une unité est recrutée dans la ville. (Besoin de fer ?)
-                Consommation 2 fer/1 Bois/3 Charbon / Niveau
-=> Esclaves pour productivité
-		1 tiers d'esclave = 1 point de productivité
+                Consommation 2 fer/1 Bois/3 Charbon / Niveau-1 (pas de consommation au niveau 1)
+                Résultat de porduction : x*FactoryLevel (selon ressources disponibles. L'usine tournera plus au level possible selon le niveau sélectionné)
+
+Lorsqu'on change la production, X jours de battement pour changer les lignes de production
 
 
-######################################################
-#In Progress
-##########################################################
+Prix Atelier Extraction : 25 000 / niveau
+=> Ouvrier (esclave+recrues) pour productivité
+		1 tiers = 1 point de productivité
 
-
-
-######################################################
-#Todo
-##########################################################
-
-Usine de Nuln
-
-Choisir la production :
-	- Pièces d'usinage => Augmente la production des workshop de la ville de ses propres workshop ou pour les autres 05/10/15/20/25% des gold des workshops de la ville
-        Consommation 3 fer/3 bois/1 Charbon
-	- Matetiaux de production => Augmenter la vitesse de construction des chantiers
-        Consommation 1 fer/4 bois/1Charbon
-	- Augmenter la prosperité ? => Outils de production ? Nourriture ? => Argent qui produit des pièces ? => beaucoup de gold mais diminue la prosperité
-
-	- Alimentation en fer/Bois/Charbon :
-		Autre ville : Carrière de Fer : Hugeldal
-		Autre ville : Bucheronnage 
-		Autre ville : Charbonnerie ?
-		Autre ville : Carrière d'Argent : Rohrhausen
-		Tout regrouper vers Nuln ?
-
-Force de travail/extraction ? => Solutionne quelle ressource produire en prio
+Force de travail/extraction=>Production
 Bois : 
 Level 1 1=>1
 Level 2 4=>5
@@ -107,32 +86,25 @@ Level 3 40=>10
 Level 4 50=>15
 Level 5 75=>25
 
-
-
-1 force de travail =~10g
-1 bois = 1fT
-1 charbon = 2 bois + 1fT
-1 fer = 5 fT
-1 Argile = 1fT
-1 Argent = 15fT
-
-Initialement : 
-
-50 bois => 25 charbon + 25 bois =>
-
 Possibilité activer/désactiver production, et choisir niveau d'extraction
+Production en premier de la ressource la moins présente dans le stash
+######################################################
+#In Progress
+#########################################################
 
-Levelup extraction => Plus de capacité/jour ? Cout baissé en fT ? => LES DEUX !
-Prix Atelier Extraction : 25 000 / niveau
+Select Nulnfactory level
 
+	- Pièces d'usinage => Augmente la production des workshop de la ville de ses propres workshop ou pour les autres 05/10/15/20/25% des gold des workshops de la ville
+        Consommation 3 fer/3 bois/1 Charbon *SelectedLevel
 
-
-Calcul production/jour :
-
-
-	- Niveau de l'usine : Détermine le nombre de comptoirs qui peuvent être construits
-
-
+Comptoir : 
+Etend l'activité Nuln/Marieembourg/Vampire => Nom ?
+Agence du Clan => -5g/jour/niveau => Level augmente effets 20/40/60/80/100%
+    10_000 initial
+Ensuite IsNulnFactory
+    Nuln : Consommation 1/1/1
+IsMariembourgTrading
+IsVampireCtypt
 
 Dans toutes les villes : Possibilité de construire un comptoir de vente 30_000 => Etend les effets de son usine. Beson de plus de matériaux ?
 	- Niveau du comptoir de vente : Effets à 50, 75 et 100%
@@ -141,11 +113,33 @@ Dans toutes les villes : Possibilité de construire un comptoir de vente 30_000 
 
 
 
-Argent : 
-Marieembroug : Acheter améliorations pour caravanes
+######################################################
+#Todo
+##########################################################
 
-Drakenhof : Acheter des collecteurs d'âmes
+Usine de Nuln
+
+Choisir la production :
+
+	- Matetiaux de production => Augmenter la vitesse de construction des chantiers, gold si chantier dans la ville possédée par autre joueur ?
+        Consommation 1 fer/4 bois/4 Clay
+	- Augmenter la prosperité ? => Outils de production ? Nourriture ? => 
+    - Faux Monayer : Argent qui produit des pièces ? => beaucoup de gold mais diminue la prosperité
+            Selon la sécurité/milice, chance de perdre l'usine/comptoir ? Chance de ne pas produire+Perdre stock argent brut => Upgrade pour cacher la production
+
+
+1 Argile = 1fT
+1 Argent = 15fT
+
+
+	- Niveau de l'usine : Détermine le nombre de comptoirs qui peuvent être construits
+
+
+
+
+Waldenhof : Acheter des collecteurs d'âmes
     - Acheter une crypte
+Crypte vampire : Collecteur d'âmes=>Batailles à moins de Xmètres 
 
 
 Or
@@ -153,23 +147,25 @@ Or
     - 2handed : Carroburg
     - Gunpowder : Hergig
     - Bow : Halls of Araereth
-    - Leadership : Aquitaine/Bretonnie ?
+    - Leadership : Paravon ?
 
 Effets Secondaires
-Marieembroug : Acheter améliorations pour caravanes
+Marieembroug : Acheter améliorations pour caravanes (assurances ? Attirent moins ?)+ Gold pour chaque passage de caravane dans la ville+
 Couronne : Augmenter le nombre de compagnions
 Averheim : HP des compagnions ?
 Recruitment rate of prisoners (comme 2eme perk de leadership)
 Paravon : Travel Speed => Acheter des pégases [+0.01 TravelSpeed pour 8_000]
 Drakenhof : Perks pour Compagnions ?
 PV du cheval
+Envoyer Or à un clan de son royaume=>Niveau Or ?
 
 Altdorf : possibilité d'imposer la paix entre factions de l'empire + imposer guerre contre faction hors empire contre 1000 de prestige
 
-Capturé = On perd tout son argent 
+Capturé = On perd tout son argent
 
-	- MarieEmbourg : Acheter des droits de péage (argent par caravane). + Meilleurs prix pour caravanes, assurance pour Caravane, etc
-		○ Marchands : + de gold : Augmenter liquidités => 20 000 -> 1000
+MarieEmbourg : Acheter des droits de péage (argent par caravane). + Meilleurs prix pour caravanes, assurance pour Caravane, etc
+		○ Marchands : + de gold : Augmenter liquidités (seulement les lieux avec un TradingPost) => 20 000 -> 1000
+        + Limite de Workshop supplémentaire
 	
 Bretonie : Villages/Agriculture => Une foi le village détenu, déposer des prisonniers pour les recruter comme serfs, et générer du revenu.
 
@@ -177,9 +173,12 @@ Bretonie : Villages/Agriculture => Une foi le village détenu, déposer des pris
 Chez les nains : Endurance de forge qui se régénère
 + d'Endurance
 
-
-
-
+Trucs de bandits => Clan de voleurs
+    - Assassin => Fort taux d'échec, mais gain d'influence ? Ou assassiner un seigneur/personnage ?
+    => Racketer les villageois qui entrent dans la ville=> Don de troupes "Bandits" pour fonctionner, et récupère une partie du butin dans un stash.
+    Pourcentage d'échec et mort du racketeur
+    Pouvoir recruter des bandits dans les bas-fonds => Coûte argent =>Implique d'avoir plusieurs upgrade uniques pour avoir un systèmes intéressant à mettre en place
+Une fois la ville possédée => Employer les bandits à des tâches nobles : Coute de l'argent contre prosperité
 
 
 
@@ -231,87 +230,6 @@ namespace TOR_Core.Models
     }
 }
 
-
-
-////////////////////////////////////////////Gestion d'inventaire
-Inventaire personnel :
-var itemRoster = MobileParty.MainParty.ItemRoster
-
-https://apidoc.bannerlord.com/v/1.2.7/class_tale_worlds_1_1_campaign_system_1_1_inventory_1_1_inventory_manager.html
-
-        private void OpenScrollShop()
-        {
-            ItemRoster roster = new ItemRoster();
-
-            MBObjectManager.Instance.GetObjectTypeList<ItemObject>()
-                .Where(item => item.IsInventoryUsable() && item.GetTraits().Any(trait => trait.OnInventoryUseScript.InventoryScriptName.Contains("SkillBookScript")))
-                .ToList()
-                .ForEach(item => roster.Add(new ItemRosterElement(item, MBRandom.RandomInt(1, 5))));
-
-            InventoryScreenHelper.OpenScreenAsTrade(roster, Settlement.CurrentSettlement.Town);
-        }
-
-            var emptyRoster = new ItemRoster();
-            InventoryScreenHelper.OpenScreenAsReceiveItems(emptyRoster, new TextObject("Give Items to the Big boss"), () => AfterDonation(currentRosterWithEquipment));
-
-        void OpenForSpending()
-        {
-            var currentRoster = new ItemRoster(Hero.MainHero.PartyBelongedTo.ItemRoster);
-            var currentRosterWithEquipment = new ItemRoster();
-            var equipment = Hero.MainHero.GetHeroEquipment();
-
-            foreach (var item in currentRoster)
-            {
-                if (item.EquipmentElement.Item == null) continue;
-                currentRosterWithEquipment.AddToCounts(item.EquipmentElement.Item, item.Amount);
-            }
-
-            foreach (var item in equipment)
-            {
-                if (item == null) continue;
-                currentRosterWithEquipment.AddToCounts(item, 1);
-            }
-
-            var emptyRoster = new ItemRoster();
-            InventoryScreenHelper.OpenScreenAsReceiveItems(emptyRoster, new TextObject("Give Items to the Big boss"), () => AfterDonation(currentRosterWithEquipment));
-
-            void AfterDonation(ItemRoster beforeTransferRoster)
-            {
-                var roster = beforeTransferRoster;
-                var currentRoster = new ItemRoster();
-
-                foreach (var item in Hero.MainHero.PartyBelongedTo.ItemRoster)
-                {
-                    currentRoster.Add(item);
-                }
-
-                var equipment = Hero.MainHero.GetHeroEquipment();
-
-                foreach (var item in equipment)
-                {
-                    if (item == null) continue;
-                    currentRoster.AddToCounts(item, 1);
-                }
-
-                var difference = new ItemRoster();
-                foreach (var item in roster)
-                {
-                    if (currentRoster.FindIndexOfElement(item.EquipmentElement) != -1)
-                    {
-                        continue;
-                    }
-                    difference.Add(item);
-                }
-
-                var rawTeefValue = difference.Sum(item => item.EquipmentElement.Item.Value);
-
-                var teef = rawTeefValue / ItemExchange;
-                if (teef > 0)
-                {
-                    Hero.MainHero.AddCultureSpecificCustomResource(teef);
-                    TORCampaignEvents.Instance.OnTeefTransferred(Hero.MainHero, rawTeefValue);
-                }
-            }
 
 ///////////////////////////////////Gestion des Workshops
 town.Workshops
@@ -412,3 +330,5 @@ leftParty.IgnoreByOtherPartiesTill(CampaignTime time)
                 }
             }
         }
+
+

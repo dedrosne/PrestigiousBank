@@ -18,6 +18,8 @@ namespace PrestigiousBank.Entities
         public static int InitialFactoryPrice = 50_000;
         public static int InitialRessourcePrice = 25_000;
 
+        public static int NbDaysDelayBetweenProductionChange = 4;
+
         //Level=0 => Not yet bought  || Max level = 5
         [SaveableProperty(1)]
         public int FactoryLevel {  get; set; }
@@ -67,6 +69,13 @@ namespace PrestigiousBank.Entities
         [SaveableProperty(16)]
         public int SelectedSilverLevel {get;set;}
 
+        [SaveableProperty(17)]
+        public int NbDaysLeftBetweenProductionChange {get; set;}
+
+        //If not enough ressources to run at selectedLevel, runLevel is lower until ressource requirement is meeted
+        [SaveableProperty(17)]
+        public int RunFactoryLevel {get;set;}
+
         public Settlement _ville;
 
         public Settlement Ville
@@ -78,7 +87,7 @@ namespace PrestigiousBank.Entities
             }
         }
 
-        public static Dictionary<int, int> ValuePerTiers = new Dictionary<int, int>
+        public static Dictionary<int, int> ValueGainedPerRecruitTier = new Dictionary<int, int>
         {
             { 1 ,1 },
             { 2 ,5 },
@@ -95,6 +104,7 @@ namespace PrestigiousBank.Entities
         public static Dictionary<int, (int WorkStrenght,int Production)> WoodProductionAndWorkStrenghtPerLevel 
         = new Dictionary<int, (int WorkStrenght,int Production)>
         {
+            {0, (0,0)},
             { 1 ,(1,1) },
             { 2 ,(4,5) },
             { 3 ,(8,10) },
@@ -106,22 +116,45 @@ namespace PrestigiousBank.Entities
         public static Dictionary<int, (int WoodConsumption, int WorkStrenght,int Production)> CharcoalProductionWoodAndWorkStrenghtPerLevel 
         = new Dictionary<int, (int WoodConsumption,int WorkStrenght,int Production)>
         {
+            {0, (0,0,0)},
             { 1 ,(2,1,1) },
             { 2 ,(9,4,5) },
             { 3 ,(16,8,10) },
             { 4 ,(20,12,15) },
-            { 5 ,(25,25,25) }
+            { 5 ,(25,18,25) }
         };
 
         //{SelectedIronLevel, (WorkStrenght, Production)}
         public static Dictionary<int, (int WorkStrenght,int Production)> IronProductionAndWorkStrenghtPerLevel 
         = new Dictionary<int, (int WorkStrenght,int Production)>
         {
+            {0, (0,0)},
             { 1 ,(5,1) },
             { 2 ,(22,5) },
             { 3 ,(40,10) },
             { 4 ,(50,15) },
             { 5 ,(75,25) }
+        };
+
+        //<selectedLevel, (int WoodConsumption, int CharcoalConsumption, int IronConsumption)>
+        public static Dictionary <int, (int WoodConsumption, int CharcoalConsumption, int IronConsumption)> WeaponProductionRessourceConsumption
+        = new Dictionary<int, (int WoodConsumption, int CharcoalConsumption, int IronConsumption)>
+        {
+            {1,(0,0,0)},
+            {2,(1,3,2)},
+            {3,(2,6,4)},
+            {4,(3,7,5)},
+            {5,(3,8,6)}
+        };
+
+        public static Dictionary <int, (int WoodConsumption, int CharcoalConsumption, int IronConsumption)> MachiningPartProductionRessourceConsumption
+        = new Dictionary<int, (int WoodConsumption, int CharcoalConsumption, int IronConsumption)>
+        {
+            {1,(0,0,0)},
+            {2,(1,3,2)},
+            {3,(2,6,4)},
+            {4,(3,7,5)},
+            {5,(3,8,6)}
         };
 
         public enum PossibleProduction { MachiningPart, Weapon, ConstructionMaterials }
@@ -160,9 +193,22 @@ namespace PrestigiousBank.Entities
             return ItemStash;
         }
 
+        public PossibleProduction TryChangeProduction(PossibleProduction selectedProduction)
+        {
+            if (selectedProduction==chosenProduction) return;
+            else 
+            {
+                chosenProduction = selectedProduction;
+                NbDaysLeftBetweenProductionChange = NbDaysDelayBetweenProductionChange;
+                PrestigiousBank.LogMessage("Production demandée : "+selectedProduction.ToString()+
+                    "\nDélai de changement deproduction : "+NbDaysDelayBetweenProductionChange+" jours");
+            }
+            return selectedProduction;
+        }
+
         public ItemObject GetMinimumItemNumberInStash(List<ItemObject> list)
         {
-            ItemObject minNumberItem = list[0];//TODO
+            ItemObject minNumberItem = list[0];
             int minNumber = 9999;
             foreach (ItemObject item in list)
             {
@@ -178,6 +224,7 @@ namespace PrestigiousBank.Entities
 
         public void TryToProduceWood()
         {
+            if (SelectedWoodLevel == 0) return;
             int ToProduce = WoodProductionAndWorkStrenghtPerLevel[SelectedWoodLevel].Production;
             int RequiredWorkStrenght = WoodProductionAndWorkStrenghtPerLevel[SelectedWoodLevel].WorkStrenght;
 
@@ -192,6 +239,7 @@ namespace PrestigiousBank.Entities
 
         public void TryToProduceCharcoal()
         {
+            if (SelectedCharcoalLevel == 0) return;
             int ToProduce = CharcoalProductionWoodAndWorkStrenghtPerLevel[SelectedCharcoalLevel].Production;
             int RequiredWorkStrenght = CharcoalProductionWoodAndWorkStrenghtPerLevel[SelectedCharcoalLevel].WorkStrenght;
             int RequiredWood = CharcoalProductionWoodAndWorkStrenghtPerLevel[SelectedCharcoalLevel].WoodConsumption;
@@ -208,6 +256,7 @@ namespace PrestigiousBank.Entities
 
         public void TryToProduceIron()
         {
+            if (SelectedIronLevel == 0) return;
             int ToProduce = IronProductionAndWorkStrenghtPerLevel[SelectedIronLevel].Production;
             int RequiredWorkStrenght = IronProductionAndWorkStrenghtPerLevel[SelectedIronLevel].WorkStrenght;
 
@@ -216,6 +265,78 @@ namespace PrestigiousBank.Entities
             {
                 WorkStrenght-=RequiredWorkStrenght;
                 GetItemStash().Add(new ItemRosterElement(DefaultItems.IronOre, ToProduce));
+            }
+        }
+
+        public void TryToProduceRessources()
+        {
+            List<ItemObject> listItems = {
+                new ItemObject(DefaultItems.HardWood),
+                new ItemObject(DefaultItems.Charcoal),
+                new ItemObject(DefaultItems.IronOre)
+                };
+            
+            while (listItems is not empty)//TODO 
+            {
+                ItemObject minItem = GetMinimumItemNumberInStash(listItems);
+                if (ItemObject==hardwood) TryToProduceWood();//TODO
+                if (ItemObject==charcoal) TryToProduceCharcoal();//TODO
+                if (ItemObject==iron) TryToProduceCharcoal();//TODO
+                listItems.removeItem(minItem);//TODO
+            }
+        }
+
+        private bool CheckRessourceAvailabilitiesForFactory(int level)
+        {
+            if (chosenProduction==PossibleProduction.Weapon)
+            {
+                if (WeaponProductionRessourceConsumption[level].WoodConsumption >= GetItemStash().GetItemNumber(item: new ItemObject(DefaultItems.HardWood))
+                    && WeaponProductionRessourceConsumption[level].CharcoalConsumption >= GetItemStash().GetItemNumber(item: new ItemObject(DefaultItems.Charcoal))
+                    && WeaponProductionRessourceConsumption[level].IronConsumption >= GetItemStash().GetItemNumber(item: new ItemObject(DefaultItems.IronOre)));
+                {
+                    return true;
+                }
+                    
+            }
+            if (chosenProduction==PossibleProduction.MachiningPart)
+            {
+                if (MachiningPartProductionRessourceConsumption[level].WoodConsumption >= GetItemStash().GetItemNumber(item: new ItemObject(DefaultItems.HardWood))
+                    && MachiningPartProductionRessourceConsumption[level].CharcoalConsumption >= GetItemStash().GetItemNumber(item: new ItemObject(DefaultItems.Charcoal))
+                    && MachiningPartProductionRessourceConsumption[level].IronConsumption >= GetItemStash().GetItemNumber(item: new ItemObject(DefaultItems.IronOre)));
+                {
+                    return true;
+                }
+            }
+        }
+
+        private void ConsumeRessource(int level)
+        {
+            if (chosenProduction==PossibleProduction.Weapon)
+            {
+                GetItemStash().Remove(new ItemRosterElement(DefaultItems.HardWood, WeaponProductionRessourceConsumption[level].WoodConsumption));
+                GetItemStash().Remove(new ItemRosterElement(DefaultItems.Charcoal, WeaponProductionRessourceConsumption[level].CharcoalConsumption));
+                GetItemStash().Remove(new ItemRosterElement(DefaultItems.IronOre, WeaponProductionRessourceConsumption[level].IronConsumption));
+            }
+            if (chosenProduction==PossibleProduction.MachiningPart)
+            {
+                GetItemStash().Remove(new ItemRosterElement(DefaultItems.HardWood, MachiningPartProductionRessourceConsumption[level].WoodConsumption));
+                GetItemStash().Remove(new ItemRosterElement(DefaultItems.Charcoal, MachiningPartProductionRessourceConsumption[level].CharcoalConsumption));
+                GetItemStash().Remove(new ItemRosterElement(DefaultItems.IronOre, MachiningPartProductionRessourceConsumption[level].IronConsumption));
+            }
+        }
+
+        //Factory tries to consume ressources at best level, starting from selectedFactoryLevel
+        public void ConsumeRessourcesToRun()
+        {
+            for (int level = SelectedFactoryLevel; level>=1; level--)
+            {
+                //Check for ressources availability depending on level
+                if (CheckRessourceAvailabilitiesForFactory(level))
+                {
+                    ConsumeRessource(level);
+                    RunFactoryLevel = level;
+                    break;
+                }
             }
         }
 

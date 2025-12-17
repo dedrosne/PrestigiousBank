@@ -84,7 +84,7 @@ namespace PrestigiousBank
         {
             CampaignEvents.OnSessionLaunchedEvent.AddNonSerializedListener((object)this, new Action<CampaignGameStarter>(this.OnSessionLaunched));
             CampaignEvents.SettlementEntered.AddNonSerializedListener(this, new Action<MobileParty, Settlement, Hero>(this.SettlementEntered));
-            CampaignEvents.DailyTickEvent.AddNonSerializedListener(this, this.DailyTickClan);
+            CampaignEvents.DailyTickEvent.AddNonSerializedListener(this, this.DailyTickEvent);
             CampaignEvents.OnTroopRecruitedEvent.AddNonSerializedListener(this, new Action<Hero, Settlement, Hero, CharacterObject, int>(this.OnTroopRecruitedEvent));
             CampaignEvents.HourlyTickEvent.AddNonSerializedListener(this, HourlyTickEvent);
 
@@ -95,24 +95,44 @@ namespace PrestigiousBank
             new NulnFactoryMenu().RegisterFactoryMenu(campaignGameStarter, NulnFactory);
         }
 
-        private void DailyTickClan()
+        private void DailyTickEvent()
         {
             //Ajout de l'XP
             Hero.MainHero.AddSkillXp(DefaultSkills.Engineering, NulnFactory.GetDailySkillXP());
-            NulnFactory.TryToProduceWood();
+            //Production des matières premières
+            NulnFactory.TryToProduceRessources();
+
+            //Gestion des Workshops
+            if (NulnFactory.chosenProduction == NulnFactory.PossibleProduction.MachiningPart)
+            {
+                List<Workshop> workshops = NulnFactory.Ville.Town.Workshops;
+                if (workshops is not empty)
+                {
+                    foreach(Workshop workshop in workshops)
+                    {
+                        //If owner = Player, then add to production
+
+
+                        //If owner != Player, then get part of production as Benefits
+                    }
+                }
+            }
+
+            if (NulnFactory.NbDaysLeftBetweenProductionChange > 0) NbDaysLeftBetweenProductionChange-=1;
+            else NulnFactory.ConsumeRessourcesToRun();
         }
 
         public void OnTroopRecruitedEvent(Hero recruiter, Settlement settlement, Hero recruitmentSource, CharacterObject troop, int amount)
         {
             if (NulnFactory.FactoryLevel == 0) return;
             if (NulnFactory.chosenProduction != NulnFactory.PossibleProduction.Weapon) return;
+            if (NulnFactory.NbDaysLeftBetweenProductionChange > 0) return;
             if (recruiter == null) return;
             if (settlement == null) return;
             if (settlement.Town == null) return;
             if (settlement.Town.StringId != townID) return;
-            int valueGained = NulnFactory.ValuePerTiers[troop.Tier] * amount * NulnFactory.FactoryLevel;
-             NulnFactory.Benefits += valueGained;
-
+            int valueGained = NulnFactory.ValueGainedPerRecruitTier[troop.Tier] * amount * NulnFactory.RunFactoryLevel;
+            NulnFactory.Benefits += valueGained;
         }
 
         public void HourlyTickEvent()
