@@ -7,35 +7,74 @@ using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.CampaignSystem.ViewModelCollection.Encyclopedia.List;
 using TaleWorlds.Core;
+using TaleWorlds.MountAndBlade;
 using TaleWorlds.SaveSystem;
 
 namespace PrestigiousBank
 {
     [SaveableRootClass(99999990)]
-    public static class ClanAgencies
+    public class ClanAgencies
     {
         [SaveableProperty(1)]
-        private static List<ClanAgency> _clanAgenciesList;
-        public static List<ClanAgency> ClanAgenciesList {get {
-            _clanAgenciesList ??= new List<ClanAgency> { };
-            return _clanAgenciesList;} 
-            set {_clanAgenciesList = value;}}
+        private List<ClanAgency> ClanAgenciesList { get; set; }
 
-        public static ClanAgency GetAgencyByTownStringId(string townId)
+        [SaveableProperty(2)]
+        public int CurrentMaxLimitAgency { get; set; }
+
+        private ClanAgency _currentSettlementAgency;
+
+        public ClanAgency CurrentSettlementAgency
         {
-            foreach(ClanAgency listMember in ClanAgenciesList)
+            get {
+                if (_currentSettlementAgency == null) RefreshCurrentSettlementAgency();
+                if (_currentSettlementAgency == null && GetClanAgenciesList().Count != 0) _currentSettlementAgency = ClanAgenciesList[0];//Afraid that CurrentSettlementAgency could be called outside of settlement
+                return _currentSettlementAgency; }
+        }
+
+        public static int InitialPriceIncreaseMaxLimitAgency = 20_000;
+
+        public static int InitialMaxLimitAgency = 5;
+
+
+        public List<ClanAgency> GetClanAgenciesList() {
+            if (ClanAgenciesList == null )ClanAgenciesList = new List<ClanAgency> { };
+            return ClanAgenciesList;} 
+         
+
+        public ClanAgency GetAgencyByTownStringId(string townId)
+        {
+            if (GetClanAgenciesList().Count != 0)
             {
-                if (listMember.TownID == townId) return listMember;
+                foreach (ClanAgency listMember in GetClanAgenciesList())
+                {
+                    if (listMember.TownID == townId) return listMember;
+                }
             }
             return null;
         }
+        
 
-        public static ClanAgency CreateAgencyFromTownID(string TownId)
+        public ClanAgency CreateAgencyFromTownID(string TownId)
         {
-            ClanAgency agency = new(townID);
+            ClanAgency agency = new ClanAgency(TownId);
             ClanAgenciesList.Add(agency);
+            agency.LevelAgency = 1;
+            agency.SelectedLevel = 1;
+            _currentSettlementAgency = agency;
             return agency;
         }
- 
+
+        public ClanAgencies()
+        {
+            CurrentMaxLimitAgency = InitialMaxLimitAgency;
+        }
+
+        public void RefreshCurrentSettlementAgency()
+        {
+            if (Settlement.CurrentSettlement != null && Settlement.CurrentSettlement.Town != null)
+                _currentSettlementAgency = GetAgencyByTownStringId(Settlement.CurrentSettlement.Town.StringId);
+        }
+
+
     }
 }

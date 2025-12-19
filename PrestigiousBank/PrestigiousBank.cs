@@ -20,10 +20,8 @@ namespace PrestigiousBank
     public class PrestigiousBank : MBSubModuleBase
     {
         public static Configuration Config { get; set; }
-        private static FileSystemWatcher _fileWatcher;
         private static string _configPath = System.IO.Path.GetFullPath(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"..\..\configuration"));
         private static string _version = "v1.3.9.0";
-        private static string _previousVersion = "v1.3.8.0";
 
         public PrestigiousBank()
         {
@@ -56,6 +54,7 @@ namespace PrestigiousBank
                 campaignGameStarter.AddBehavior(new MiddenheimBankCampaignBehavior());
                 campaignGameStarter.AddBehavior(new AverheimBankCampaignBehavior());
                 campaignGameStarter.AddBehavior(new NulnFactoryCampaignBehavior());
+                campaignGameStarter.AddBehavior(new ClanAgenciesBehaviour());
 
                 // ============================================================
                 // Core models and processors
@@ -88,67 +87,6 @@ namespace PrestigiousBank
             }
         }
 
-        /*private static void CreateConfig()
-         {
-             try
-             {
-                 if (File.Exists(_configPath + _version + ".xml"))
-                 {
-                    // Read config
-                    PrestigiousBank.Config = ReadConfig<Configuration>(_configPath + _version + ".xml");
-                 }
-                 else
-                 {
-                     // Check if previous config exists
-                     if (File.Exists(_configPath + _previousVersion + ".xml"))
-                     {
-                         // Merge
-                         var oldConfig = ReadConfig<Configuration>(_configPath + _previousVersion + ".xml");
-                         Config = CreateDefaultConfiguration(oldConfig);
-                         CreateConfigFile<Configuration>(Config, _configPath + _version + ".xml");
-                     }
-                     else if (File.Exists(_configPath + ".xml"))
-                     {
-                         // CAN BE DELETED IN FEW VERSIONS ONWARDS
-                         // Merge
-                         var oldConfig = ReadConfig<Configuration.Configuration>(_configPath + ".xml");
-                         Config = CreateDefaultConfiguration(oldConfig);
-                         CreateConfigFile<Configuration>(Config, _configPath + _version + ".xml");
-                         // Save old config in right format
-                         CreateConfigFile<Configuration.Configuration>(oldConfig, _configPath + _previousVersion + ".xml");
-                     }
-                     else
-                     {
-                         // Create new default configurations
-                         Config = CreateDefaultConfiguration();
-                         CreateConfigFile<Configuration>(Config, _configPath + _version + ".xml");
-                     }
-                 }
-             }
-             catch
-             {
-                 Config = CreateDefaultConfiguration();
-                 CreateConfigFile<Configuration>(Config, _configPath + _version + ".xml");
-             }
-
-             var directory = System.IO.Path.GetDirectoryName(_configPath + _version + ".xml");
-             var filename = System.IO.Path.GetFileName(_configPath + _version + ".xml");
-
-             _fileWatcher = new FileSystemWatcher(directory, filename);
-
-             _fileWatcher.NotifyFilter = NotifyFilters.Attributes
-                                  | NotifyFilters.CreationTime
-                                  | NotifyFilters.DirectoryName
-                                  | NotifyFilters.FileName
-                                  | NotifyFilters.LastAccess
-                                  | NotifyFilters.LastWrite
-                                  | NotifyFilters.Security
-                                  | NotifyFilters.Size;
-
-             _fileWatcher.Changed += OnChanged;
-             _fileWatcher.IncludeSubdirectories = true;
-             _fileWatcher.EnableRaisingEvents = true;
-         }*/
 
         private static T ReadConfig<T>(string configPath)
         {

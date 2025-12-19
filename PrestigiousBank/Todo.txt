@@ -56,6 +56,9 @@ Cout d'upgrade : Level * 50_000 po | Max Level 5
 	- Armes => Obtient des gold à chaque fois qu'une unité est recrutée dans la ville. (Besoin de fer ?)
                 Consommation 2 fer/1 Bois/3 Charbon / Niveau-1 (pas de consommation au niveau 1)
                 Résultat de porduction : x*FactoryLevel (selon ressources disponibles. L'usine tournera plus au level possible selon le niveau sélectionné)
+    - Pièces d'usinage => Augmente la production des workshop de la ville de ses propres workshop ou pour les autres 05/10/15/20/25% des gold des workshops de la ville
+        Augmenter production des workshops de 20%*level, et obtient 80% de ce gain de production (20% laissés au détenteur)
+        Consommation 3 fer/3 bois/1 Charbon *SelectedLevel
 
 Lorsqu'on change la production, X jours de battement pour changer les lignes de production
 
@@ -94,15 +97,17 @@ Production en premier de la ressource la moins présente dans le stash
 
 Select Nulnfactory level
 
-	- Pièces d'usinage => Augmente la production des workshop de la ville de ses propres workshop ou pour les autres 05/10/15/20/25% des gold des workshops de la ville
-        Consommation 3 fer/3 bois/1 Charbon *SelectedLevel
+
+        
 
 Comptoir : 
 Etend l'activité Nuln/Marieembourg/Vampire => Nom ?
-Agence du Clan => -5g/jour/niveau => Level augmente effets 20/40/60/80/100%
-    10_000 initial
+Agence du Clan => -5g/jour/niveau => Level augmente effets 10/20/30/40/50%
+    20_000 initial
 Ensuite IsNulnFactory
-    Nuln : Consommation 1/1/1
+    Pas de consommations de matière spuuplémentaire. Consommation de main d'oeuvre ? Faisable
+
+
 IsMariembourgTrading
 IsVampireCtypt
 

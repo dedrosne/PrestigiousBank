@@ -23,13 +23,33 @@ namespace PrestigiousBank
         [SaveableProperty(3)]
         public int SelectedLevel {get;set;}
 
+        private Town _town;
+
+        public Town Town { 
+            get { 
+                if (_town == null)
+                {
+                    foreach(Town town in Town.AllTowns)
+                    {
+                        if (town.StringId == TownID) { _town = town; break; }
+                    }
+                } 
+                return _town;
+            }
+            set { _town = value; } }
+
         public static int AgencyInitialPrice = 10_000;
 
         public static int AgencyUpkeepPerLevel = 20;
+
         public ClanAgency(string townID)
         {
             TownID = townID;
+        }
 
+        public int CalculatePriceToLevelUpAgency()
+        {
+            return (LevelAgency + 1) * AgencyInitialPrice;
         }
     }
 }

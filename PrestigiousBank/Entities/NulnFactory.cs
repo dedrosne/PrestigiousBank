@@ -5,8 +5,11 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.ComponentInterfaces;
+using TaleWorlds.CampaignSystem.GameComponents;
 using TaleWorlds.CampaignSystem.Roster;
 using TaleWorlds.CampaignSystem.Settlements;
+using TaleWorlds.CampaignSystem.Settlements.Workshops;
 using TaleWorlds.Core;
 using TaleWorlds.SaveSystem;
 
@@ -73,7 +76,7 @@ namespace PrestigiousBank.Entities
         public int NbDaysLeftBetweenProductionChange {get; set;}
 
         //If not enough ressources to run at selectedLevel, runLevel is lower until ressource requirement is meeted
-        [SaveableProperty(17)]
+        [SaveableProperty(18)]
         public int RunFactoryLevel {get;set;}
 
         public Settlement _ville;
@@ -130,10 +133,10 @@ namespace PrestigiousBank.Entities
         {
             {0, (0,0)},
             { 1 ,(5,1) },
-            { 2 ,(22,5) },
-            { 3 ,(40,10) },
-            { 4 ,(50,15) },
-            { 5 ,(75,25) }
+            { 2 ,(10,5) },
+            { 3 ,(15,10) },
+            { 4 ,(20,15) },
+            { 5 ,(30,25) }
         };
 
         //<selectedLevel, (int WoodConsumption, int CharcoalConsumption, int IronConsumption)>
@@ -193,10 +196,19 @@ namespace PrestigiousBank.Entities
             return ItemStash;
         }
 
+        public int CalculateTotalWorkStrenght()
+        {
+            int result = 0;
+            result += WoodProductionAndWorkStrenghtPerLevel[SelectedWoodLevel].WorkStrenght;
+            result += CharcoalProductionWoodAndWorkStrenghtPerLevel[SelectedCharcoalLevel].WorkStrenght;
+            result += IronProductionAndWorkStrenghtPerLevel[SelectedIronLevel].WorkStrenght;
+
+            return result;
+        }
+
         public PossibleProduction TryChangeProduction(PossibleProduction selectedProduction)
         {
-            if (selectedProduction==chosenProduction) return;
-            else 
+            if (selectedProduction != chosenProduction)
             {
                 chosenProduction = selectedProduction;
                 NbDaysLeftBetweenProductionChange = NbDaysDelayBetweenProductionChange;
@@ -244,8 +256,7 @@ namespace PrestigiousBank.Entities
             int RequiredWorkStrenght = CharcoalProductionWoodAndWorkStrenghtPerLevel[SelectedCharcoalLevel].WorkStrenght;
             int RequiredWood = CharcoalProductionWoodAndWorkStrenghtPerLevel[SelectedCharcoalLevel].WoodConsumption;
 
-
-            if (WorkStrenght < RequiredWorkStrenght || GetItemStash().GetItemNumber(item: new ItemObject(DefaultItems.HardWood)) < RequiredWood)   return;
+            if (WorkStrenght < RequiredWorkStrenght || GetItemStash().GetItemNumber(item: DefaultItems.HardWood) < RequiredWood)   return;
             else
             {
                 WorkStrenght-=RequiredWorkStrenght;
@@ -270,19 +281,19 @@ namespace PrestigiousBank.Entities
 
         public void TryToProduceRessources()
         {
-            List<ItemObject> listItems = {
+            List<ItemObject> listItems = new List<ItemObject> {
                 new ItemObject(DefaultItems.HardWood),
                 new ItemObject(DefaultItems.Charcoal),
                 new ItemObject(DefaultItems.IronOre)
                 };
             
-            while (listItems is not empty)//TODO 
+            while (listItems.Count != 0) 
             {
                 ItemObject minItem = GetMinimumItemNumberInStash(listItems);
-                if (ItemObject==hardwood) TryToProduceWood();//TODO
-                if (ItemObject==charcoal) TryToProduceCharcoal();//TODO
-                if (ItemObject==iron) TryToProduceCharcoal();//TODO
-                listItems.removeItem(minItem);//TODO
+                if (minItem.StringId == "hardwood") TryToProduceWood();//TODO
+                if (minItem.StringId == "charcoal") TryToProduceCharcoal();//TODO
+                if (minItem.StringId == "iron") TryToProduceIron();//TODO
+                listItems.Remove(minItem);
             }
         }
 
@@ -292,21 +303,22 @@ namespace PrestigiousBank.Entities
             {
                 if (WeaponProductionRessourceConsumption[level].WoodConsumption >= GetItemStash().GetItemNumber(item: new ItemObject(DefaultItems.HardWood))
                     && WeaponProductionRessourceConsumption[level].CharcoalConsumption >= GetItemStash().GetItemNumber(item: new ItemObject(DefaultItems.Charcoal))
-                    && WeaponProductionRessourceConsumption[level].IronConsumption >= GetItemStash().GetItemNumber(item: new ItemObject(DefaultItems.IronOre)));
+                    && WeaponProductionRessourceConsumption[level].IronConsumption >= GetItemStash().GetItemNumber(item: new ItemObject(DefaultItems.IronOre)))
                 {
                     return true;
                 }
                     
             }
-            if (chosenProduction==PossibleProduction.MachiningPart)
+            if (chosenProduction == PossibleProduction.MachiningPart)
             {
                 if (MachiningPartProductionRessourceConsumption[level].WoodConsumption >= GetItemStash().GetItemNumber(item: new ItemObject(DefaultItems.HardWood))
                     && MachiningPartProductionRessourceConsumption[level].CharcoalConsumption >= GetItemStash().GetItemNumber(item: new ItemObject(DefaultItems.Charcoal))
-                    && MachiningPartProductionRessourceConsumption[level].IronConsumption >= GetItemStash().GetItemNumber(item: new ItemObject(DefaultItems.IronOre)));
+                    && MachiningPartProductionRessourceConsumption[level].IronConsumption >= GetItemStash().GetItemNumber(item: new ItemObject(DefaultItems.IronOre)))
                 {
                     return true;
                 }
             }
+            return false;
         }
 
         private void ConsumeRessource(int level)
@@ -338,6 +350,48 @@ namespace PrestigiousBank.Entities
                     break;
                 }
             }
+        }
+
+        public void ApplyWorkshopGains(Workshop workshop, float factorClanAgency = 1f)
+        {
+            //Chiffre d'affaire = Profit+Expense
+            int Turnover = workshop.ProfitMade + workshop.Expense;
+
+            //Production gain = Chiffre d'affaire * level*0.05 * ClanAgencyLevelFactor
+            int ProductionGain = (int)(Turnover * (RunFactoryLevel * 0.20)* factorClanAgency);
+            //Increase Gold as new Machining part increase production
+            workshop.ChangeGold(ProductionGain);
+
+            //Price of Machining parts
+            if (workshop.Owner != Hero.MainHero)
+            {
+                workshop.ChangeGold((int)(-ProductionGain * 0.8));
+                this.Benefits += (int)(ProductionGain * 0.8);
+
+            }
+        }
+
+        public string GetToolTipFactoryPerLevel(int level)
+        {
+            string result = "";
+
+
+            //Consommation de bois
+            result += "Consommation de bois :";
+            if (chosenProduction == PossibleProduction.Weapon) result += WeaponProductionRessourceConsumption[level].WoodConsumption;
+            if (chosenProduction == PossibleProduction.MachiningPart) result += MachiningPartProductionRessourceConsumption[level].WoodConsumption;
+
+            //Consommation de charbon
+            result += "\nConsommation de charbon :";
+            if (chosenProduction == PossibleProduction.Weapon) result += WeaponProductionRessourceConsumption[level].CharcoalConsumption;
+            if (chosenProduction == PossibleProduction.MachiningPart) result += MachiningPartProductionRessourceConsumption[level].CharcoalConsumption;
+
+            //Consommation de fer
+            result += "\nConsommation de fer :";
+            if (chosenProduction == PossibleProduction.Weapon) result += WeaponProductionRessourceConsumption[level].IronConsumption;
+            if (chosenProduction == PossibleProduction.MachiningPart) result += MachiningPartProductionRessourceConsumption[level].IronConsumption;
+
+            return result;
         }
 
     }

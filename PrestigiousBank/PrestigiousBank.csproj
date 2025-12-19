@@ -275,28 +275,33 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Behaviours\AverheimBankBehaviour.cs" />
-    <Compile Include="Behaviours\MiddenheimBankBehaviour.cs" />
+    <Compile Include="Behaviours\CityBankBehaviours\AverheimBankBehaviour.cs" />
+    <Compile Include="Behaviours\CityBankBehaviours\MiddenheimBankBehaviour.cs" />
+    <Compile Include="Behaviours\ClanAgenciesBehaviour.cs" />
     <Compile Include="Behaviours\NulnFactoryBehaviour.cs" />
-    <Compile Include="Behaviours\YnEdrylKoiranBankBehaviour.cs" />
-    <Compile Include="Behaviours\CouronneBankBehaviour.cs" />
-    <Compile Include="Behaviours\DrakenhofBankBehaviour.cs" />
-    <Compile Include="Behaviours\AltdorfBankBehaviour.cs" />
+    <Compile Include="Behaviours\CityBankBehaviours\YnEdrylKoiranBankBehaviour.cs" />
+    <Compile Include="Behaviours\CityBankBehaviours\CouronneBankBehaviour.cs" />
+    <Compile Include="Behaviours\CityBankBehaviours\DrakenhofBankBehaviour.cs" />
+    <Compile Include="Behaviours\CityBankBehaviours\AltdorfBankBehaviour.cs" />
     <Compile Include="Entities\CityBanks\CouronneBank.cs" />
     <Compile Include="Entities\CityBanks\AverheimBank.cs" />
     <Compile Include="Entities\CityBanks\MiddenheimBank.cs" />
     <Compile Include="Entities\CityBanks\YnEdrylKoiranBank.cs" />
     <Compile Include="Entities\CityBanks\DrakenhofBank.cs" />
     <Compile Include="Entities\Bank.cs" />
+    <Compile Include="Entities\ClanAgencies.cs" />
+    <Compile Include="Entities\ClanAgency.cs" />
     <Compile Include="Entities\Configuration.cs" />
     <Compile Include="Entities\InsuredSettlement.cs" />
     <Compile Include="Entities\InsuredCaravan.cs" />
     <Compile Include="Entities\CityBanks\AltdorfBank.cs" />
     <Compile Include="Entities\NulnFactory.cs" />
+    <Compile Include="Entities\Saveable\ClanAgenciesSaveableTypeDefiner.cs" />
     <Compile Include="Entities\Saveable\NulnFactorySaveableTypeDefiner.cs" />
     <Compile Include="Entities\Saveable\CouronneBankSaveableTypeDefiner.cs" />
     <Compile Include="Entities\Saveable\MiddenheimBankSaveableTypeDefiner.cs" />
     <Compile Include="Entities\Saveable\AverheimBankSaveableTypeDefiner.cs" />
+    <Compile Include="Entities\Saveable\ClanAgencySaveableTypeDefiner.cs" />
     <Compile Include="Entities\Saveable\YnEdrylKoiranBankSaveableTypeDefiner.cs" />
     <Compile Include="Entities\Saveable\DrakenhofBankSaveableTypeDefiner.cs" />
     <Compile Include="Entities\Saveable\AltdorfBankSaveableTypeDefiner.cs" />
@@ -308,6 +313,7 @@
     <Compile Include="Menus\CityBankMenus\DrakenhofBankMenu.cs" />
     <Compile Include="Menus\CityBankMenus\AltdorfBankMenu.cs" />
     <Compile Include="Menus\BankMenu.cs" />
+    <Compile Include="Menus\ClanAgencyMenu.cs" />
     <Compile Include="Menus\NulnFactoryMenu.cs" />
     <Compile Include="Models\PrestigiousPartyHealingModel.cs" />
     <Compile Include="Models\PrestigiousPartySizeModel.cs" />

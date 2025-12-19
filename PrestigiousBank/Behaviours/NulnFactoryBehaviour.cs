@@ -10,6 +10,7 @@ using TaleWorlds.CampaignSystem.GameMenus;
 using TaleWorlds.CampaignSystem.MapEvents;
 using TaleWorlds.CampaignSystem.MapNotificationTypes;
 using TaleWorlds.CampaignSystem.Party;
+using TaleWorlds.CampaignSystem.Settlements.Workshops;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.CampaignSystem.ViewModelCollection.Encyclopedia.Items;
 using TaleWorlds.Core;
@@ -23,6 +24,8 @@ using TOR_Core.Extensions;
 using TOR_Core.CharacterDevelopment;
 using PrestigiousBank.Entities;
 using System.Runtime.InteropServices;
+using System.Diagnostics.Eventing.Reader;
+using TaleWorlds.CampaignSystem.GameComponents;
 
 namespace PrestigiousBank
 {
@@ -72,13 +75,7 @@ namespace PrestigiousBank
         }
 
         public NulnFactoryCampaignBehavior() : base()
-        {
-            //MBTextManager.SetTextVariable("Birke_Bank_Encyclopedia_Main", PrestigiousBank.Config.BankName);
-            //bankAltdorf = bankAltdorf;
-
-            //_bankTrait = Game.Current.ObjectManager.RegisterPresumedObject<TraitObject>(new TraitObject("bank"));
-            //_bankTrait.Initialize(new TextObject(GameTexts.FindText("str_trait_bankName").ToString()), new TextObject(GameTexts.FindText("str_trait_bankDescription").ToString()), false, 0, 4);
-        }
+        {}
 
         public override void RegisterEvents()
         {
@@ -87,13 +84,13 @@ namespace PrestigiousBank
             CampaignEvents.DailyTickEvent.AddNonSerializedListener(this, this.DailyTickEvent);
             CampaignEvents.OnTroopRecruitedEvent.AddNonSerializedListener(this, new Action<Hero, Settlement, Hero, CharacterObject, int>(this.OnTroopRecruitedEvent));
             CampaignEvents.HourlyTickEvent.AddNonSerializedListener(this, HourlyTickEvent);
-
         }
 
         private void OnSessionLaunched(CampaignGameStarter campaignGameStarter)
         {
             new NulnFactoryMenu().RegisterFactoryMenu(campaignGameStarter, NulnFactory);
         }
+        
 
         private void DailyTickEvent()
         {
@@ -102,24 +99,9 @@ namespace PrestigiousBank
             //Production des matières premières
             NulnFactory.TryToProduceRessources();
 
-            //Gestion des Workshops
-            if (NulnFactory.chosenProduction == NulnFactory.PossibleProduction.MachiningPart)
-            {
-                List<Workshop> workshops = NulnFactory.Ville.Town.Workshops;
-                if (workshops is not empty)
-                {
-                    foreach(Workshop workshop in workshops)
-                    {
-                        //If owner = Player, then add to production
 
 
-                        //If owner != Player, then get part of production as Benefits
-                    }
-                }
-            }
 
-            if (NulnFactory.NbDaysLeftBetweenProductionChange > 0) NbDaysLeftBetweenProductionChange-=1;
-            else NulnFactory.ConsumeRessourcesToRun();
         }
 
         public void OnTroopRecruitedEvent(Hero recruiter, Settlement settlement, Hero recruitmentSource, CharacterObject troop, int amount)
@@ -141,6 +123,26 @@ namespace PrestigiousBank
 
             if ((int)time % 24 == 13)
             {
+                //Gestion du délai de changement de production
+                if (NulnFactory.NbDaysLeftBetweenProductionChange > 0) NulnFactory.NbDaysLeftBetweenProductionChange -= 1;
+                else NulnFactory.ConsumeRessourcesToRun();
+
+                //Gestion des Workshops si production MachiningPart
+                if (NulnFactory.chosenProduction == NulnFactory.PossibleProduction.MachiningPart && NulnFactory.NbDaysLeftBetweenProductionChange == 0)//Check days left not necessary, but optimization ?
+                {
+                    Workshop[] workshops = NulnFactory.Ville.Town.Workshops;
+                    if (workshops.Length != 0)
+                    {
+                        foreach (Workshop workshop in workshops)
+                        {
+                            //PrestigiousBank.LogMessage("Workshop profit :" + workshop.ProfitMade);
+                            //PrestigiousBank.LogMessage("Workshop Capital :" + workshop.Capital);
+                            //PrestigiousBank.LogMessage("Workshop Expense :" + workshop.Expense);
+                            NulnFactory.ApplyWorkshopGains(workshop);
+                        }
+                    }
+                }
+
                 NulnFactory.PreviousDayBenefits = NulnFactory.Benefits;
                 NulnFactory.Benefits = 0;
             }
