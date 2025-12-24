@@ -78,18 +78,15 @@ namespace PrestigiousBank
 
         public void OnTroopRecruitedEvent(Hero recruiter, Settlement settlement, Hero recruitmentSource, CharacterObject troop, int amount)
         {
-            if (NulnFactoryCampaignBehavior.NulnFactory.FactoryLevel == 0) return;
-            if (NulnFactoryCampaignBehavior.NulnFactory.chosenProduction != NulnFactory.PossibleProduction.Weapon) return;
-            if (NulnFactoryCampaignBehavior.NulnFactory.NbDaysLeftBetweenProductionChange > 0) return;
-            if (recruiter == null) return;
-            if (settlement == null) return;
-            if (settlement.Town == null) return;
-
-            ClanAgency agency = ClanAgencies.GetAgencyByTownStringId(settlement.Town.StringId);
-            if (agency != null)
+            if (settlement!= null && settlement.IsTown && 
+                settlement.Town.StringId != NulnFactoryCampaignBehavior.townID &&//Dont re-apply event catched in NulnFactoryBehaviour
+                NulnFactoryCampaignBehavior.NulnFactory.NbDaysLeftBetweenProductionChange == 0)
             {
-                int valueGained = NulnFactory.ValueGainedPerRecruitTier[troop.Tier] * amount * NulnFactoryCampaignBehavior.NulnFactory.RunFactoryLevel;
-                NulnFactoryCampaignBehavior.NulnFactory.Benefits += (int)(valueGained * agency.LevelAgency*0.10f);
+                ClanAgency agency = ClanAgencies.GetAgencyByTownStringId(settlement.Town.StringId);
+                if (agency != null)
+                {
+                    NulnFactoryCampaignBehavior.NulnFactory.ApplyTroopRecruited(recruiter, settlement, recruitmentSource, troop, amount, agency.LevelAgency * ClanAgency.AgencyProductionFactorPerLevel);
+                }
             }
 
         }
@@ -103,7 +100,7 @@ namespace PrestigiousBank
 
                 //Gestion des Workshops si production MachiningPart
                 if (NulnFactoryCampaignBehavior.NulnFactory.chosenProduction == NulnFactory.PossibleProduction.MachiningPart 
-                    && NulnFactoryCampaignBehavior.NulnFactory.NbDaysLeftBetweenProductionChange == 0)//Check days left not necessary, but optimization ?
+                    && NulnFactoryCampaignBehavior.NulnFactory.NbDaysLeftBetweenProductionChange == 0) //Check days left not necessary, but optimization ?
                 {
                     if (ClanAgencies.GetClanAgenciesList().Count > 0) 
                     {
@@ -111,7 +108,7 @@ namespace PrestigiousBank
                         {
 
                             Workshop[] workshops = agency.Town.Workshops;
-                            if (workshops.Length != 0)
+                            if (agency.TownID != NulnFactoryCampaignBehavior.townID && workshops.Length != 0)//Dont re-apply event catched in NulnFactoryBehaviour
                             {
                                 foreach (Workshop workshop in workshops)
                                 {

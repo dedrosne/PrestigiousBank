@@ -11,17 +11,21 @@ using TaleWorlds.SaveSystem;
 
 namespace PrestigiousBank
 {
-    [SaveableRootClass(99999991)]
-    public class ClanAgency
+    [SaveableRootClass(99999989)]
+    public class ClanHideout
     {
         [SaveableProperty(1)]
         public string TownID {get;set;}
 
         [SaveableProperty(2)]
-        public int LevelAgency {get;set;}
+        public int LevelHideout {get;set;}
 
         [SaveableProperty(3)]
-        public int SelectedLevel {get;set;}
+        public int SelectedLevelHideout { get;set;}
+        
+        [SaveableProperty(4)]
+        public int BanditsGangStrenght { get; set; }
+
 
         private Town _town;
 
@@ -38,20 +42,23 @@ namespace PrestigiousBank
             }
             set { _town = value; } }
 
-        public static int AgencyInitialPrice = 10_000;
+        public static int HideoutInitialPrice = 20_000;
 
-        public static int AgencyUpkeepPerLevel = 20;
 
-        public static float AgencyProductionFactorPerLevel = 0.15f;
-
-        public ClanAgency(string townID)
+        public ClanHideout(string townID)
         {
             TownID = townID;
         }
 
-        public int CalculatePriceToLevelUpAgency()
+        public int CalculatePriceToLevelUpHideout()
         {
-            return (LevelAgency + 1) * AgencyInitialPrice;
+            return (LevelHideout + 1) * HideoutInitialPrice;
+        }
+
+
+        public int GetDailySkillXP()
+        {
+            return 1000 * LevelHideout;
         }
     }
 }

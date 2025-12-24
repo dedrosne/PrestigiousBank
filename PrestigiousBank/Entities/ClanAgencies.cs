@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
@@ -19,7 +20,7 @@ namespace PrestigiousBank
         private List<ClanAgency> ClanAgenciesList { get; set; }
 
         [SaveableProperty(2)]
-        public int CurrentMaxLimitAgency { get; set; }
+        public int MaxLimitAgencyUpgradeBought { get; set; }
 
         private ClanAgency _currentSettlementAgency;
 
@@ -34,6 +35,8 @@ namespace PrestigiousBank
         public static int InitialPriceIncreaseMaxLimitAgency = 20_000;
 
         public static int InitialMaxLimitAgency = 5;
+
+        public static int UpgradeMaxLimitAgencyCost = 50_000;
 
 
         public List<ClanAgency> GetClanAgenciesList() {
@@ -66,7 +69,7 @@ namespace PrestigiousBank
 
         public ClanAgencies()
         {
-            CurrentMaxLimitAgency = InitialMaxLimitAgency;
+            MaxLimitAgencyUpgradeBought = InitialMaxLimitAgency;
         }
 
         public void RefreshCurrentSettlementAgency()
@@ -75,6 +78,16 @@ namespace PrestigiousBank
                 _currentSettlementAgency = GetAgencyByTownStringId(Settlement.CurrentSettlement.Town.StringId);
         }
 
+        public bool DoDisplayOptionToBuyAgency()
+        {
+            if (NulnFactoryCampaignBehavior.NulnFactory.FactoryLevel == 0) return false;
+            else return true;
+        }
+
+        public int GetMaxAgencies()
+        {
+            return NulnFactoryCampaignBehavior.NulnFactory.FactoryLevel+Clan.PlayerClan.Tier+MaxLimitAgencyUpgradeBought;
+        }
 
     }
 }

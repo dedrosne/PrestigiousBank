@@ -278,6 +278,7 @@
     <Compile Include="Behaviours\CityBankBehaviours\AverheimBankBehaviour.cs" />
     <Compile Include="Behaviours\CityBankBehaviours\MiddenheimBankBehaviour.cs" />
     <Compile Include="Behaviours\ClanAgenciesBehaviour.cs" />
+    <Compile Include="Behaviours\ClanHideoutBehaviour.cs" />
     <Compile Include="Behaviours\NulnFactoryBehaviour.cs" />
     <Compile Include="Behaviours\CityBankBehaviours\YnEdrylKoiranBankBehaviour.cs" />
     <Compile Include="Behaviours\CityBankBehaviours\CouronneBankBehaviour.cs" />
@@ -290,6 +291,7 @@
     <Compile Include="Entities\CityBanks\DrakenhofBank.cs" />
     <Compile Include="Entities\Bank.cs" />
     <Compile Include="Entities\ClanAgencies.cs" />
+    <Compile Include="Entities\ClanHideout.cs" />
     <Compile Include="Entities\ClanAgency.cs" />
     <Compile Include="Entities\Configuration.cs" />
     <Compile Include="Entities\InsuredSettlement.cs" />
@@ -301,7 +303,7 @@
     <Compile Include="Entities\Saveable\CouronneBankSaveableTypeDefiner.cs" />
     <Compile Include="Entities\Saveable\MiddenheimBankSaveableTypeDefiner.cs" />
     <Compile Include="Entities\Saveable\AverheimBankSaveableTypeDefiner.cs" />
-    <Compile Include="Entities\Saveable\ClanAgencySaveableTypeDefiner.cs" />
+    <Compile Include="Entities\Saveable\ClanHideoutSaveableTypeDefiner.cs" />
     <Compile Include="Entities\Saveable\YnEdrylKoiranBankSaveableTypeDefiner.cs" />
     <Compile Include="Entities\Saveable\DrakenhofBankSaveableTypeDefiner.cs" />
     <Compile Include="Entities\Saveable\AltdorfBankSaveableTypeDefiner.cs" />

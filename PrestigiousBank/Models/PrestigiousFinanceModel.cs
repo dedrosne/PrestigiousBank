@@ -154,7 +154,20 @@ namespace PrestigiousBank
             {
                 result.Add(NulnFactoryCampaignBehavior.NulnFactory.PreviousDayBenefits, new TextObject("Usine de Nuln"));
             }
-            ;
+
+            //Clan Agencies Upkeep
+            ClanAgenciesBehaviour ClanAgenciesBehaviour = Campaign.Current?.GetCampaignBehavior<ClanAgenciesBehaviour>();
+            if (NulnFactoryCampaignBehavior == null) return;
+            if (ClanAgenciesBehaviour.ClanAgencies.GetClanAgenciesList().Count > 0)
+            {
+                int agencyUpkeep = 0;
+                foreach (ClanAgency agency in ClanAgenciesBehaviour.ClanAgencies.GetClanAgenciesList())
+                {
+                    agencyUpkeep += agency.LevelAgency * ClanAgency.AgencyUpkeepPerLevel;
+                }
+                result.Add(-agencyUpkeep, new TextObject("Entretien des Agences"));
+            }
+
 
         }
     }

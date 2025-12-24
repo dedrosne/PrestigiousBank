@@ -106,15 +106,8 @@ namespace PrestigiousBank
 
         public void OnTroopRecruitedEvent(Hero recruiter, Settlement settlement, Hero recruitmentSource, CharacterObject troop, int amount)
         {
-            if (NulnFactory.FactoryLevel == 0) return;
-            if (NulnFactory.chosenProduction != NulnFactory.PossibleProduction.Weapon) return;
-            if (NulnFactory.NbDaysLeftBetweenProductionChange > 0) return;
-            if (recruiter == null) return;
-            if (settlement == null) return;
-            if (settlement.Town == null) return;
-            if (settlement.Town.StringId != townID) return;
-            int valueGained = NulnFactory.ValueGainedPerRecruitTier[troop.Tier] * amount * NulnFactory.RunFactoryLevel;
-            NulnFactory.Benefits += valueGained;
+            if (settlement!= null && settlement.IsTown && settlement.Town.StringId == townID)
+                NulnFactory.ApplyTroopRecruited(recruiter, settlement, recruitmentSource, troop, amount, factorAgency: 1, townID);
         }
 
         public void HourlyTickEvent()

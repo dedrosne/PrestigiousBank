@@ -71,11 +71,11 @@ namespace PrestigiousBank
         {
             if (Ville != null)
             {
-                return Ville.Town.Prosperity * 0.0000002f;
+                return (Ville.Town.Prosperity/3500) * 0.001f;
             }
             else return 0f;
-            //Prosperity between 0 and 10 000.
-            //10 000 = 0.02% interest/day
+            //Prosperity between 0 and 10 000. Usually at 3500-4000
+            //3500 = 0.1% interest/day
         }
 
         public int CalculateInterests()
@@ -89,9 +89,9 @@ namespace PrestigiousBank
 
         public int GetCustomerLevel()
         {
-            if (Solde < 49_999) return 1;
-            if (Solde < 149_999) return 2;
-            if (Solde < 299_999) return 3;
+            if (Solde <= 49_999) return 1;
+            if (Solde <= 149_999) return 2;
+            if (Solde <= 299_999) return 3;
             else return 4;
         }
 
@@ -106,8 +106,8 @@ namespace PrestigiousBank
 
         public int GetDailySkillXP()
         {
-            //TradeXP = 1XP/100or pour tout or au dessus de 200_000. Max 5000/jour
-            return Math.Min(Math.Max((Solde - 200_000) / 100, 0),5000);
+            //SkillXp = 1XP/100or pour tout or au dessus de 200_000. Max 5000/jour
+            return Math.Min(Math.Max((Solde - 150_000) / 100, 0),5000);
         }
 
     }

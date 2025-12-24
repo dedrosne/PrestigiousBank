@@ -47,7 +47,16 @@ namespace PrestigiousBank
                     {
                         args.optionLeaveType = GameMenuOption.LeaveType.Craft;//TODO
                         args.IsEnabled = Hero.MainHero.Gold >= ClanAgency.AgencyInitialPrice;
-                        args.Tooltip = Hero.MainHero.Gold >= ClanAgency.AgencyInitialPrice ? null : new TextObject("Pas assez d'or");
+                        if (Hero.MainHero.Gold < ClanAgency.AgencyInitialPrice) { 
+                            args.Tooltip = new TextObject("Pas assez d'or");
+                            args.IsEnabled = false;
+                        }
+                        else if (ClanAgencies.GetMaxAgencies() <= ClanAgencies.GetClanAgenciesList().Count)
+                        {
+                            args.Tooltip = new TextObject("Nombre d'agence max atteint");
+                            args.IsEnabled = false;
+                        }
+                        if (!ClanAgencies.DoDisplayOptionToBuyAgency()) return false;
                         if (ClanAgencies.GetAgencyByTownStringId(Settlement.CurrentSettlement.Town.StringId) != null) return false;
                         else return true;
                     },
@@ -75,8 +84,52 @@ namespace PrestigiousBank
                                                     isLeave: false,
                                                     index: 1);
 
+            //Nuln Factory
+            campaignGameStarter.AddGameMenuOption("clanAgency",
+                                                    "clanAgency_nulnFactory",
+                                                    "Gérer l'usine de Nuln",
+                                                    args =>
+                                                    {
+                                                        ClanAgency currentAgency = ClanAgencies.GetAgencyByTownStringId(Settlement.CurrentSettlement.Town.StringId);
+                                                        args.optionLeaveType = GameMenuOption.LeaveType.Craft;//TODO
+                                                        if (currentAgency == null || currentAgency.LevelAgency == 0) return false;
+                                                        else return true;
+                                                    },
+                                                    _ => { GameMenu.SwitchToMenu("nulnFactory_menu"); },
+                                                    isLeave: false,
+                                                    index: 1);
+
+
+            //EmptySpaces
+            campaignGameStarter.AddGameMenuOption("clanAgency", "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
+            campaignGameStarter.AddGameMenuOption("clanAgency", "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
+
             RegisterLevelSelectionMenuOptions(campaignGameStarter);
 
+            //EmptySpaces
+            campaignGameStarter.AddGameMenuOption("clanAgency", "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
+
+            //Upgrade Max Agencies
+            campaignGameStarter.AddGameMenuOption("clanAgency",
+                                        "clanAgency_upgradeMaxAgency",
+                                        "["+ClanAgencies.UpgradeMaxLimitAgencyCost+"{GOLD_ICON}]Augmenter le nombre maximum d'agences",
+                                        args =>
+                                        //Conditions : Clan Level 5 && Agence Level 5
+                                        {
+                                            ClanAgency currentAgency = ClanAgencies.GetAgencyByTownStringId(Settlement.CurrentSettlement.Town.StringId);
+                                            args.optionLeaveType = GameMenuOption.LeaveType.Craft;//TODO
+                                            args.Tooltip = Clan.PlayerClan.Tier >= 5 ? null : new TextObject("Clan Tiers 5 nécessaire");
+                                            if (currentAgency == null || currentAgency.LevelAgency != 5) return false;
+                                            else return true;
+                                        },
+                                        _ => {
+                                            ClanAgencies.MaxLimitAgencyUpgradeBought += 1;
+                                            GameMenu.SwitchToMenu("clanAgency"); },
+                                        isLeave: false,
+                                        index: 1);
+
+            //EmptySpaces
+            campaignGameStarter.AddGameMenuOption("clanAgency", "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
 
 
 
@@ -99,9 +152,16 @@ namespace PrestigiousBank
                 // string chosenProductionString = chosenProduction.ToString();
 
                 // Agence Menu
-                campaignGameStarter.AddGameMenu("clanAgency",
-                    String.Format("Agence de {0}\nNiveau de l'agence: {1}\nCoût d'entretien actuel: {2}", Settlement.CurrentSettlement.Town.Name, currentAgency.LevelAgency, currentAgency.SelectedLevel * ClanAgency.AgencyUpkeepPerLevel),
-                    null, TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
+                if (currentAgency != null)
+                {
+                    campaignGameStarter.AddGameMenu("clanAgency",
+                        "Agence de " + Settlement.CurrentSettlement.Town.Name + "\n" +
+                        "Niveau de l'agence: " + currentAgency.LevelAgency +
+                        "\nCoût d'entretien actuel: " + currentAgency.SelectedLevel * ClanAgency.AgencyUpkeepPerLevel + "\n\n" +
+                        "Nombre d'agences actuellement :" + ClanAgencies.GetClanAgenciesList().Count + "\n" +
+                        "Nombre maximum d'agences : " + ClanAgencies.GetMaxAgencies(),
+                        null, TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
+                }
             }
         }
 

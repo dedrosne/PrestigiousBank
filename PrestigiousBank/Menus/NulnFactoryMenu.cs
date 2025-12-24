@@ -74,7 +74,7 @@ namespace PrestigiousBank
 
             //Town -> NulnFactory
             campaignGameStarter.AddGameMenuOption("town",
-                                                  String.Format("{0}_nulnFactory_menu", _cityID),
+                                                  "nulnFactory_menu",
                                                   "Usine de Nuln",
                                                   args =>
                                                   {
@@ -85,13 +85,13 @@ namespace PrestigiousBank
                                                   },
                                                   _ => {
                                                       CreateOrUpdateGameMenuDesc(campaignGameStarter); 
-                                                      GameMenu.SwitchToMenu(String.Format("{0}_nulnFactory_menu", _cityID)); },
+                                                      GameMenu.SwitchToMenu("nulnFactory_menu"); },
                                                   isLeave: false,
                                                   _optionBankIndex);
 
 
             // Factory Menu -> ProductionChoice
-            campaignGameStarter.AddGameMenuOption(String.Format("{0}_nulnFactory_menu", _cityID), String.Format("{0}_productionChoice", _cityID), "Changer la production",
+            campaignGameStarter.AddGameMenuOption("nulnFactory_menu", String.Format("{0}_productionChoice", _cityID), "Changer la production",
                 a => { a.optionLeaveType = GameMenuOption.LeaveType.Manage; return true; },
                 _ => GameMenu.SwitchToMenu(String.Format("{0}_productionChoice", _cityID)),
                 isLeave: false, index: 1);
@@ -99,31 +99,31 @@ namespace PrestigiousBank
 
 
             //Open Stash
-            campaignGameStarter.AddGameMenuOption(String.Format("{0}_nulnFactory_menu", _cityID), String.Format("{0}_openStash", _cityID), "Ouvrir l'entrepôt",
+            campaignGameStarter.AddGameMenuOption("nulnFactory_menu", String.Format("{0}_openStash", _cityID), "Ouvrir l'entrepôt",
                 a => { a.optionLeaveType = GameMenuOption.LeaveType.OpenStash; return true; },
                 _ => InventoryManager.OpenScreenAsStash(_nulnFactory.GetItemStash()),
                 isLeave: false, index: 2);
 
             // Factory Menu -> RawMaterials Production
-            campaignGameStarter.AddGameMenuOption(String.Format("{0}_nulnFactory_menu", _cityID), String.Format("{0}_rawMaterials_menu", _cityID), "Production de matières premières",
+            campaignGameStarter.AddGameMenuOption("nulnFactory_menu", String.Format("{0}_rawMaterials_menu", _cityID), "Production de matières premières",
                 a => { a.optionLeaveType = GameMenuOption.LeaveType.SneakIn; return true; },
                 _ => GameMenu.SwitchToMenu(String.Format("{0}_rawMaterials_menu", _cityID)),
                 isLeave: false, index: 3);
             RegisterRawMaterialsProductionMenuOptions(campaignGameStarter);
 
             //EmptySpaces
-            campaignGameStarter.AddGameMenuOption(String.Format("{0}_nulnFactory_menu", _cityID), "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
-            campaignGameStarter.AddGameMenuOption(String.Format("{0}_nulnFactory_menu", _cityID), "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
+            campaignGameStarter.AddGameMenuOption("nulnFactory_menu", "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
+            campaignGameStarter.AddGameMenuOption("nulnFactory_menu", "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
 
 
             RegisterLevelSelectionMenuOptions(campaignGameStarter);
 
             //EmptySpaces
-            campaignGameStarter.AddGameMenuOption(String.Format("{0}_nulnFactory_menu", _cityID), "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
-            campaignGameStarter.AddGameMenuOption(String.Format("{0}_nulnFactory_menu", _cityID), "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
+            campaignGameStarter.AddGameMenuOption("nulnFactory_menu", "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
+            campaignGameStarter.AddGameMenuOption("nulnFactory_menu", "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
 
             //Quitter l'usine
-            campaignGameStarter.AddGameMenuOption(String.Format("{0}_nulnFactory_menu", _cityID), String.Format("{0}_nulnFactory_menu_back", _cityID), "Quitter l'usine",
+            campaignGameStarter.AddGameMenuOption("nulnFactory_menu", String.Format("{0}_nulnFactory_menu_back", _cityID), "Quitter l'usine",
                 a => { a.optionLeaveType = GameMenuOption.LeaveType.Leave; return true; },
                 _ => GameMenu.SwitchToMenu("town"),
                 isLeave: true, index: -1);
@@ -137,7 +137,7 @@ namespace PrestigiousBank
             string chosenProductionString = chosenProduction.ToString();
 
             // Factory Menu
-            campaignGameStarter.AddGameMenu(String.Format("{0}_nulnFactory_menu", _cityID),
+            campaignGameStarter.AddGameMenu("nulnFactory_menu",
                 String.Format("Usine de Nuln\nNiveau de l'usine : {0}\nProduction Actuelle : {1}", factoryLevel, chosenProductionString),
                 null, TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
 
@@ -192,7 +192,7 @@ namespace PrestigiousBank
             var factoryProductionLevelUp = new TextObject("{NULNFACTORYPRODUCTIONTEXTUP}");
             SetFactoryLevelProductionText();
             //Désactivé ==> SelectedLevel = 0
-            campaignGameStarter.AddGameMenuOption(String.Format("{0}_nulnFactory_menu", _cityID), String.Format("{0}_nulnFactoryProduction_0", _cityID),
+            campaignGameStarter.AddGameMenuOption("nulnFactory_menu", String.Format("{0}_nulnFactoryProduction_0", _cityID),
                 factoryProduction0.Value,
                 a => {
                     a.optionLeaveType = GameMenuOption.LeaveType.HostileAction; //TODO
@@ -202,14 +202,14 @@ namespace PrestigiousBank
                 _ => {
                     _nulnFactory.SelectedFactoryLevel = 0;
                     SetFactoryLevelProductionText();
-                    GameMenu.SwitchToMenu(String.Format("{0}_nulnFactory_menu", _cityID));
+                    GameMenu.SwitchToMenu("nulnFactory_menu");
                     CreateOrUpdateGameMenuDesc(campaignGameStarter);
                     PrestigiousBank.LogMessage("Usine désactivée");
                 },
                 isLeave: false);
 
             //Niveau 1 ==> SelectedLevel = 1
-            campaignGameStarter.AddGameMenuOption(String.Format("{0}_nulnFactory_menu", _cityID), String.Format("{0}_nulnFactoryProduction_1", _cityID),
+            campaignGameStarter.AddGameMenuOption("nulnFactory_menu", String.Format("{0}_nulnFactoryProduction_1", _cityID),
                 factoryProduction1.Value,
                 a => {
                     a.optionLeaveType = GameMenuOption.LeaveType.HostileAction; //TODO
@@ -219,14 +219,14 @@ namespace PrestigiousBank
                 _ => {
                     _nulnFactory.SelectedFactoryLevel = 1;
                     SetFactoryLevelProductionText();
-                    GameMenu.SwitchToMenu(String.Format("{0}_nulnFactory_menu", _cityID));
+                    GameMenu.SwitchToMenu("nulnFactory_menu");
                     CreateOrUpdateGameMenuDesc(campaignGameStarter);
                     PrestigiousBank.LogMessage("L'usine tourne au niveau 1");
                 },
                 isLeave: false);
 
             //Niveau 2 ==> SelectedLevel = 2
-            campaignGameStarter.AddGameMenuOption(String.Format("{0}_nulnFactory_menu", _cityID), String.Format("{0}_nulnFactoryProduction_2", _cityID),
+            campaignGameStarter.AddGameMenuOption("nulnFactory_menu", String.Format("{0}_nulnFactoryProduction_2", _cityID),
                 factoryProduction2.Value,
                 a => {
                     a.optionLeaveType = GameMenuOption.LeaveType.HostileAction; //TODO
@@ -236,13 +236,13 @@ namespace PrestigiousBank
                 _ => {
                     _nulnFactory.SelectedFactoryLevel = 2;
                     SetFactoryLevelProductionText();
-                    GameMenu.SwitchToMenu(String.Format("{0}_nulnFactory_menu", _cityID));
+                    GameMenu.SwitchToMenu("nulnFactory_menu");
                     CreateOrUpdateGameMenuDesc(campaignGameStarter);
                     PrestigiousBank.LogMessage("L'usine tourne au niveau 2");
                 },
                 isLeave: false);
             //Niveau 3 ==> SelectedLevel = 3
-            campaignGameStarter.AddGameMenuOption(String.Format("{0}_nulnFactory_menu", _cityID), String.Format("{0}_nulnFactoryProduction_3", _cityID),
+            campaignGameStarter.AddGameMenuOption("nulnFactory_menu", String.Format("{0}_nulnFactoryProduction_3", _cityID),
                 factoryProduction3.Value,
                 a => {
                     a.optionLeaveType = GameMenuOption.LeaveType.HostileAction; //TODO
@@ -252,13 +252,13 @@ namespace PrestigiousBank
                 _ => {
                     _nulnFactory.SelectedFactoryLevel = 3;
                     SetFactoryLevelProductionText();
-                    GameMenu.SwitchToMenu(String.Format("{0}_nulnFactory_menu", _cityID));
+                    GameMenu.SwitchToMenu("nulnFactory_menu");
                     CreateOrUpdateGameMenuDesc(campaignGameStarter);
                     PrestigiousBank.LogMessage("L'usine tourne au niveau 3");
                 },
                 isLeave: false);
             //Niveau 4 ==> SelectedLevel = 4
-            campaignGameStarter.AddGameMenuOption(String.Format("{0}_nulnFactory_menu", _cityID), String.Format("{0}_nulnFactoryProduction_4", _cityID),
+            campaignGameStarter.AddGameMenuOption("nulnFactory_menu", String.Format("{0}_nulnFactoryProduction_4", _cityID),
                 factoryProduction4.Value,
                 a => {
                     a.optionLeaveType = GameMenuOption.LeaveType.HostileAction; //TODO
@@ -268,13 +268,13 @@ namespace PrestigiousBank
                 _ => {
                     _nulnFactory.SelectedFactoryLevel = 4;
                     SetFactoryLevelProductionText();
-                    GameMenu.SwitchToMenu(String.Format("{0}_nulnFactory_menu", _cityID));
+                    GameMenu.SwitchToMenu("nulnFactory_menu");
                     CreateOrUpdateGameMenuDesc(campaignGameStarter);
                     PrestigiousBank.LogMessage("L'usine tourne au niveau 4");
                 },
                 isLeave: false);
             //Niveau 5 ==> SelectedLevel = 5
-            campaignGameStarter.AddGameMenuOption(String.Format("{0}_nulnFactory_menu", _cityID), String.Format("{0}_nulnFactoryProduction_5", _cityID),
+            campaignGameStarter.AddGameMenuOption("nulnFactory_menu", String.Format("{0}_nulnFactoryProduction_5", _cityID),
                 factoryProduction5.Value,
                 a => {
                     a.optionLeaveType = GameMenuOption.LeaveType.HostileAction; //TODO
@@ -284,14 +284,14 @@ namespace PrestigiousBank
                 _ => {
                     _nulnFactory.SelectedFactoryLevel = 5;
                     SetFactoryLevelProductionText();
-                    GameMenu.SwitchToMenu(String.Format("{0}_nulnFactory_menu", _cityID));
+                    GameMenu.SwitchToMenu("nulnFactory_menu");
                     CreateOrUpdateGameMenuDesc(campaignGameStarter);
                     PrestigiousBank.LogMessage("L'usine tourne au niveau 5");
                 },
                 isLeave: false);
 
             //Level UP
-            campaignGameStarter.AddGameMenuOption(String.Format("{0}_nulnFactory_menu", _cityID), String.Format("{0}_nulnFactoryProduction_levelup", _cityID),
+            campaignGameStarter.AddGameMenuOption("nulnFactory_menu", String.Format("{0}_nulnFactoryProduction_levelup", _cityID),
                 factoryProductionLevelUp.Value,
                 a => {
                     a.optionLeaveType = GameMenuOption.LeaveType.HostileAction; //TODO
@@ -305,7 +305,7 @@ namespace PrestigiousBank
                     _nulnFactory.FactoryLevel += 1;
                     _nulnFactory.SelectedFactoryLevel = _nulnFactory.FactoryLevel;
                     SetFactoryLevelProductionText();
-                    GameMenu.SwitchToMenu(String.Format("{0}_nulnFactory_menu", _cityID));
+                    GameMenu.SwitchToMenu("nulnFactory_menu");
                     CreateOrUpdateGameMenuDesc(campaignGameStarter);
                     PrestigiousBank.LogMessage("Amélioration l'usine");
                 },
@@ -371,7 +371,7 @@ namespace PrestigiousBank
             //Leave
             campaignGameStarter.AddGameMenuOption(String.Format("{0}_productionChoice", _cityID), String.Format("{0}_productionChoice_back", _cityID), "Retour",
                 a => { a.optionLeaveType = GameMenuOption.LeaveType.Leave; return true; },
-                _ => GameMenu.SwitchToMenu(String.Format("{0}_nulnFactory_menu", _cityID)),
+                _ => GameMenu.SwitchToMenu("nulnFactory_menu"),
                 isLeave: true, index: 999);
         }
 
@@ -551,7 +551,7 @@ namespace PrestigiousBank
             //Leave
             campaignGameStarter.AddGameMenuOption(String.Format("{0}_rawMaterials_menu", _cityID), String.Format("{0}_rawMaterials_menu_back", _cityID), "Retour",
                 a => { a.optionLeaveType = GameMenuOption.LeaveType.Leave; return true; },
-                _ => GameMenu.SwitchToMenu(String.Format("{0}_nulnFactory_menu", _cityID)),
+                _ => GameMenu.SwitchToMenu("nulnFactory_menu"),
                 isLeave: true, index: 999);
         }
 

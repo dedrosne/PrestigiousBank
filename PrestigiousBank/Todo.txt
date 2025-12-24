@@ -91,14 +91,8 @@ Level 5 75=>25
 
 Possibilité activer/désactiver production, et choisir niveau d'extraction
 Production en premier de la ressource la moins présente dans le stash
-######################################################
-#In Progress
-#########################################################
-
-Select Nulnfactory level
 
 
-        
 
 Comptoir : 
 Etend l'activité Nuln/Marieembourg/Vampire => Nom ?
@@ -114,8 +108,28 @@ IsVampireCtypt
 Dans toutes les villes : Possibilité de construire un comptoir de vente 30_000 => Etend les effets de son usine. Beson de plus de matériaux ?
 	- Niveau du comptoir de vente : Effets à 50, 75 et 100%
 	- => Possibilité d'accéder aux fonctionnalités de Nuln dans la ville du comptoir
-+ 1 comptoir construisable => Acheter un permis pour 50_000g supplémentaires. Disponible une fois l'usine niveau max
+Pas d'effet de comptoir à Nuln pour l'usine de Nuln
 
+
+
+######################################################
+#In Progress
+#########################################################
+
+
+
+        
+Nombre de agence max = Rang du Clan + NulnFactoryLevel + Upgrades Achetées post Clan Rang5
+
++ 1 agence construisable => Acheter un permis pour 50_000g supplémentaires. Disponible une fois Clan Tier5
+
+
+Trucs de bandits => Clan de voleurs
+    - Assassin => Fort taux d'échec, mais gain d'influence ? Ou assassiner un seigneur/personnage ?
+    => Racketer les villageois qui entrent dans la ville=> Don de troupes "Bandits" pour fonctionner, et récupère une partie du butin dans un stash.
+    Pourcentage d'échec et mort du racketeur
+    Pouvoir recruter des bandits dans les bas-fonds => Coûte argent =>Implique d'avoir plusieurs upgrade uniques pour avoir un systèmes intéressant à mettre en place
+Une fois la ville possédée => Employer les bandits à des tâches nobles : Coute de l'argent contre prosperité
 
 
 ######################################################
@@ -178,12 +192,6 @@ Bretonie : Villages/Agriculture => Une foi le village détenu, déposer des pris
 Chez les nains : Endurance de forge qui se régénère
 + d'Endurance
 
-Trucs de bandits => Clan de voleurs
-    - Assassin => Fort taux d'échec, mais gain d'influence ? Ou assassiner un seigneur/personnage ?
-    => Racketer les villageois qui entrent dans la ville=> Don de troupes "Bandits" pour fonctionner, et récupère une partie du butin dans un stash.
-    Pourcentage d'échec et mort du racketeur
-    Pouvoir recruter des bandits dans les bas-fonds => Coûte argent =>Implique d'avoir plusieurs upgrade uniques pour avoir un systèmes intéressant à mettre en place
-Une fois la ville possédée => Employer les bandits à des tâches nobles : Coute de l'argent contre prosperité
 
 
 
@@ -235,10 +243,6 @@ namespace TOR_Core.Models
     }
 }
 
-
-///////////////////////////////////Gestion des Workshops
-town.Workshops
-workshop.ChangeGold(workshop.Expense * 0.15f);=> Diminue les dépenses. A appliquer sur un dailyTick
 
 
 //////////////////////////////////////Relation royaumes
