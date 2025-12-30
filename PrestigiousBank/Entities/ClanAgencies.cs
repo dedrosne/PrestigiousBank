@@ -34,7 +34,7 @@ namespace PrestigiousBank
 
         public static int InitialPriceIncreaseMaxLimitAgency = 20_000;
 
-        public static int InitialMaxLimitAgency = 5;
+        public static int InitialMaxLimitAgency = 1;
 
         public static int UpgradeMaxLimitAgencyCost = 50_000;
 

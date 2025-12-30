@@ -71,28 +71,13 @@ namespace PrestigiousBank
 
         public YnEdrylKoiranBankCampaignBehavior() : base()
         {
-            //MBTextManager.SetTextVariable("Birke_Bank_Encyclopedia_Main", PrestigiousBank.Config.BankName);
-            //bankAltdorf = bankAltdorf;
-
-            //_bankTrait = Game.Current.ObjectManager.RegisterPresumedObject<TraitObject>(new TraitObject("bank"));
-            //_bankTrait.Initialize(new TextObject(GameTexts.FindText("str_trait_bankName").ToString()), new TextObject(GameTexts.FindText("str_trait_bankDescription").ToString()), false, 0, 4);
         }
 
         public override void RegisterEvents()
         {
             CampaignEvents.OnSessionLaunchedEvent.AddNonSerializedListener((object)this, new Action<CampaignGameStarter>(this.OnSessionLaunched));
-            //CampaignEvents.GameMenuOpened.AddNonSerializedListener(this, GameMenuOpened);
             CampaignEvents.DailyTickEvent.AddNonSerializedListener(this, this.DailyTickClan);
-            //CampaignEvents.GameMenuOptionSelectedEvent.AddNonSerializedListener(this, GameMenuOptionSelected);
-            //CampaignEvents.HourlyTickEvent.AddNonSerializedListener(this, CalculateRentEvent);
-            //CampaignEvents.OnGameLoadedEvent.AddNonSerializedListener(this, OnGameLoadedEvent);
-            //CampaignEvents.OnGameEarlyLoadedEvent.AddNonSerializedListener(this, OnGameEarlyLoadedEvent);
-            //CampaignEvents.RaidCompletedEvent.AddNonSerializedListener(this, OnRaidCompletedEvent);
-            //CampaignEvents.OnSettlementOwnerChangedEvent.AddNonSerializedListener(this, OnSettlementOwnerChangedEvent);
-            //Game.Current.EventManager.RegisterEvent<TutorialContextChangedEvent>(new Action<TutorialContextChangedEvent>(this.OnTutorialContextChange));
-
-            //if (PrestigiousBank.Config.DoBalancing)
-            //    CampaignEvents.DailyTickEvent.AddNonSerializedListener(this, BalanceNationEvent);
+            CampaignEvents.HourlyTickEvent.AddNonSerializedListener(this, this.HourlyTickEvent);
         }
 
         private void OnSessionLaunched(CampaignGameStarter campaignGameStarter)
@@ -107,6 +92,11 @@ namespace PrestigiousBank
                 Hero.MainHero.AddCultureSpecificCustomResource(YnEdrylKoiranBank.CalculateForestHarmonyInterests());
             //Ajout de l'XP
             Hero.MainHero.AddSkillXp(DefaultSkills.Medicine, YnEdrylKoiranBank.GetDailySkillXP());
+        }
+
+        private void HourlyTickEvent()
+        {
+            YnEdrylKoiranBank.ApplyDiamondLevelGoldTownIncrease();
         }
 
 

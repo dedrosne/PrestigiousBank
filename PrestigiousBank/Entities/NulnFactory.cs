@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.ComponentInterfaces;
+using TaleWorlds.CampaignSystem.Extensions;
 using TaleWorlds.CampaignSystem.GameComponents;
 using TaleWorlds.CampaignSystem.Roster;
 using TaleWorlds.CampaignSystem.Settlements;
@@ -79,6 +80,12 @@ namespace PrestigiousBank.Entities
         [SaveableProperty(18)]
         public int RunFactoryLevel {get;set;}
 
+        [SaveableProperty(19)]
+        public int IronFurnaceLevel {get;set;}
+
+        [SaveableProperty(20)]
+        public int SelectedIronFurnaceLevel {get;set;}
+
         public Settlement _ville;
 
         public Settlement Ville
@@ -92,7 +99,7 @@ namespace PrestigiousBank.Entities
 
         public static Dictionary<int, int> ValueGainedPerRecruitTier = new Dictionary<int, int>
         {
-            { 1 ,1 },
+            { 1 ,3 },
             { 2 ,5 },
             { 3 ,15 },
             { 4 ,50 },
@@ -139,6 +146,30 @@ namespace PrestigiousBank.Entities
             { 5 ,(30,25) }
         };
 
+        //{SelectedSliverLevel, (WorkStrenght, Production)}
+        public static Dictionary<int, (int WorkStrenght, int Production)> SilverProductionAndWorkStrenghtPerLevel
+        = new Dictionary<int, (int WorkStrenght, int Production)>
+        {
+            {0, (0,0)},
+            { 1 ,(20,1) },
+            { 2 ,(36,2) },
+            { 3 ,(48,3) },
+            { 4 ,(56,4) },
+            { 5 ,(60,5) }
+        };
+
+        //{SelectedCharcoalLevel, (IronOreCunsomption, CharcoalCunsomtion, WorkStrenght, Production)}
+        public static Dictionary<int, (int IronOreConsumption, int CharcoalConsumption, int WorkStrenght, int Production)> IronIngotProductionCharcoalOreAndWorkStrenghtPerLevel
+        = new Dictionary<int, (int IronOreConsumption, int CharcoalConsumption, int WorkStrenght, int Production)>
+        {
+            {0, (0,0,0,0)},
+            { 1 ,(2,1,2,1) },
+            { 2 ,(3,2,4,2) },
+            { 3 ,(9,3,10,6) },
+            { 4 ,(18,4,20,15) },
+            { 5 ,(25,5,30,25) }
+        };
+
         //<selectedLevel, (int WoodConsumption, int CharcoalConsumption, int IronConsumption)>
         public static Dictionary <int, (int WoodConsumption, int CharcoalConsumption, int IronConsumption)> WeaponProductionRessourceConsumption
         = new Dictionary<int, (int WoodConsumption, int CharcoalConsumption, int IronConsumption)>
@@ -177,12 +208,12 @@ namespace PrestigiousBank.Entities
 
         public int GetDailySkillXP()
         {
-            return 500*FactoryLevel+100*WoodLevel+100*CharcoalLevel+100*IronLevel+100*ClayLevel*100*SilverLevel;
+            return 500*FactoryLevel+100*WoodLevel+100*CharcoalLevel+100*IronLevel+100*ClayLevel+100*SilverLevel;
         }
 
         public int CalculatePriceToLevelUpFactory()
         {
-            return InitialFactoryPrice * (FactoryLevel + 1);
+            return Math.Max(InitialFactoryPrice * (FactoryLevel + 1), InitialFactoryPrice*2);
         }
 
         public int CalculatePriceToLevelUpRessource(int CurrentLevel)
@@ -202,6 +233,8 @@ namespace PrestigiousBank.Entities
             result += WoodProductionAndWorkStrenghtPerLevel[SelectedWoodLevel].WorkStrenght;
             result += CharcoalProductionWoodAndWorkStrenghtPerLevel[SelectedCharcoalLevel].WorkStrenght;
             result += IronProductionAndWorkStrenghtPerLevel[SelectedIronLevel].WorkStrenght;
+            result += SilverProductionAndWorkStrenghtPerLevel[SelectedSilverLevel].WorkStrenght;
+            result += IronIngotProductionCharcoalOreAndWorkStrenghtPerLevel[SelectedIronFurnaceLevel].WorkStrenght;
 
             return result;
         }
@@ -218,6 +251,7 @@ namespace PrestigiousBank.Entities
             return selectedProduction;
         }
 
+        //Ne fonctionne pas
         public ItemObject GetMinimumItemNumberInStash(List<ItemObject> list)
         {
             ItemObject minNumberItem = list[0];
@@ -265,7 +299,7 @@ namespace PrestigiousBank.Entities
             }
         }
 
-        public void TryToProduceIron()
+        public void TryToProduceIronOre()
         {
             if (SelectedIronLevel == 0) return;
             int ToProduce = IronProductionAndWorkStrenghtPerLevel[SelectedIronLevel].Production;
@@ -279,20 +313,59 @@ namespace PrestigiousBank.Entities
             }
         }
 
+        public void TryToProduceSilver()
+        {
+            if (SelectedSilverLevel == 0) return;
+            int ToProduce = SilverProductionAndWorkStrenghtPerLevel[SelectedSilverLevel].Production;
+            int RequiredWorkStrenght = SilverProductionAndWorkStrenghtPerLevel[SelectedSilverLevel].WorkStrenght;
+
+            if (WorkStrenght < RequiredWorkStrenght) return;
+            else
+            {
+                WorkStrenght -= RequiredWorkStrenght;
+                GetItemStash().Add(new ItemRosterElement(new ItemObject("silver"), ToProduce));
+                int Count = GetItemStash().GetItemNumber(new ItemObject("silver"));
+            }
+        }
+
+        public void TryToProduceIronIngot()
+        {
+            if (SelectedIronFurnaceLevel == 0) return;
+            int ToProduce = IronIngotProductionCharcoalOreAndWorkStrenghtPerLevel[SelectedIronFurnaceLevel].Production;
+            int RequiredWorkStrenght = IronIngotProductionCharcoalOreAndWorkStrenghtPerLevel[SelectedIronFurnaceLevel].WorkStrenght;
+            int RequiredCharcoal = IronIngotProductionCharcoalOreAndWorkStrenghtPerLevel[SelectedIronFurnaceLevel].CharcoalConsumption;
+            int RequiredIronOre = IronIngotProductionCharcoalOreAndWorkStrenghtPerLevel[SelectedIronFurnaceLevel].IronOreConsumption;
+
+            if (WorkStrenght < RequiredWorkStrenght || 
+                GetItemStash().GetItemNumber(item: DefaultItems.Charcoal) < RequiredCharcoal ||
+                GetItemStash().GetItemNumber(item: DefaultItems.IronOre) < RequiredIronOre) return;
+            else
+            {
+                WorkStrenght -= RequiredWorkStrenght;
+                GetItemStash().Remove(new ItemRosterElement(DefaultItems.Charcoal, RequiredCharcoal));
+                GetItemStash().Remove(new ItemRosterElement(DefaultItems.IronOre, RequiredIronOre));
+                GetItemStash().Add(new ItemRosterElement(DefaultItems.IronIngot4, ToProduce));
+            }
+        }
+
         public void TryToProduceRessources()
         {
             List<ItemObject> listItems = new List<ItemObject> {
                 new ItemObject(DefaultItems.HardWood),
                 new ItemObject(DefaultItems.Charcoal),
-                new ItemObject(DefaultItems.IronOre)
+                new ItemObject(DefaultItems.IronOre),
+                new ItemObject("silver"),
+                new ItemObject(DefaultItems.IronIngot4)
                 };
             
             while (listItems.Count != 0) 
             {
                 ItemObject minItem = GetMinimumItemNumberInStash(listItems);
-                if (minItem.StringId == "hardwood") TryToProduceWood();//TODO
-                if (minItem.StringId == "charcoal") TryToProduceCharcoal();//TODO
-                if (minItem.StringId == "iron") TryToProduceIron();//TODO
+                if (minItem.StringId == "hardwood") TryToProduceWood();
+                if (minItem.StringId == "charcoal") TryToProduceCharcoal();
+                if (minItem.StringId == "iron") TryToProduceIronOre();
+                if (minItem.StringId == "silver") TryToProduceSilver();//TODO
+                if (minItem.StringId == "ironIngot4") TryToProduceIronIngot();//TODO
                 listItems.Remove(minItem);
             }
         }

@@ -77,6 +77,7 @@ namespace PrestigiousBank
         {
             CampaignEvents.OnSessionLaunchedEvent.AddNonSerializedListener((object)this, new Action<CampaignGameStarter>(this.OnSessionLaunched));
             CampaignEvents.DailyTickEvent.AddNonSerializedListener(this, this.DailyTickClan);
+            CampaignEvents.HourlyTickEvent.AddNonSerializedListener(this, this.HourlyTickEvent);
         }
 
         private void OnSessionLaunched(CampaignGameStarter campaignGameStarter)
@@ -88,6 +89,11 @@ namespace PrestigiousBank
         {
             //Ajout de l'XP
             Hero.MainHero.AddSkillXp(DefaultSkills.Tactics, MiddenheimBank.GetDailySkillXP());
+        }
+
+        private void HourlyTickEvent()
+        {
+            MiddenheimBank.ApplyDiamondLevelGoldTownIncrease();
         }
 
 

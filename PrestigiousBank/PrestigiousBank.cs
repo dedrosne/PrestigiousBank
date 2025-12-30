@@ -9,6 +9,7 @@ using System.Xml.Serialization;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.ComponentInterfaces;
 using TaleWorlds.CampaignSystem.Encyclopedia;
+using TaleWorlds.CampaignSystem.Extensions;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.Core;
 using TaleWorlds.Engine.GauntletUI;
@@ -25,7 +26,6 @@ namespace PrestigiousBank
 
         public PrestigiousBank()
         {
-
         }
 
         protected override void OnSubModuleLoad()

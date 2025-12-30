@@ -82,18 +82,8 @@ namespace PrestigiousBank
         public override void RegisterEvents()
         {
             CampaignEvents.OnSessionLaunchedEvent.AddNonSerializedListener((object)this, new Action<CampaignGameStarter>(this.OnSessionLaunched));
-            //CampaignEvents.GameMenuOpened.AddNonSerializedListener(this, GameMenuOpened);
             CampaignEvents.DailyTickEvent.AddNonSerializedListener(this, this.DailyTickClan);
-            //CampaignEvents.GameMenuOptionSelectedEvent.AddNonSerializedListener(this, GameMenuOptionSelected);
-            //CampaignEvents.HourlyTickEvent.AddNonSerializedListener(this, CalculateRentEvent);
-            //CampaignEvents.OnGameLoadedEvent.AddNonSerializedListener(this, OnGameLoadedEvent);
-            //CampaignEvents.OnGameEarlyLoadedEvent.AddNonSerializedListener(this, OnGameEarlyLoadedEvent);
-            //CampaignEvents.RaidCompletedEvent.AddNonSerializedListener(this, OnRaidCompletedEvent);
-            //CampaignEvents.OnSettlementOwnerChangedEvent.AddNonSerializedListener(this, OnSettlementOwnerChangedEvent);
-            //Game.Current.EventManager.RegisterEvent<TutorialContextChangedEvent>(new Action<TutorialContextChangedEvent>(this.OnTutorialContextChange));
-
-            //if (PrestigiousBank.Config.DoBalancing)
-            //    CampaignEvents.DailyTickEvent.AddNonSerializedListener(this, BalanceNationEvent);
+            CampaignEvents.HourlyTickEvent.AddNonSerializedListener(this, this.HourlyTickEvent);
         }
 
         private void OnSessionLaunched(CampaignGameStarter campaignGameStarter)
@@ -108,6 +98,11 @@ namespace PrestigiousBank
                 Hero.MainHero.AddCultureSpecificCustomResource(BankCouronne.CalculateChivalryInterests());
             //Ajout de l'XP
             Hero.MainHero.AddSkillXp( DefaultSkills.Riding, BankCouronne.GetDailySkillXP());
+        }
+
+        private void HourlyTickEvent()
+        {
+            BankCouronne.ApplyDiamondLevelGoldTownIncrease();
         }
 
         public override void SyncData(IDataStore dataStore)

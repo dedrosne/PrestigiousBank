@@ -75,7 +75,7 @@ namespace PrestigiousBank
         public override void RegisterEvents()
         {
             CampaignEvents.OnSessionLaunchedEvent.AddNonSerializedListener((object)this, new Action<CampaignGameStarter>(this.OnSessionLaunched));
-
+            CampaignEvents.HourlyTickEvent.AddNonSerializedListener(this, this.HourlyTickEvent);
             CampaignEvents.DailyTickEvent.AddNonSerializedListener(this, this.DailyTickClan);
 
         }
@@ -89,6 +89,11 @@ namespace PrestigiousBank
         {
             //Ajout de l'XP
             Hero.MainHero.AddSkillXp(DefaultSkills.Athletics, AverheimBank.GetDailySkillXP());
+        }
+
+        private void HourlyTickEvent()
+        {
+            AverheimBank.ApplyDiamondLevelGoldTownIncrease();
         }
 
 

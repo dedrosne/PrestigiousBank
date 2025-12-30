@@ -10,6 +10,7 @@ Banque :
     - Argent : argent déposé entre 50k et 149_999
     - Or : Argent déposé entre 150k et 299_999
     - Platine : Au dessus
+    - Diamant : Plus de gold au marchand de la ville : 10% de tout dépôt au dessus de 500_000
 
 Avantages :
     - Bronze : Dépot/Retrait
@@ -109,19 +110,32 @@ Dans toutes les villes : Possibilité de construire un comptoir de vente 30_000 
 	- Niveau du comptoir de vente : Effets à 50, 75 et 100%
 	- => Possibilité d'accéder aux fonctionnalités de Nuln dans la ville du comptoir
 Pas d'effet de comptoir à Nuln pour l'usine de Nuln
-
-
++ 1 agence construisable => Acheter un permis pour 50_000g supplémentaires. Disponible une fois Clan Tier5
+Nombre de agence max = Rang du Clan + NulnFactoryLevel + Upgrades Achetées post Clan Rang5
 
 ######################################################
 #In Progress
 #########################################################
 
 
+1 lingot fer = 1 charbon+2ore + 2fT
+2 lingot fer = 2 charbon+3ore + 4fT
+6 lingot fer = 3 charbon+9ore + 10fT
+15 lingot fer = 4 charbon+18ore + 20fT
+25 lingot fer = 5 charbon+25ore + 30fT
 
+
+
+1 Argent = 20fT
+	Level 1 20=>1
+	Level 2 36=>2
+	Level 3 48=>3
+	Level 4 56=>4
+	Level 5 60=>5
         
-Nombre de agence max = Rang du Clan + NulnFactoryLevel + Upgrades Achetées post Clan Rang5
 
-+ 1 agence construisable => Acheter un permis pour 50_000g supplémentaires. Disponible une fois Clan Tier5
+
+
 
 
 Trucs de bandits => Clan de voleurs
@@ -154,23 +168,10 @@ Level 2 4=>5
 Level 3 8=>10
 Level 4 12=>20
 Level 5 25=>50
-1 lingot fer = 1 charbon+2ore + 2fT
-2 lingot fer = 2 charbon+3ore + 4fT
-6 lingot fer = 3 charbon+9ore + 10fT
-15 lingot fer = 4 charbon+18ore + 20fT
-25 lingot fer = 5 charbon+25ore + 30fT
 
 
 
-1 Argent = 20fT
-	Level 1 20=>1
-	Level 2 36=>2
-	Level 3 48=>3
-	Level 4 56=>4
-	Level 5 60=>5
 
-
-	- Niveau de l'usine : Détermine le nombre de comptoirs qui peuvent être construits
 
 
 

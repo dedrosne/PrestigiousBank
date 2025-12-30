@@ -92,7 +92,8 @@ namespace PrestigiousBank
             if (Solde <= 49_999) return 1;
             if (Solde <= 149_999) return 2;
             if (Solde <= 299_999) return 3;
-            else return 4;
+            if (Solde <= 499_999) return 4;
+            else return 5;
         }
 
         public String GetCustomerLevelString()
@@ -101,13 +102,23 @@ namespace PrestigiousBank
             if (level == 1) return "Bronze";
             if (level == 2) return "Argent";
             if (level == 3) return "Or";
-            else return "Platine";
+            if (level == 4) return "Platine";
+            else return "Diamant";
         }
 
         public int GetDailySkillXP()
         {
             //SkillXp = 1XP/100or pour tout or au dessus de 200_000. Max 5000/jour
             return Math.Min(Math.Max((Solde - 150_000) / 100, 0),5000);
+        }
+
+        public void ApplyDiamondLevelGoldTownIncrease()
+        {
+            if (GetCustomerLevel() == 5) {
+                int newGoldMaximum = Convert.ToInt32(Ville.Town.Prosperity * 10f) + (Solde - 500_000)/10;
+                int currentgold = Ville.Town.Gold;
+                if (currentgold < newGoldMaximum) Ville.Town.ChangeGold(1000+(newGoldMaximum-currentgold)/20);
+            }
         }
 
     }
