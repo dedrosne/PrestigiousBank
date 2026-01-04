@@ -146,6 +146,15 @@ namespace PrestigiousBank
             int PartyHelperUpkeep = MiddenheimBankCampaignBehavior.MiddenheimBank.CalculatePartyHelperUpkeep();
             if (PartyHelperUpkeep != 0) result.Add(-PartyHelperUpkeep, new TextObject("Aides de camp de Middenheim"));
 
+            //Parravon
+            ParravonBankCampaignBehavior ParravonBankCampaignBehavior = Campaign.Current?.GetCampaignBehavior<ParravonBankCampaignBehavior>();
+
+            if (ParravonBankCampaignBehavior == null) return;
+
+            int InterestsParravon = ParravonBankCampaignBehavior.ParravonBank.CalculateInterests();
+            if (InterestsParravon != 0)
+                result.Add(InterestsParravon, new TextObject("Banque de Parravon"));
+
             //Nuln Factory
             NulnFactoryCampaignBehavior NulnFactoryCampaignBehavior = Campaign.Current?.GetCampaignBehavior<NulnFactoryCampaignBehavior>();
 

@@ -1,30 +1,33 @@
-﻿using Messages.FromClient.ToLobbyServer;
+﻿using Helpers;
+using Messages.FromClient.ToLobbyServer;
 using PrestigiousBank.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
+using System.Runtime.Remoting.Messaging;
 using System.Threading.Tasks;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Encounters;
 using TaleWorlds.CampaignSystem.GameMenus;
+using TaleWorlds.CampaignSystem.GameState;
 using TaleWorlds.CampaignSystem.Inventory;
+using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.Roster;
 using TaleWorlds.CampaignSystem.Settlements;
-using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
+using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View;
 using TaleWorlds.ObjectSystem;
 using TaleWorlds.ScreenSystem;
+using TOR_Core.AbilitySystem.Spells;
 using TOR_Core.CampaignMechanics.CustomResources;
+using TOR_Core.CampaignMechanics.Menagery;
 using TOR_Core.Extensions;
 using static TaleWorlds.CampaignSystem.Settlements.Workshops.WorkshopType;
-using TaleWorlds.CampaignSystem.GameState;
-using Helpers;
-using TOR_Core.CampaignMechanics.Menagery;
-using System.Runtime.Remoting.Messaging;
 
 namespace PrestigiousBank
 {
@@ -91,13 +94,51 @@ namespace PrestigiousBank
                                                     args =>
                                                     {
                                                         ClanAgency currentAgency = ClanAgencies.GetAgencyByTownStringId(Settlement.CurrentSettlement.Town.StringId);
-                                                        args.optionLeaveType = GameMenuOption.LeaveType.Craft;//TODO
-                                                        if (currentAgency == null || currentAgency.LevelAgency == 0) return false;
-                                                        else return true;
+                                                        args.optionLeaveType = GameMenuOption.LeaveType.Manage;
+                                                        return true;
                                                     },
                                                     _ => { GameMenu.SwitchToMenu("nulnFactory_menu"); },
                                                     isLeave: false,
                                                     index: 1);
+
+            //Acheter la téléportation pour l'agence
+            campaignGameStarter.AddGameMenuOption("clanAgency",
+                                        "clanAgency_Buyteleporter",
+                                        "["+ClanAgency.PriceToBuildTeleporter+"{GOLD_ICON}] Construire un téléporter dans cette agence",
+                                        args =>
+                                        {
+                                            ClanAgency currentAgency = ClanAgencies.GetAgencyByTownStringId(Settlement.CurrentSettlement.Town.StringId);
+                                            args.optionLeaveType = GameMenuOption.LeaveType.Craft;
+                                            if (currentAgency.LevelAgency <4) args.Tooltip = new TextObject("Agence niveau 4 requis");
+                                            else if (Hero.MainHero.Gold < ClanAgency.PriceToBuildTeleporter) args.Tooltip = new TextObject("Pas assez d'or");
+                                            args.IsEnabled = currentAgency.LevelAgency >= 4 && Hero.MainHero.Gold >= ClanAgency.PriceToBuildTeleporter;
+                                            return AltdorfBankCampaignBehavior.BankAltdorf.IsTeleportUnblocked && !currentAgency.IsTeleportUnlocked;
+                                        },
+                                        _ => { 
+                                            ClanAgencies.GetAgencyByTownStringId(Settlement.CurrentSettlement.Town.StringId).IsTeleportUnlocked = true;
+                                            Hero.MainHero.ChangeHeroGold(-ClanAgency.PriceToBuildTeleporter);
+                                            GameMenu.SwitchToMenu("clanAgency");
+                                        },
+                                        isLeave: false,
+                                        index: 2);
+
+            //Téléportation entre agences
+            campaignGameStarter.AddGameMenuOption("clanAgency",
+                                        "clanAgency_teleport",
+                                        "["+ ClanAgency.CalculatePriceToTeleport() + "{GOLD_ICON}] Se téléporter dans une autre agence",
+                                        args =>
+                                        {
+                                            ClanAgency currentAgency = ClanAgencies.GetAgencyByTownStringId(Settlement.CurrentSettlement.Town.StringId);
+                                            args.optionLeaveType = GameMenuOption.LeaveType.OrderTroopsToAttack;
+                                            args.IsEnabled = Hero.MainHero.Gold >= ClanAgency.CalculatePriceToTeleport() && currentAgency.IsTeleportUnlocked && ClanAgenciesBehaviour.ClanAgencies.GetAgenciesTeleportUnblocked().Count >= 2;
+                                            if (ClanAgenciesBehaviour.ClanAgencies.GetAgenciesTeleportUnblocked().Count < 2) args.Tooltip = new TextObject("Aucune agence cible");
+                                            else if (Hero.MainHero.Gold < ClanAgency.CalculatePriceToTeleport()) args.Tooltip = new TextObject("Pas assez d'or");
+                                            
+                                                return currentAgency.IsTeleportUnlocked;
+                                        },
+                                        _ => ChooseTeleportOptions(),
+                                        isLeave: false,
+                                        index: 3);
 
 
             //EmptySpaces
@@ -119,6 +160,7 @@ namespace PrestigiousBank
                                             ClanAgency currentAgency = ClanAgencies.GetAgencyByTownStringId(Settlement.CurrentSettlement.Town.StringId);
                                             args.optionLeaveType = GameMenuOption.LeaveType.Craft;//TODO
                                             args.Tooltip = Clan.PlayerClan.Tier >= 5 ? null : new TextObject("Clan Tiers 5 nécessaire");
+                                            args.IsEnabled = Clan.PlayerClan.Tier >= 5;
                                             if (currentAgency == null || currentAgency.LevelAgency != 5) return false;
                                             else return true;
                                         },
@@ -166,7 +208,7 @@ namespace PrestigiousBank
         }
 
 
-
+        #region Agency Upgrade
         public void RegisterLevelSelectionMenuOptions(CampaignGameStarter campaignGameStarter)
         {
 
@@ -346,10 +388,42 @@ namespace PrestigiousBank
         }
 
 
-        #region Agency Upgrade
+        
 
 
         #endregion
+
+        public void ChooseTeleportOptions()
+        {
+            ClanAgency currentAgency = ClanAgencies.GetAgencyByTownStringId(Settlement.CurrentSettlement.Town.StringId);
+            List<ClanAgency> possibleDestinations = ClanAgenciesBehaviour.ClanAgencies.GetAgenciesTeleportUnblocked()
+                .Where(agency => agency.TownID != currentAgency.TownID).ToList();
+
+            List<InquiryElement> list = new List<InquiryElement>();
+            string townText; 
+
+            foreach (ClanAgency agency in possibleDestinations)
+            {
+                townText = agency.Town.Name.Value;
+                if (townText.Contains("}")) townText = townText.Split('}')[1];
+                list.Add(new InquiryElement(agency,townText, null, true, "Se téléporter à "+ agency.Town.Name.Value));
+            }
+            var inquirydata = new MultiSelectionInquiryData("Se téléporter", "Choisissez une destination de téléportation", list, true, 1, 1, "Confirm", "Cancel", SelectedTeleportDestination, null, "", true);
+            MBInformationManager.ShowMultiSelectionInquiry(inquirydata, true);
+        }
+
+        public void SelectedTeleportDestination(List<InquiryElement> inquiryElements)
+        {
+            ClanAgency agency =(ClanAgency) inquiryElements[0].Identifier;
+            Hero.MainHero.ChangeHeroGold(-ClanAgency.CalculatePriceToTeleport());
+            SoundEvent.PlaySound2D(SoundEvent.GetEventIdFromString("event:/ui/notification/coins_negative"));
+            GameMenu.ExitToLast();
+            //Campaign.Current.GameMenuManager.;
+            PlayerEncounter.LeaveSettlement();
+            PlayerEncounter.Finish(true);
+            Campaign.Current.SaveHandler.SignalAutoSave();
+            MobileParty.MainParty.Position2D = agency.Town.Settlement.GatePosition;
+        }
 
 
 

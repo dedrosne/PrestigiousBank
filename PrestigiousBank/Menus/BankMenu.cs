@@ -59,7 +59,11 @@ namespace PrestigiousBank
                 isLeave: false, index: 1);
             RegisterAccountMenuOptions(campaignGameStarter);
 
+            CallChildrenBankMenu(campaignGameStarter, bank);
 
+
+            //Empty space
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_menu", _cityID), "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
 
             //Quitter la banque
             campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_menu", _cityID), String.Format("{0}_bank_menu_back", _cityID), "Quitter la banque",
@@ -67,6 +71,8 @@ namespace PrestigiousBank
                 _ => GameMenu.SwitchToMenu("town"),
                 isLeave: true, index: -1);
         }
+
+        public virtual void CallChildrenBankMenu(CampaignGameStarter campaignGameStarter, Bank bank) { }
 
         public virtual void CreateOrUpdateGameMenuDesc(CampaignGameStarter campaignGameStarter)
         {
@@ -166,7 +172,7 @@ namespace PrestigiousBank
             campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_deposit", _cityID), String.Format("{0}_bank_deposit_back", _cityID), "Retour",
                 a => { a.optionLeaveType = GameMenuOption.LeaveType.Leave; return true; },
                 _ => GameMenu.SwitchToMenu(String.Format("{0}_account", _cityID)),
-                isLeave: false, 6, isRepeatable: false);
+                isLeave: true, 6, isRepeatable: false);
         }
 
 

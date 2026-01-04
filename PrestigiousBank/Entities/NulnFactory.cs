@@ -208,12 +208,12 @@ namespace PrestigiousBank.Entities
 
         public int GetDailySkillXP()
         {
-            return 500*FactoryLevel+100*WoodLevel+100*CharcoalLevel+100*IronLevel+100*ClayLevel+100*SilverLevel;
+            return 100*FactoryLevel+20*WoodLevel+20*CharcoalLevel+20*IronLevel+20*ClayLevel+20*SilverLevel+20*IronFurnaceLevel;
         }
 
         public int CalculatePriceToLevelUpFactory()
         {
-            return Math.Max(InitialFactoryPrice * (FactoryLevel + 1), InitialFactoryPrice*2);
+            return Math.Max(InitialFactoryPrice * (FactoryLevel + 1), InitialFactoryPrice*2);//Only used for level up, not buy. Implemented like this because of menu not updated when factory bought
         }
 
         public int CalculatePriceToLevelUpRessource(int CurrentLevel)
@@ -323,7 +323,7 @@ namespace PrestigiousBank.Entities
             else
             {
                 WorkStrenght -= RequiredWorkStrenght;
-                GetItemStash().Add(new ItemRosterElement(new ItemObject("silver"), ToProduce));
+                GetItemStash().Add(new ItemRosterElement(Items.All.Find(match: x=>x.StringId == "silver"), ToProduce));
                 int Count = GetItemStash().GetItemNumber(new ItemObject("silver"));
             }
         }

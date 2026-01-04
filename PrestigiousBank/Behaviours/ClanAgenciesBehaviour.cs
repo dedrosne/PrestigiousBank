@@ -115,7 +115,7 @@ namespace PrestigiousBank
                                     //PrestigiousBank.LogMessage("Workshop profit :" + workshop.ProfitMade);
                                     //PrestigiousBank.LogMessage("Workshop Capital :" + workshop.Capital);
                                     //PrestigiousBank.LogMessage("Workshop Expense :" + workshop.Expense);
-                                    NulnFactoryCampaignBehavior.NulnFactory.ApplyWorkshopGains(workshop, agency.LevelAgency * 0.10f);
+                                    NulnFactoryCampaignBehavior.NulnFactory.ApplyWorkshopGains(workshop, agency.LevelAgency * ClanAgency.AgencyProductionFactorPerLevel);
                                 }
                             }
                         }
@@ -126,10 +126,17 @@ namespace PrestigiousBank
 
         public void SettlementEntered(MobileParty mobileParty, Settlement settlement, Hero hero)
         {
-            if (hero != Hero.MainHero) return;
-            if (settlement == null) return;
-            if (!settlement.IsTown) return;
-            ClanAgencies.RefreshCurrentSettlementAgency();
+            if (settlement != null && settlement.IsTown && hero == Hero.MainHero)
+                ClanAgencies.RefreshCurrentSettlementAgency();
+
+
+            //Clan Hideout Racketeering
+            ClanAgency agency = ClanAgencies.GetAgencyByTownStringId(settlement.Town.StringId);
+            if (settlement != null && agency != null && settlement.IsTown && mobileParty.IsVillager)
+            {
+                float factor = agency.LevelAgency * ClanAgency.AgencyProductionFactorPerLevel;
+                ClanHideoutCampaignBehavior.ClanHideout.Apply_Racketeering(mobileParty, settlement, factor);
+            }
         }
 
         public override void SyncData(IDataStore dataStore)

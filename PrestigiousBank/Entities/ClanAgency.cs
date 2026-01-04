@@ -4,6 +4,7 @@ using System.Diagnostics.Eventing.Reader;
 using System.Globalization;
 using System.Linq;
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.CampaignSystem.ViewModelCollection.Encyclopedia.List;
 using TaleWorlds.Core;
@@ -23,6 +24,9 @@ namespace PrestigiousBank
         [SaveableProperty(3)]
         public int SelectedLevel {get;set;}
 
+        [SaveableProperty(4)]
+        public bool IsTeleportUnlocked { get;set;}
+
         private Town _town;
 
         public Town Town { 
@@ -39,19 +43,28 @@ namespace PrestigiousBank
             set { _town = value; } }
 
         public static int AgencyInitialPrice = 10_000;
-
         public static int AgencyUpkeepPerLevel = 20;
+        public static float AgencyProductionFactorPerLevel = 0.1f;
 
-        public static float AgencyProductionFactorPerLevel = 0.15f;
+        //Teleporter values
+        public static int PriceToBuildTeleporter = 20_000;
+        public static int PriceToTeleportPerUnir = 20;
+        public static int LevelToBeAbleToBuildTeleporter = 4;
 
         public ClanAgency(string townID)
         {
             TownID = townID;
+            IsTeleportUnlocked = false;
         }
 
         public int CalculatePriceToLevelUpAgency()
         {
             return (LevelAgency + 1) * AgencyInitialPrice;
+        }
+
+        public static int CalculatePriceToTeleport()
+        {
+            return PriceToTeleportPerUnir * PartyBase.MainParty.NumberOfAllMembers;
         }
     }
 }

@@ -35,10 +35,8 @@ namespace PrestigiousBank
 
         }
 
-        public override void RegisterBankMenu(CampaignGameStarter campaignGameStarter, Bank Bank)
+        public override void CallChildrenBankMenu(CampaignGameStarter campaignGameStarter, Bank Bank)
         {
-            base.RegisterBankMenu(campaignGameStarter, Bank);
-
             //Bank Menu -> Sigmar Blessings
             campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_menu", _cityID), String.Format("{0}_bank_sigmarBlessings", _cityID),
                 "Bénédictions de Sigmar",

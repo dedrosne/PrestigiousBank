@@ -35,11 +35,8 @@ namespace PrestigiousBank
 
         }
 
-        public override void RegisterBankMenu(CampaignGameStarter campaignGameStarter, Bank Bank)
+        public override void CallChildrenBankMenu(CampaignGameStarter campaignGameStarter, Bank Bank)
         {
-            base.RegisterBankMenu(campaignGameStarter, Bank);
-
-
             // Bank Menu -> Chivalry Account
             campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_menu", _cityID), String.Format("{0}_bank_chivalry_account", _cityID),
                 "Financer des ONG de charité",

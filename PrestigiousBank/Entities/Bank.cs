@@ -108,8 +108,8 @@ namespace PrestigiousBank
 
         public int GetDailySkillXP()
         {
-            //SkillXp = 1XP/100or pour tout or au dessus de 200_000. Max 5000/jour
-            return Math.Min(Math.Max((Solde - 150_000) / 100, 0),5000);
+            //SkillXp = 1XP/1000or pour tout or au dessus du palier Or. Max 1000/jour
+            return Math.Min(Math.Max((Solde - 150_000) / 1000, 0),1000);
         }
 
         public void ApplyDiamondLevelGoldTownIncrease()

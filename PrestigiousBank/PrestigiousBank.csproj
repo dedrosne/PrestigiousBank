@@ -276,6 +276,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Behaviours\CityBankBehaviours\AverheimBankBehaviour.cs" />
+    <Compile Include="Behaviours\CityBankBehaviours\ParravonBankBehaviour.cs" />
     <Compile Include="Behaviours\CityBankBehaviours\MiddenheimBankBehaviour.cs" />
     <Compile Include="Behaviours\ClanAgenciesBehaviour.cs" />
     <Compile Include="Behaviours\ClanHideoutBehaviour.cs" />
@@ -287,6 +288,7 @@
     <Compile Include="Entities\CityBanks\CouronneBank.cs" />
     <Compile Include="Entities\CityBanks\AverheimBank.cs" />
     <Compile Include="Entities\CityBanks\MiddenheimBank.cs" />
+    <Compile Include="Entities\CityBanks\ParravonBank.cs" />
     <Compile Include="Entities\CityBanks\YnEdrylKoiranBank.cs" />
     <Compile Include="Entities\CityBanks\DrakenhofBank.cs" />
     <Compile Include="Entities\Bank.cs" />
@@ -299,6 +301,7 @@
     <Compile Include="Entities\CityBanks\AltdorfBank.cs" />
     <Compile Include="Entities\NulnFactory.cs" />
     <Compile Include="Entities\Saveable\ClanAgenciesSaveableTypeDefiner.cs" />
+    <Compile Include="Entities\Saveable\ParravonBankSaveableTypeDefiner.cs" />
     <Compile Include="Entities\Saveable\NulnFactorySaveableTypeDefiner.cs" />
     <Compile Include="Entities\Saveable\CouronneBankSaveableTypeDefiner.cs" />
     <Compile Include="Entities\Saveable\MiddenheimBankSaveableTypeDefiner.cs" />
@@ -310,14 +313,18 @@
     <Compile Include="Harmony\AltdorfBankPatch.cs" />
     <Compile Include="Menus\CityBankMenus\CouronneBankMenu.cs" />
     <Compile Include="Menus\CityBankMenus\AverheimBankMenu.cs" />
+    <Compile Include="Menus\CityBankMenus\ParravonBankMenu.cs" />
     <Compile Include="Menus\CityBankMenus\MiddenheimBankMenu.cs" />
     <Compile Include="Menus\CityBankMenus\YnEdrylKoiranBankMenu.cs" />
     <Compile Include="Menus\CityBankMenus\DrakenhofBankMenu.cs" />
     <Compile Include="Menus\CityBankMenus\AltdorfBankMenu.cs" />
     <Compile Include="Menus\BankMenu.cs" />
     <Compile Include="Menus\ClanAgencyMenu.cs" />
+    <Compile Include="Menus\ClanHideoutMenu.cs" />
     <Compile Include="Menus\NulnFactoryMenu.cs" />
     <Compile Include="Models\PrestigiousPartyHealingModel.cs" />
+    <Compile Include="Models\PrestigiousCapitalProtectionModel.cs" />
+    <Compile Include="Models\PrestigiousPartySpeedModel.cs" />
     <Compile Include="Models\PrestigiousPartySizeModel.cs" />
     <Compile Include="Models\PrestigiousCharacterStatsModel.cs" />
     <Compile Include="PrestigiousBank.cs" />

@@ -44,11 +44,8 @@ namespace PrestigiousBank
 
         }
 
-        public override void RegisterBankMenu(CampaignGameStarter campaignGameStarter, Bank Bank)
+        public override void CallChildrenBankMenu(CampaignGameStarter campaignGameStarter, Bank Bank)
         {
-            base.RegisterBankMenu(campaignGameStarter,Bank);
-
-
             // Bank Menu -> Prestigious Account
             campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_menu", _cityID), String.Format("{0}_bank_prestigious_account", _cityID), 
                 "Soutenir la bureaucratie",
@@ -72,6 +69,25 @@ namespace PrestigiousBank
                 _ => GameMenu.SwitchToMenu(String.Format("{0}_bank_magic_services", _cityID)),
                 isLeave: false, index: 3);
             RegisterMagicServicesMenuOptions(campaignGameStarter);
+
+            //Bank Menu => Buy Teleport between Clan agencies
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_menu", _cityID), String.Format("{0}_bank_teleportService", _cityID),
+                "["+AltdorfBank.PriceUnblockTeleport+"{GOLD_ICON}] Téléportation entre agences",
+                a => {
+                    a.optionLeaveType = GameMenuOption.LeaveType.SneakIn;
+                    if (((AltdorfBank)_bank).GetCustomerLevel() <= 4) a.Tooltip = new TextObject("Niveau de client Diamant requis", null);
+                    else if (Hero.MainHero.Gold < AltdorfBank.PriceUnblockTeleport) a.Tooltip = new TextObject("Pas assez d'or", null);
+                    a.IsEnabled = ((AltdorfBank)_bank).GetCustomerLevel() > 4 && Hero.MainHero.Gold >= AltdorfBank.PriceUnblockTeleport;
+                    return !((AltdorfBank)_bank).IsTeleportUnblocked; //Do not display it anymore if it is bought
+                },
+                _ =>
+                {
+                    Hero.MainHero.ChangeHeroGold(-AltdorfBank.PriceUnblockTeleport);
+                    ((AltdorfBank)_bank).IsTeleportUnblocked = true;
+                    GameMenu.SwitchToMenu(String.Format("{0}_bank_menu", _cityID));
+                    PrestigiousBank.LogMessage("Téléportation entre agences débloquée.\nAchetez une agence et construisez-y un téléporteur.");
+                },
+                isLeave: false, index: 4);
         }
 
 

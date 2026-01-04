@@ -80,13 +80,22 @@ namespace PrestigiousBank
 
         public bool DoDisplayOptionToBuyAgency()
         {
-            if (NulnFactoryCampaignBehavior.NulnFactory.FactoryLevel == 0) return false;
-            else return true;
+            if (NulnFactoryCampaignBehavior.NulnFactory.FactoryLevel > 0 || 
+                AltdorfBankCampaignBehavior.BankAltdorf.IsTeleportUnblocked || 
+                ClanHideoutCampaignBehavior.ClanHideout.LevelHideout > 0) 
+                return true;
+
+            else return false;
         }
 
         public int GetMaxAgencies()
         {
             return NulnFactoryCampaignBehavior.NulnFactory.FactoryLevel+Clan.PlayerClan.Tier+MaxLimitAgencyUpgradeBought;
+        }
+
+        public List<ClanAgency> GetAgenciesTeleportUnblocked()
+        {
+            return GetClanAgenciesList().Where(x => x.IsTeleportUnlocked).ToList();
         }
 
     }

@@ -18,13 +18,18 @@ namespace PrestigiousBank
         [SaveableProperty(3)]
         public int ChannelerNumber { get; set; }
 
+        [SaveableProperty(4)]
+        public bool IsTeleportUnblocked { get; set; }
+
         public static int UpkeepPerChanneler = 10;
         public static int PricePerChanneler = 4000;
+        public static int PriceUnblockTeleport = 100_000;
 
         public AltdorfBank(Settlement ville) : base(ville)
         {
             PrestigiousAccountSolde = 0;
             ChannelerNumber = 0;
+            IsTeleportUnblocked = false;
         }
 
 

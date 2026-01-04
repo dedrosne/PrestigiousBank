@@ -10,6 +10,7 @@ using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.ComponentInterfaces;
 using TaleWorlds.CampaignSystem.Encyclopedia;
 using TaleWorlds.CampaignSystem.Extensions;
+using TaleWorlds.CampaignSystem.GameComponents;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.Core;
 using TaleWorlds.Engine.GauntletUI;
@@ -52,6 +53,7 @@ namespace PrestigiousBank
                 campaignGameStarter.AddBehavior(new CouronneBankCampaignBehavior());
                 campaignGameStarter.AddBehavior(new YnEdrylKoiranBankCampaignBehavior());
                 campaignGameStarter.AddBehavior(new MiddenheimBankCampaignBehavior());
+                campaignGameStarter.AddBehavior(new ParravonBankCampaignBehavior());
                 campaignGameStarter.AddBehavior(new AverheimBankCampaignBehavior());
                 campaignGameStarter.AddBehavior(new NulnFactoryCampaignBehavior());
                 campaignGameStarter.AddBehavior(new ClanAgenciesBehaviour());
@@ -66,6 +68,8 @@ namespace PrestigiousBank
                 starter.AddModel((PartyHealingModel)new PrestigiousPartyHealingModel());
                 starter.AddModel((CharacterStatsModel)new PrestigiousCharacterStatsModel());
                 starter.AddModel((PartySizeLimitModel)new PrestigiousPartySizeModel());
+                starter.AddModel((TargetScoreCalculatingModel)new PrestigiousCapitalProtectionModel());
+                starter.AddModel((PartySpeedModel)new PrestigiousPartySpeedModel());
                 // ============================================================
                 // Bank menus
                 // ============================================================

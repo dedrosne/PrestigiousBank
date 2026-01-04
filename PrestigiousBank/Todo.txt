@@ -15,7 +15,7 @@ Banque :
 Avantages :
     - Bronze : Dépot/Retrait
     - Argent : Avantage principal de la Banque
-    - Or : XP dans un skill selon la Banque -> 1XP/100or pour tout or au dessus de 200_000. Max 5000/jour
+    - Or : XP dans un skill selon la Banque -> 1XP/1000or pour tout or au dessus du palier Or. Max 1000/jour
     - Platine : Avantage secondaire de la Banque
 
 
@@ -23,7 +23,8 @@ Altdorf :
     - Argent : Corrompre les scribes pour mettre en valeur ses faits d'arme => 1 prestige journaliers/10000 gold offert
     - Or : XP dans le Skill Magic
     - Platine : Augmenter vents de magie : Engager des canalysateur. 1 canalysateur pour 5000g, puis 10g/jour, pour 1 mana max
-    
+    - Diamant : Débloquer la téléportation entre agences
+            Prix de déblocage : 100_000, puis 20_000 pour construire le téléporteur dans l'agence (niveau d'agence requis : 4), puis 20*taille d'armée pour se téléporter
 
 Drakenhof : 
     - Argent :
@@ -52,6 +53,14 @@ Middenheim :
     - Argent : Augmenter le PartySize de 1. Prix : 2000 + Entretien : 
     - Or : XP dans le skill Tactics
 
+Parravon :
+    - Argent : Augmenter le PartySpeed de 0.01. Prix : 2000 + 200*NbBought : 
+    - Or : XP dans le skill Tactics
+
+
+
+/////////////////////////////Usine de Nuln
+
 Usine à Nuln : Construction 50_000 po
 Cout d'upgrade : Level * 50_000 po | Max Level 5
 	- Armes => Obtient des gold à chaque fois qu'une unité est recrutée dans la ville. (Besoin de fer ?)
@@ -62,7 +71,6 @@ Cout d'upgrade : Level * 50_000 po | Max Level 5
         Consommation 3 fer/3 bois/1 Charbon *SelectedLevel
 
 Lorsqu'on change la production, X jours de battement pour changer les lignes de production
-
 
 Prix Atelier Extraction : 25 000 / niveau
 => Ouvrier (esclave+recrues) pour productivité
@@ -90,34 +98,6 @@ Level 3 40=>10
 Level 4 50=>15
 Level 5 75=>25
 
-Possibilité activer/désactiver production, et choisir niveau d'extraction
-Production en premier de la ressource la moins présente dans le stash
-
-
-
-Comptoir : 
-Etend l'activité Nuln/Marieembourg/Vampire => Nom ?
-Agence du Clan => -5g/jour/niveau => Level augmente effets 10/20/30/40/50%
-    20_000 initial
-Ensuite IsNulnFactory
-    Pas de consommations de matière spuuplémentaire. Consommation de main d'oeuvre ? Faisable
-
-
-IsMariembourgTrading
-IsVampireCtypt
-
-Dans toutes les villes : Possibilité de construire un comptoir de vente 30_000 => Etend les effets de son usine. Beson de plus de matériaux ?
-	- Niveau du comptoir de vente : Effets à 50, 75 et 100%
-	- => Possibilité d'accéder aux fonctionnalités de Nuln dans la ville du comptoir
-Pas d'effet de comptoir à Nuln pour l'usine de Nuln
-+ 1 agence construisable => Acheter un permis pour 50_000g supplémentaires. Disponible une fois Clan Tier5
-Nombre de agence max = Rang du Clan + NulnFactoryLevel + Upgrades Achetées post Clan Rang5
-
-######################################################
-#In Progress
-#########################################################
-
-
 1 lingot fer = 1 charbon+2ore + 2fT
 2 lingot fer = 2 charbon+3ore + 4fT
 6 lingot fer = 3 charbon+9ore + 10fT
@@ -132,19 +112,72 @@ Nombre de agence max = Rang du Clan + NulnFactoryLevel + Upgrades Achetées post
 	Level 3 48=>3
 	Level 4 56=>4
 	Level 5 60=>5
-        
+
+Possibilité activer/désactiver production, et choisir niveau d'extraction
+Production en premier de la ressource la moins présente dans le stash
+
+XP en engineering : 100*FactoryLevel+20*WoodLevel+20*CharcoalLevel+20*IronLevel+20*ClayLevel+20*SilverLevel+20*IronFurnaceLevel
+
+////////////////////////Agence de Clan
+
+Agence : 
+Etend l'activité Nuln/Marieembourg/Vampire => Nom ?
+Agence du Clan => -20g/jour/niveau => Level augmente effets 10/20/30/40/50%
+    20_000 * level acheté
+
+Effet sur Usine de Nuln :
+    Pas de consommations de matière spuplémentaire.
+	Possibilité d'accéder aux fonctionnalités de Nuln dans la ville du comptoir
+Pas d'effet de comptoir à Nuln pour l'usine de Nuln
+
+Effet sur Clan Hideout :
+    Max de valeur racketée : 10%*agenceHideout (arrondi inférieur)
+    Force de gang mise en jeu : 10%*agenceHideout (arrondi inférieur)
+
++ 1 agence construisable => Acheter un permis pour 50_000g supplémentaires. Disponible une fois Clan Tier5
+Nombre de agence max = Rang du Clan + NulnFactoryLevel + Upgrades Achetées post Clan Rang5
+
+Téléportation entre agences :
+    - Une fois débloqué à Altdorf
+     20_000 pour construire le téléporteur dans l'agence (niveau d'agence requis : 4), puis 20*taille d'armée pour se téléporter
+
+////////////////////////////Protection des capitales
+La capitale de chaque faction ne peut pas être assiégée
 
 
+######################################################
+#In Progress
+#########################################################
+
+Prix de construction de la planque : 50_000
 
 
-
-Trucs de bandits => Clan de voleurs
-    - Assassin => Fort taux d'échec, mais gain d'influence ? Ou assassiner un seigneur/personnage ?
+Level 1 :
+Racket Level 1-5 : 10_000*level | Peut pas être supérieur au niveau du clan
     => Racketer les villageois qui entrent dans la ville=> Don de troupes "Bandits" pour fonctionner, et récupère une partie du butin dans un stash.
-    Pourcentage d'échec et mort du racketeur
+    valeur max des Items récupérés : 20-100 * level
+    Force de gang impliquée : 10*level
+    Chance d'échec+perte des forces impliquées : 
+        valeur récupérée /10 / level => Niveau 1 : 2% pour 20 récupéré, 10% pour 100 (max) récupéré
+    
+Level 2 :
     Pouvoir recruter des bandits dans les bas-fonds => Coûte argent =>Implique d'avoir plusieurs upgrade uniques pour avoir un systèmes intéressant à mettre en place
+
+Level 3 : Débloque Faux monayer de l'usine de Nuln
+
+Level 4 : Sabotage : 
+Bombe dans un camp de Party : Peut blesser un certain nombre de troupes dans une party dans la ville
+
+Level 5 :    
+- Assassin => Fort taux d'échec, mais gain d'influence ? Ou assassiner un seigneur/personnage ?
+
+
+
 Une fois la ville possédée => Employer les bandits à des tâches nobles : Coute de l'argent contre prosperité
 
+Porte dérobée : Permet d'entrer dans la ville même si en guerre
+
+Drakenhof : Perks pour Compagnions ?
 
 ######################################################
 #Todo
@@ -171,7 +204,8 @@ Level 5 25=>50
 
 
 
-
+Temple de son Dieu/religion
+    
 
 
 
@@ -193,8 +227,7 @@ Marieembroug : Acheter améliorations pour caravanes (assurances ? Attirent moin
 Couronne : Augmenter le nombre de compagnions
 Averheim : HP des compagnions ?
 Recruitment rate of prisoners (comme 2eme perk de leadership)
-Paravon : Travel Speed => Acheter des pégases [+0.01 TravelSpeed pour 8_000]
-Drakenhof : Perks pour Compagnions ?
+
 PV du cheval
 Envoyer Or à un clan de son royaume=>Niveau Or ?
 
@@ -358,30 +391,3 @@ leftParty.IgnoreByOtherPartiesTill(CampaignTime time)
                     campaignBehavior.SetHeroCraftingStamina(hero, value);
                 }
             }
-
-/////////////////////////////////////////////////////////////////More gold for towns
-https://www.nexusmods.com/mountandblade2bannerlord/mods/2195?tab=files
-        }
-
-		// Token: 0x06000002 RID: 2 RVA: 0x00002064 File Offset: 0x00000264
-		private void AddMoreGoldToTowns()
-		{
-			foreach (Settlement settlement in Settlement.All)
-			{
-				bool isTown = settlement.IsTown;
-				if (isTown)
-				{
-					int goldthreshold = Convert.ToInt32(settlement.Prosperity * 10f);
-					int currentgold = settlement.Town.Gold;
-					bool flag = currentgold < goldthreshold;
-					if (flag)
-					{
-						int gold = 1000;
-						gold += this.rnd.Next(100);
-						gold += this.rnd.Next(100);
-						gold += this.rnd.Next(100);
-						settlement.Town.ChangeGold(gold);
-					}
-				}
-			}
-		}

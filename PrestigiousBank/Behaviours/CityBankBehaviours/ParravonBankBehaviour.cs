@@ -10,7 +10,6 @@ using TaleWorlds.CampaignSystem.GameMenus;
 using TaleWorlds.CampaignSystem.MapEvents;
 using TaleWorlds.CampaignSystem.MapNotificationTypes;
 using TaleWorlds.CampaignSystem.Party;
-using TaleWorlds.CampaignSystem.Settlements.Workshops;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.CampaignSystem.ViewModelCollection.Encyclopedia.Items;
 using TaleWorlds.Core;
@@ -22,30 +21,26 @@ using TaleWorlds.Localization;
 using TaleWorlds.ScreenSystem;
 using TOR_Core.Extensions;
 using TOR_Core.CharacterDevelopment;
-using PrestigiousBank.Entities;
-using System.Runtime.InteropServices;
-using System.Diagnostics.Eventing.Reader;
-using TaleWorlds.CampaignSystem.GameComponents;
 
 namespace PrestigiousBank
 {
-    public class ClanHideoutCampaignBehavior : CampaignBehaviorBase
+    public class ParravonBankCampaignBehavior : CampaignBehaviorBase
     {
-        public static string townID = "town_comp_NL1";//Salzenmund
-        public static ClanHideout _hideout = null;
+        public static string townID = "town_comp_PA1";
+        public static ParravonBank _bank= null;
 
-        public static ClanHideout ClanHideout
+        public static ParravonBank ParravonBank
         {
             get
             {
-                if (_hideout == null)
+                if (_bank == null)
                 {
                     if (Town.AllTowns != null) {
                         foreach (var town in Town.AllTowns)
                         {
                             if (town.StringId == townID)
                             {
-                                _hideout = new ClanHideout(townID);
+                                _bank = new ParravonBank(town.Settlement);
                                 break;
                             }
                                 
@@ -53,52 +48,54 @@ namespace PrestigiousBank
 
                     }
                 }
-                return _hideout;
+                if (_bank != null && _bank.Ville == null)
+                {
+                    foreach (var town in Town.AllTowns)
+                    {
+                        if (town.StringId == townID)
+                        {
+                            _bank.Ville = town.Settlement;
+                            break;
+                        }
+
+                    }
+                }
+                return _bank;
 
             }
             set
             {
-                _hideout = value;
+                _bank = value;
             }
         }
 
-        public ClanHideoutCampaignBehavior() : base()
-        {}
+        public ParravonBankCampaignBehavior() : base()
+        {
+        }
 
         public override void RegisterEvents()
         {
             CampaignEvents.OnSessionLaunchedEvent.AddNonSerializedListener((object)this, new Action<CampaignGameStarter>(this.OnSessionLaunched));
-            CampaignEvents.SettlementEntered.AddNonSerializedListener(this, new Action<MobileParty, Settlement, Hero>(this.SettlementEntered));
-            CampaignEvents.DailyTickEvent.AddNonSerializedListener(this, this.DailyTickEvent);
-
+            CampaignEvents.DailyTickEvent.AddNonSerializedListener(this, this.DailyTickClan);
+            CampaignEvents.HourlyTickEvent.AddNonSerializedListener(this, this.HourlyTickEvent);
         }
 
         private void OnSessionLaunched(CampaignGameStarter campaignGameStarter)
         {
-            //new NulnFactoryMenu().RegisterFactoryMenu(campaignGameStarter, NulnFactory);
+            new ParravonBankMenu().RegisterBankMenu(campaignGameStarter, ParravonBank);
         }
-        
 
-        private void DailyTickEvent()
+        private void DailyTickClan()
         {
             //Ajout de l'XP
-            Hero.MainHero.AddSkillXp(DefaultSkills.Roguery, ClanHideout.GetDailySkillXP());
-
-
-
-
+            Hero.MainHero.AddSkillXp(DefaultSkills.Leadership, ParravonBank.GetDailySkillXP());
         }
 
-
-
-        public void SettlementEntered(MobileParty mobileParty, Settlement settlement, Hero hero)
+        private void HourlyTickEvent()
         {
-            if (settlement.Town.StringId == ClanHideout.TownID)
-                ClanHideout.Apply_Racketeering(mobileParty, settlement);
-            
-
-
+            ParravonBank.ApplyDiamondLevelGoldTownIncrease();
         }
+
 
         public override void SyncData(IDataStore dataStore)
         {
@@ -106,11 +103,11 @@ namespace PrestigiousBank
             {
                 if (dataStore.IsLoading)
                 {
-                    dataStore.SyncData<ClanHideout>("ClanHideout", ref _hideout);
+                    dataStore.SyncData<ParravonBank>("ParravonBank", ref _bank);
                 }
                 else
                 {
-                    dataStore.SyncData<ClanHideout>("ClanHideout", ref _hideout);
+                    dataStore.SyncData<ParravonBank>("ParravonBank", ref _bank);
                 }
             }
             catch

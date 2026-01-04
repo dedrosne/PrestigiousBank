@@ -28,103 +28,128 @@ using TOR_Core.Extensions;
 
 namespace PrestigiousBank
 {
-    public class NulnFactoryMenu
+    public class ClanHideoutMenu
     {
         public string _cityName;
         public string _cityID;
-        public NulnFactory _nulnFactory;
-        public static int _optionBankIndex = -1;
+        public ClanHideout _clanHideout;
 
-        public virtual void RegisterFactoryMenu(CampaignGameStarter campaignGameStarter, NulnFactory NulnFactory)
+        public virtual void RegisterFactoryMenu(CampaignGameStarter campaignGameStarter, ClanHideout clanHideout)
         {
-            _nulnFactory = NulnFactory;
-            _cityID = _nulnFactory.Ville.Town.StringId;
-            _cityName = _nulnFactory.Ville.Name.Value;
+            _clanHideout = clanHideout;
+            _cityID = _clanHideout.Town.StringId;
+            _cityName = _clanHideout.Town.Name.Value;
+
             MBTextManager.SetTextVariable("GOLD_ICON", "{=!}<img src=\"General\\Icons\\Coin@2x\" extend=\"7\">");
-            MBTextManager.SetTextVariable("PRESTIGE_ICON",
-                    CustomResourceManager.GetResourceObject("Prestige").GetCustomResourceIconAsText());
 
 
             
 
             CreateOrUpdateGameMenuDesc(campaignGameStarter);
 
-            //Town -> Acheter l'usine
+            //Town -> Buy the hideout
             campaignGameStarter.AddGameMenuOption("town",
-                                                  String.Format("{0}_nulnFactoryBuy_menu", _cityID),
-                                                  "["+NulnFactory.InitialFactoryPrice+"{GOLD_ICON}] Acheter une usine à Nuln",
+                                                  "clanHideoutMenu_buy",
+                                                  "["+ ClanHideout.HideoutLevelPrice + "{GOLD_ICON}] Acheter une planque à "+_cityName,
                                                   args =>
                                                   {
                                                       args.optionLeaveType = GameMenuOption.LeaveType.Craft;
-                                                      args.IsEnabled = Hero.MainHero.Gold >= NulnFactory.InitialFactoryPrice;
-                                                      args.Tooltip = Hero.MainHero.Gold >= NulnFactory.InitialFactoryPrice ? null : new TextObject("Pas assez d'or");
+                                                      args.IsEnabled = Hero.MainHero.Gold >= ClanHideout.HideoutLevelPrice;
+                                                      args.Tooltip = Hero.MainHero.Gold >= ClanHideout.HideoutLevelPrice ? null : new TextObject("Pas assez d'or");
                                                       if (Settlement.CurrentSettlement.Town.StringId != _cityID) return false;
-                                                      else if (NulnFactory.FactoryLevel > 0) return false;
+                                                      else if (clanHideout.LevelHideout > 0) return false;
                                                       else return true;
                                                   },
                                                   _ => {
-                                                      _nulnFactory.FactoryLevel += 1;
-                                                      _nulnFactory.SelectedFactoryLevel = 1;
-                                                      Hero.MainHero.ChangeHeroGold(-NulnFactory.InitialFactoryPrice);
+                                                      _clanHideout.LevelHideout += 1;
+                                                      Hero.MainHero.ChangeHeroGold(-ClanHideout.HideoutLevelPrice);
                                                       GameMenu.SwitchToMenu("town");
                                                       CreateOrUpdateGameMenuDesc(campaignGameStarter);
-                                                      GameTexts.SetVariable("PRICE_LEVEL_UP", _nulnFactory.CalculatePriceToLevelUpFactory());
+                                                      //GameTexts.SetVariable("PRICE_LEVEL_UP", _nulnFactory.CalculatePriceToLevelUpFactory());
                                                   },
                                                   isLeave: false,
-                                                  _optionBankIndex);
+                                                  -1);
 
-            //Town -> NulnFactory
+            //Town -> ClanHideout
             campaignGameStarter.AddGameMenuOption("town",
-                                                  "nulnFactory_menu",
-                                                  "Usine de Nuln",
+                                                  "clanHideoutMenu",
+                                                  "Planque du clan",
                                                   args =>
                                                   {
                                                       args.optionLeaveType = GameMenuOption.LeaveType.Craft;
                                                       if (Settlement.CurrentSettlement.Town.StringId != _cityID) return false;
-                                                      else if (NulnFactory.FactoryLevel == 0) return false;
+                                                      else if (_clanHideout.LevelHideout == 0) return false;
                                                       else return true;
                                                   },
                                                   _ => {
                                                       CreateOrUpdateGameMenuDesc(campaignGameStarter); 
-                                                      GameMenu.SwitchToMenu("nulnFactory_menu"); },
+                                                      GameMenu.SwitchToMenu("clanHideoutMenu"); },
                                                   isLeave: false,
-                                                  _optionBankIndex);
+                                                  -1);
 
 
-            // Factory Menu -> ProductionChoice
-            campaignGameStarter.AddGameMenuOption("nulnFactory_menu", String.Format("{0}_productionChoice", _cityID), "Changer la production",
-                a => { a.optionLeaveType = GameMenuOption.LeaveType.Manage; return true; },
-                _ => GameMenu.SwitchToMenu(String.Format("{0}_productionChoice", _cityID)),
-                isLeave: false, index: 1);
-            RegisterProductionChoiceMenuOptions(campaignGameStarter);
+            //Engage outlaws
+            campaignGameStarter.AddGameMenuOption("clanHideoutMenu", "clanHideoutMenu_donateOutlaws",
+                "Recruter des gangsters",
+                a => { a.optionLeaveType = GameMenuOption.LeaveType.DonatePrisoners; return true; },
+                _ => {
+                    MobileParty leftParty = new MobileParty();
+                    leftParty.SetCustomName(new TextObject("Gangsters"));
 
+                    //PartyScreenManager.OpenScreenForManagingAlley  //TODO
+                    PartyScreenManager.OpenScreenAsManageTroopsAndPrisoners(
+                        leftParty,
+                        onPartyScreenClosed: delegate (PartyBase leftOwnerParty, TroopRoster leftMemberRoster, TroopRoster leftPrisonRoster, PartyBase rightOwnerParty, TroopRoster rightMemberRoster, TroopRoster rightPrisonRoster, bool fromCancel)
+                        {
+                            if (!fromCancel)
+                            {
+                                if (leftPrisonRoster.Count != 0)
+                                {
+                                    foreach (TroopRosterElement item in leftPrisonRoster.GetTroopRoster())
+                                    {
+                                        _clanHideout.BanditsGangStrenght += item.Character.Tier * item.Number;
+                                    }
+                                }
+                                if (leftMemberRoster.Count != 0)
+                                {
+                                    foreach (TroopRosterElement item in leftMemberRoster.GetTroopRoster())
+                                    {
+                                        _clanHideout.BanditsGangStrenght += item.Character.Tier * item.Number;
+                                    }
+                                }
+                                CreateOrUpdateGameMenuDesc(campaignGameStarter);
+                            }
+                        });
+
+
+                },
+                isLeave: false);
 
             //Open Stash
-            campaignGameStarter.AddGameMenuOption("nulnFactory_menu", String.Format("{0}_openStash", _cityID), "Ouvrir l'entrepôt",
+            campaignGameStarter.AddGameMenuOption("clanHideoutMenu", "clanHideoutMenu_openStash", "Ouvrir la cache",
                 a => { a.optionLeaveType = GameMenuOption.LeaveType.OpenStash; return true; },
-                _ => InventoryManager.OpenScreenAsStash(_nulnFactory.GetItemStash()),//Crash. Why ? InventoryManager Null
+                _ => InventoryManager.OpenScreenAsStash(_clanHideout.GetItemStash()),//Crash. Why ? InventoryManager Null
                 isLeave: false, index: 2);
 
-            // Factory Menu -> RawMaterials Production
-            campaignGameStarter.AddGameMenuOption("nulnFactory_menu", String.Format("{0}_rawMaterials_menu", _cityID), "Production de matières premières",
-                a => { a.optionLeaveType = GameMenuOption.LeaveType.SneakIn; return true; },
-                _ => GameMenu.SwitchToMenu(String.Format("{0}_rawMaterials_menu", _cityID)),
-                isLeave: false, index: 3);
-            RegisterRawMaterialsProductionMenuOptions(campaignGameStarter);
+            //EmptySpaces
+            campaignGameStarter.AddGameMenuOption("clanHideoutMenu", "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
+            campaignGameStarter.AddGameMenuOption("clanHideoutMenu", "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
+
+            //Rackettering
 
             //EmptySpaces
-            campaignGameStarter.AddGameMenuOption("nulnFactory_menu", "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
-            campaignGameStarter.AddGameMenuOption("nulnFactory_menu", "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
+            campaignGameStarter.AddGameMenuOption("clanHideoutMenu", "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
+            campaignGameStarter.AddGameMenuOption("clanHideoutMenu", "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
 
-
+            //Level
             RegisterLevelSelectionMenuOptions(campaignGameStarter);
 
             //EmptySpaces
-            campaignGameStarter.AddGameMenuOption("nulnFactory_menu", "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
-            campaignGameStarter.AddGameMenuOption("nulnFactory_menu", "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
+            campaignGameStarter.AddGameMenuOption("clanHideoutMenu", "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
+            campaignGameStarter.AddGameMenuOption("clanHideoutMenu", "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
 
-            //Quitter l'usine
-            campaignGameStarter.AddGameMenuOption("nulnFactory_menu", String.Format("{0}_nulnFactory_menu_back", _cityID), "Quitter l'usine",
+            //Quitter la planque
+            campaignGameStarter.AddGameMenuOption("clanHideoutMenu", "clanHideoutMenu_back", "Quitter la planque",
                 a => { a.optionLeaveType = GameMenuOption.LeaveType.Leave; return true; },
                 _ => GameMenu.SwitchToMenu("town"),
                 isLeave: true, index: -1);
@@ -133,65 +158,13 @@ namespace PrestigiousBank
         public virtual void CreateOrUpdateGameMenuDesc(CampaignGameStarter campaignGameStarter)
         {
 
-            int factoryLevel = _nulnFactory.FactoryLevel;
-            NulnFactory.PossibleProduction chosenProduction = _nulnFactory.chosenProduction;
-            string chosenProductionString = chosenProduction.ToString();
+            int hideoutLevel = _clanHideout.LevelHideout;
 
             // Factory Menu
-            campaignGameStarter.AddGameMenu("nulnFactory_menu",
-                String.Format("Usine de Nuln\nNiveau de l'usine : {0}\nProduction Actuelle : {1}", factoryLevel, chosenProductionString),
+            campaignGameStarter.AddGameMenu("clanHideoutMenu",
+                "Planque du clan\nNiveau de la planque :"+ hideoutLevel+"\nForce du gang : "+_clanHideout.BanditsGangStrenght,
                 null, TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
 
-            //ProductionChoice
-            campaignGameStarter.AddGameMenu(String.Format("{0}_productionChoice", _cityID),
-                "Choix de la production"+
-                "\nARMES : {GOLD_ICON} généré selon le tiers des unités recrutées dans la ville"+
-                "\nPIECES D'USINAGE : Récupère un pourcentage de la valeur produite des Workshops de la ville, ou augmente la production de ses propres Workshops"+
-                "\nMATERIAUX DE CONSTRUCTION : Ne fait rien pour l'instant"//TODO
-                , null, TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
-
-            // Raw Materials
-            campaignGameStarter.AddGameMenu(String.Format("{0}_rawMaterials_menu", _cityID),
-                "Production de matières premières :"+
-                "\nChaque jour, les ouvriers meurent à la tâche pour produire des matières premières\n"+
-                "Force de travail : "+_nulnFactory.WorkStrenght+
-                "\nDemande actuelle d'ouvrier/jour :"+_nulnFactory.CalculateTotalWorkStrenght(),
-                null, TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
-
-            // Wood Production
-            campaignGameStarter.AddGameMenu(String.Format("{0}_woodProduction", _cityID),
-                "Scierie de bois :"+
-                "\nProduit chaque jour du bois en fonction du niveau de production et de la force de travail disponible\n"+
-                "Force de travail : "+_nulnFactory.WorkStrenght,
-                null, TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
-
-            // Charcoal Production
-            campaignGameStarter.AddGameMenu(String.Format("{0}_charcoalProduction", _cityID),
-                "Four à charbon :"+
-                "\nProduit chaque jour du charbon en fonction du niveau de production, du bois disponible et de la force de travail disponible\n"+
-                "Force de travail : "+_nulnFactory.WorkStrenght,
-                null, TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
-
-            // Iron Production
-            campaignGameStarter.AddGameMenu(String.Format("{0}_ironProduction", _cityID),
-                "Mine de fer :"+
-                "\nProduit chaque jour du fer en fonction du niveau de production et de la force de travail disponible\n"+
-                "Force de travail : "+_nulnFactory.WorkStrenght,
-                null, TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
-
-            // IRON INGOT Production
-            campaignGameStarter.AddGameMenu(String.Format("{0}_ironFurnaceProduction", _cityID),
-                "Fonderie :" +
-                "\nProduit chaque jour des lingots de fer en fonction du niveau de production, charbon, minerai et de la force de travail disponible\n" +
-                "Force de travail : " + _nulnFactory.WorkStrenght,
-                null, TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
-
-            // SILVER Production
-            campaignGameStarter.AddGameMenu(String.Format("{0}_silverProduction", _cityID),
-                "Mine d'argent :" +
-                "\nProduit chaque jour de l'argent en fonction du niveau de production et de la force de travail disponible\n" +
-                "Force de travail : " + _nulnFactory.WorkStrenght,
-                null, TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
 
         }
 
@@ -422,7 +395,6 @@ namespace PrestigiousBank
                 a => { a.optionLeaveType = GameMenuOption.LeaveType.DonatePrisoners; return true; },
                 _ => {
                     MobileParty leftParty = new MobileParty();
-                    leftParty.SetCustomName(new TextObject("Ouvriers"));
                     PartyScreenManager.OpenScreenAsManageTroopsAndPrisoners(
                         leftParty, 
                         delegate (PartyBase leftOwnerParty, TroopRoster leftMemberRoster, TroopRoster leftPrisonRoster, PartyBase rightOwnerParty, TroopRoster rightMemberRoster, TroopRoster rightPrisonRoster, bool fromCancel) 

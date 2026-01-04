@@ -38,10 +38,8 @@ namespace PrestigiousBank
 
         }
 
-        public override void RegisterBankMenu(CampaignGameStarter campaignGameStarter, Bank Bank)
+        public override void CallChildrenBankMenu(CampaignGameStarter campaignGameStarter, Bank Bank)
         {
-            base.RegisterBankMenu(campaignGameStarter, Bank);
-
             //Bank Menu -> Party Helper
             campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_menu", _cityID), String.Format("{0}_bank_party_helper", _cityID),
                 "Services des aides de camp",

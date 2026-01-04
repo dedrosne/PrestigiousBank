@@ -44,10 +44,8 @@ namespace PrestigiousBank
 
         }
 
-        public override void RegisterBankMenu(CampaignGameStarter campaignGameStarter, Bank Bank)
+        public override void CallChildrenBankMenu(CampaignGameStarter campaignGameStarter, Bank Bank)
         {
-            base.RegisterBankMenu(campaignGameStarter, Bank);
-
             // Bank Menu -> ForestHarmony Account
             campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_menu", _cityID), String.Format("{0}_bank_forestHarmony_account", _cityID),
                 "Harmoniser la forêt",

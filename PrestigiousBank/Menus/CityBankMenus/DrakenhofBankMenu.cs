@@ -34,11 +34,8 @@ namespace PrestigiousBank
 
         }
 
-        public override void RegisterBankMenu(CampaignGameStarter campaignGameStarter, Bank Bank)
+        public override void CallChildrenBankMenu(CampaignGameStarter campaignGameStarter, Bank Bank)
         {
-            base.RegisterBankMenu(campaignGameStarter, Bank);
-
-
             // Bank Menu -> Dark Ritual Menu
             campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_menu",_cityID), 
                 String.Format("{0}_dark_ritual_enlightment", _cityID), "Accéder à la salle rituelle",

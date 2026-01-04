@@ -144,9 +144,13 @@ namespace PrestigiousBank
         public void SettlementEntered(MobileParty mobileParty, Settlement settlement, Hero hero)
         {
             if (hero != Hero.MainHero) return;
-            if (settlement.IsTown) PrestigiousBank.LogMessage("SettlementID : " + settlement.StringId);
+            if (settlement.IsTown) { PrestigiousBank.LogMessage("SettlementID : " + settlement.StringId);
+                
+            };
             if (settlement.IsVillage) PrestigiousBank.LogMessage("SettlementID : " + settlement.StringId);
             if (settlement.IsCastle) PrestigiousBank.LogMessage("SettlementID : " +settlement.StringId);
+            if (settlement.OwnerClan != null && settlement.OwnerClan.Kingdom != null)
+                PrestigiousBank.LogMessage("KingdomID : " + settlement.OwnerClan.Kingdom.StringId);
         }
 
         public override void SyncData(IDataStore dataStore)
