@@ -131,11 +131,15 @@ namespace PrestigiousBank
 
 
             //Clan Hideout Racketeering
-            ClanAgency agency = ClanAgencies.GetAgencyByTownStringId(settlement.Town.StringId);
-            if (settlement != null && agency != null && settlement.IsTown && mobileParty.IsVillager)
+            
+            if (settlement != null && settlement.IsTown && mobileParty.IsVillager)
             {
-                float factor = agency.LevelAgency * ClanAgency.AgencyProductionFactorPerLevel;
-                ClanHideoutCampaignBehavior.ClanHideout.Apply_Racketeering(mobileParty, settlement, factor);
+                ClanAgency agency = ClanAgencies.GetAgencyByTownStringId(settlement.Town.StringId);
+                if (agency != null)
+                {
+                    float factor = agency.LevelAgency * ClanAgency.AgencyProductionFactorPerLevel;
+                    ClanHideoutCampaignBehavior.ClanHideout.Apply_Racketeering(mobileParty, settlement, factor);
+                }
             }
         }
 

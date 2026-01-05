@@ -150,7 +150,7 @@ La capitale de chaque faction ne peut pas être assiégée
 #########################################################
 
 Prix de construction de la planque : 50_000
-
+Level <= ClanLevel
 
 Level 1 :
 Racket Level 1-5 : 10_000*level | Peut pas être supérieur au niveau du clan
@@ -173,9 +173,11 @@ Level 5 :
 
 
 
-Une fois la ville possédée => Employer les bandits à des tâches nobles : Coute de l'argent contre prosperité
+Une fois débloqué, peut recruter dans les hideout
 
 Porte dérobée : Permet d'entrer dans la ville même si en guerre
+
+
 
 Drakenhof : Perks pour Compagnions ?
 

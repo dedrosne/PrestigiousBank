@@ -57,6 +57,7 @@ namespace PrestigiousBank
                 campaignGameStarter.AddBehavior(new AverheimBankCampaignBehavior());
                 campaignGameStarter.AddBehavior(new NulnFactoryCampaignBehavior());
                 campaignGameStarter.AddBehavior(new ClanAgenciesBehaviour());
+                campaignGameStarter.AddBehavior(new ClanHideoutCampaignBehavior());
 
                 // ============================================================
                 // Core models and processors

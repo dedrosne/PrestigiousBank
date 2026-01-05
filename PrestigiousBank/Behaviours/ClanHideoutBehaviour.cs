@@ -26,6 +26,8 @@ using PrestigiousBank.Entities;
 using System.Runtime.InteropServices;
 using System.Diagnostics.Eventing.Reader;
 using TaleWorlds.CampaignSystem.GameComponents;
+using System.Globalization;
+using TOR_Core.Utilities;
 
 namespace PrestigiousBank
 {
@@ -93,7 +95,18 @@ namespace PrestigiousBank
 
         public void SettlementEntered(MobileParty mobileParty, Settlement settlement, Hero hero)
         {
-            if (settlement.Town.StringId == ClanHideout.TownID)
+            if (hero == Hero.MainHero) 
+            {
+                List<CharacterObject> list =  CharacterObject.All.Where<CharacterObject>(x=>!x.IsHero).ToList();
+                list = list.Where<CharacterObject>(x => !x.IsTemplate &&(
+                x.Culture.StringId == TORConstants.Cultures.HERRIMAULT |
+                x.Culture.StringId == "mountain_bandits" |
+                x.Culture.StringId == TORConstants.Cultures.DRUCHII |
+                x.Culture.StringId == TORConstants.Cultures.CHAOS |
+                x.IsBeastman() | x.IsCultist() ))
+                    .ToList();
+            }
+            if (settlement != null && settlement.IsTown && settlement.Town.StringId == ClanHideout.TownID)
                 ClanHideout.Apply_Racketeering(mobileParty, settlement);
             
 
