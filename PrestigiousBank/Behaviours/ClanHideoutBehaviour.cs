@@ -1,17 +1,25 @@
-﻿using PrestigiousBank;
+﻿using HarmonyLib;
+using Newtonsoft.Json;
+using PrestigiousBank;
+using PrestigiousBank.Entities;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
+using System.Globalization;
 using System.Linq;
-using Newtonsoft.Json;
+using System.Runtime;
+using System.Runtime.InteropServices;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Actions;
+using TaleWorlds.CampaignSystem.CampaignBehaviors;
 using TaleWorlds.CampaignSystem.CharacterDevelopment;
+using TaleWorlds.CampaignSystem.GameComponents;
 using TaleWorlds.CampaignSystem.GameMenus;
 using TaleWorlds.CampaignSystem.MapEvents;
 using TaleWorlds.CampaignSystem.MapNotificationTypes;
 using TaleWorlds.CampaignSystem.Party;
-using TaleWorlds.CampaignSystem.Settlements.Workshops;
 using TaleWorlds.CampaignSystem.Settlements;
+using TaleWorlds.CampaignSystem.Settlements.Workshops;
 using TaleWorlds.CampaignSystem.ViewModelCollection.Encyclopedia.Items;
 using TaleWorlds.Core;
 using TaleWorlds.Core.ViewModelCollection.Information;
@@ -20,13 +28,8 @@ using TaleWorlds.Library;
 using TaleWorlds.LinQuick;
 using TaleWorlds.Localization;
 using TaleWorlds.ScreenSystem;
-using TOR_Core.Extensions;
 using TOR_Core.CharacterDevelopment;
-using PrestigiousBank.Entities;
-using System.Runtime.InteropServices;
-using System.Diagnostics.Eventing.Reader;
-using TaleWorlds.CampaignSystem.GameComponents;
-using System.Globalization;
+using TOR_Core.Extensions;
 using TOR_Core.Utilities;
 
 namespace PrestigiousBank
@@ -77,7 +80,8 @@ namespace PrestigiousBank
 
         private void OnSessionLaunched(CampaignGameStarter campaignGameStarter)
         {
-            //new NulnFactoryMenu().RegisterFactoryMenu(campaignGameStarter, NulnFactory);
+            new ClanHideoutMenu().RegisterFactoryMenu(campaignGameStarter, ClanHideout);
+            AllTimeHideoutAttackEnable();
         }
         
 
@@ -105,8 +109,13 @@ namespace PrestigiousBank
                 x.Culture.StringId == TORConstants.Cultures.CHAOS |
                 x.IsBeastman() | x.IsCultist() ))
                     .ToList();
+
+                if (settlement!= null && settlement.IsHideout)
+                {
+                    new ClanHideoutMenu().RefreshHideoutMenuText();
+                }
             }
-            if (settlement != null && settlement.IsTown && settlement.Town.StringId == ClanHideout.TownID)
+            if (settlement != null && settlement.IsTown && settlement.Town.StringId == ClanHideout.TownID && mobileParty != null && mobileParty.IsVillager)
                 ClanHideout.Apply_Racketeering(mobileParty, settlement);
             
 
@@ -130,6 +139,32 @@ namespace PrestigiousBank
             {
             }
         }
+
+        private HideoutCampaignBehavior _hideoutCampaignBehavior
+        {
+            get
+            {
+                return Campaign.Current.GetCampaignBehavior<HideoutCampaignBehavior>();
+            }
+        }
+
+        private void AllTimeHideoutAttackEnable()
+        {
+            _attackHideoutStartField.Invoke(this._hideoutCampaignBehavior) = this._attackHideoutStartFieldValue;
+            _attackHideoutEndField.Invoke(this._hideoutCampaignBehavior) = this._attackHideoutEndFieldValue;
+        }
+
+        // Token: 0x04000014 RID: 20
+        private int _attackHideoutStartFieldValue = 0;
+
+        // Token: 0x04000015 RID: 21
+        private int _attackHideoutEndFieldValue = 24;
+
+        // Token: 0x04000016 RID: 22
+        private static AccessTools.FieldRef<HideoutCampaignBehavior, int> _attackHideoutStartField = AccessTools.FieldRefAccess<HideoutCampaignBehavior, int>("CanAttackHideoutStart");
+
+        // Token: 0x04000017 RID: 23
+        private static AccessTools.FieldRef<HideoutCampaignBehavior, int> _attackHideoutEndField = AccessTools.FieldRefAccess<HideoutCampaignBehavior, int>("CanAttackHideoutEnd");
 
     }
 }

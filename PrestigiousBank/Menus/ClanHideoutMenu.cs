@@ -12,6 +12,7 @@ using TaleWorlds.CampaignSystem.Encounters;
 using TaleWorlds.CampaignSystem.GameMenus;
 using TaleWorlds.CampaignSystem.GameState;
 using TaleWorlds.CampaignSystem.Inventory;
+using TaleWorlds.CampaignSystem.MapEvents;
 using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.Roster;
 using TaleWorlds.CampaignSystem.Settlements;
@@ -49,10 +50,10 @@ namespace PrestigiousBank
             //Racketeering Menu
             campaignGameStarter.AddGameMenu("clanHideout_racketeering_menu",
                 "Extorsion des villageois\n" +
-                "Lorsque les villageois entrent dans la ville, les voleurs leur extorqueront leurs biens à vendre\n\n" +
-                "Niveau du Racketage\n" + _clanHideout.Racketeering_Level +
+                "Lorsque les villageois entrent dans la ville, les voleurs leur extorqueront leurs biens à vendre.\n\n" +
+                "Niveau du Racketage : " + _clanHideout.Racketeering_Level +
                 "\nForce du gang : " + _clanHideout.BanditsGangStrenght +
-                "Chance de se faire attraper par la garde : 2%/" + ClanHideout.Racketeering_MinimumValue * _clanHideout.Racketeering_Level + "{GOLD_ICON} volés\n" +
+                "\nChance de se faire attraper par la garde :\n2%/" + ClanHideout.Racketeering_MinimumValue * _clanHideout.Racketeering_Level + "{GOLD_ICON} volés\n" +
                 "Force impliqué par tentative : " + ClanHideout.Racketeering_BanditStrenghtNeededPerLevel * _clanHideout.Racketeering_Level,
                 null, TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
         }
@@ -69,7 +70,7 @@ namespace PrestigiousBank
 
 
             CreateOrUpdateGameMenuDesc(campaignGameStarter);
-            RegisterHideoutMenuOption(campaignGameStarter);
+            RegisterRecruitHideoutMenuOption(campaignGameStarter);
             //Town -> Buy the hideout
             campaignGameStarter.AddGameMenuOption("town",
                                                   "clanHideoutMenu_buy",
@@ -166,6 +167,8 @@ namespace PrestigiousBank
                         leftPartyName: new TextObject("Recrues du gang"),
                         onCancelButtonClicked: null
                         );
+                    CreateOrUpdateGameMenuDesc(campaignGameStarter);
+                    GameMenu.SwitchToMenu("clanHideoutMenu");
                     /*        PartyScreenManager.OpenScreenAsManageTroopsAndPrisoners(
                                 leftParty,
                                 onPartyScreenClosed: delegate (PartyBase leftOwnerParty, TroopRoster leftMemberRoster, TroopRoster leftPrisonRoster, PartyBase rightOwnerParty, TroopRoster rightMemberRoster, TroopRoster rightPrisonRoster, bool fromCancel)
@@ -199,8 +202,8 @@ namespace PrestigiousBank
                 isLeave: false, index: 2);
 
             //EmptySpaces
-            campaignGameStarter.AddGameMenuOption("clanHideoutMenu", "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
-            campaignGameStarter.AddGameMenuOption("clanHideoutMenu", "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
+            campaignGameStarter.AddGameMenuOption("clanHideoutMenu", "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false, index: 3);
+            campaignGameStarter.AddGameMenuOption("clanHideoutMenu", "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false, index: 4);
 
             //clanHideoutMenu -> Buy racketeering
             campaignGameStarter.AddGameMenuOption("clanHideoutMenu", "clanHideout_racketeering_menu_buy", "[" + ClanHideout.Racketeering_LevelPrice + "{GOLD_ICON}] Commencer une activité d'extorsion de villageois",
@@ -215,9 +218,10 @@ namespace PrestigiousBank
                 {
                     _clanHideout.Racketeering_Level += 1;
                     Hero.MainHero.ChangeHeroGold(-ClanHideout.Racketeering_LevelPrice);
+                    CreateOrUpdateGameMenuDesc(campaignGameStarter);
                     GameMenu.SwitchToMenu("clanHideoutMenu");
                 },
-                isLeave: false, index: 2);
+                isLeave: false, index: 5);
 
             //clanHideoutMenu -> racketteringMenu
             campaignGameStarter.AddGameMenuOption("clanHideoutMenu", "clanHideout_racketeering_menu", "Activité d'extorsion",
@@ -226,13 +230,13 @@ namespace PrestigiousBank
                     a.optionLeaveType = GameMenuOption.LeaveType.ForceToGiveGoods;
                     return _clanHideout.Racketeering_Level >= 1;
                 },
-                _ => { SetRacketeeringMenuText(); GameMenu.SwitchToMenu("clanHideout_racketeering_menu"); },
-                isLeave: false, index: 2);
+                _ => { RefreshRacketeeringMenuText(); GameMenu.SwitchToMenu("clanHideout_racketeering_menu"); },
+                isLeave: false, index: 5);
             RegisterRacketeeringMenuOptions(campaignGameStarter);
 
             //EmptySpaces
-            campaignGameStarter.AddGameMenuOption("clanHideoutMenu", "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
-            campaignGameStarter.AddGameMenuOption("clanHideoutMenu", "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
+            campaignGameStarter.AddGameMenuOption("clanHideoutMenu", "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false,index: 6);
+            campaignGameStarter.AddGameMenuOption("clanHideoutMenu", "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false, index: 7);
 
             //Upgrade Hideout
             //TODO
@@ -240,36 +244,96 @@ namespace PrestigiousBank
             //TODO
 
             //EmptySpaces
-            campaignGameStarter.AddGameMenuOption("clanHideoutMenu", "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
-            campaignGameStarter.AddGameMenuOption("clanHideoutMenu", "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
+            campaignGameStarter.AddGameMenuOption("clanHideoutMenu", "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false, index: 30);
+            campaignGameStarter.AddGameMenuOption("clanHideoutMenu", "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false, index: 40);
 
             //Quitter la planque
             campaignGameStarter.AddGameMenuOption("clanHideoutMenu", "clanHideoutMenu_back", "Quitter la planque",
                 a => { a.optionLeaveType = GameMenuOption.LeaveType.Leave; return true; },
                 _ => GameMenu.SwitchToMenu("town"),
-                isLeave: true, index: -1);
+                isLeave: true, index: 50);
         }
 
-        public void RegisterHideoutMenuOption(CampaignGameStarter campaignGameStarter)
+        #region Recruit Hideout
+        public void RegisterRecruitHideoutMenuOption(CampaignGameStarter campaignGameStarter)
         {
-            //hideout -> Recruit Outlaws
-            //TODO
-            //campaignGameStarter.AddGameMenuOption("clanHideoutMenu", "clanHideout_racketeering_menu_buy", "[" + ClanHideout.Racketeering_LevelPrice + "{GOLD_ICON}] Commencer une activité d'extorsion de villageois",
-            //    a =>
-            //    {
-            //        a.optionLeaveType = GameMenuOption.LeaveType.ForceToGiveGoods;
-            //        a.Tooltip = Hero.MainHero.Gold >= ClanHideout.Racketeering_LevelPrice ? null : new TextObject("Pas assez d'or");
-            //        a.IsEnabled = Hero.MainHero.Gold >= ClanHideout.Racketeering_LevelPrice;
-            //        return _clanHideout.Racketeering_Level == 0;
-            //    },
-            //    _ =>
-            //    {
-            //        _clanHideout.Racketeering_Level += 1;
-            //        Hero.MainHero.ChangeHeroGold(-ClanHideout.Racketeering_LevelPrice);
-            //        GameMenu.SwitchToMenu("clanHideoutMenu");
-            //    },
-            //    isLeave: false, index: 2);
+            //hideout -> Recruit Outlaws to party
+            TextObject priceValueOutlaws = new TextObject("{HIDEOUT_PRICE_VALUE}");
+            campaignGameStarter.AddGameMenuOption("hideout_place", "hideout_place_recruitOutlawsParty", "[{HIDEOUT_PRICE_VALUE}{GOLD_ICON}] Recruter les hors-la-loi dans la troupe",
+                a =>
+                {
+                    int value = ClanHideout.CalculateHideoutRecruitValue();
+                    a.optionLeaveType = GameMenuOption.LeaveType.TroopSelection;
+                    a.Tooltip = Hero.MainHero.Gold >= value ? null : new TextObject("Pas assez d'or");
+                    a.IsEnabled = Hero.MainHero.Gold >= value;
+                    return _clanHideout.Racketeering_Level > 0;
+                },
+                _ => RecruitHideoutOutlawPartiesConsequence(2),
+                isLeave: false, index: -1);
+
+            //hideout -> Recruit Outlaws to ClanHideout
+            campaignGameStarter.AddGameMenuOption("hideout_place", "hideout_place_recruitOutlawsPlank", "[{HIDEOUT_PRICE_VALUE}{GOLD_ICON}] Recruter les hors-la-loi dans la planque",
+                a =>
+                {
+                    int value = ClanHideout.CalculateHideoutRecruitValue();
+                    a.optionLeaveType = GameMenuOption.LeaveType.TroopSelection;
+                    a.Tooltip = Hero.MainHero.Gold >= value ? null : new TextObject("Pas assez d'or");
+                    a.IsEnabled = Hero.MainHero.Gold >= value;
+                    return _clanHideout.Racketeering_Level > 0;
+                },
+                _ => RecruitHideoutOutlawPartiesConsequence(1),
+                isLeave: false, index: -1);
         }
+
+        public void RefreshHideoutMenuText()
+        {
+            if (Settlement.CurrentSettlement != null && Settlement.CurrentSettlement.IsHideout)
+            {
+                GameTexts.SetVariable("HIDEOUT_PRICE_VALUE", ClanHideout.CalculateHideoutRecruitValue());
+            }
+        }
+
+        //Mode = 1 => Send to ClanHideoutGangStrenght
+        //Mode = 2 => Send to Party
+        public void RecruitHideoutOutlawPartiesConsequence(int mode)
+        {
+            List<PartyBase> partiesGetDefenderParties = Settlement.CurrentSettlement.Hideout.GetDefenderParties(MapEvent.BattleTypes.Hideout).Where(party => party.NumberOfAllMembers != 0).ToList();
+            foreach (PartyBase partyBase in partiesGetDefenderParties)
+            {
+                if (partyBase.MemberRoster != null)
+                {
+                    if (mode == 1)
+                    {
+                        foreach (TroopRosterElement troop in partyBase.MemberRoster.GetTroopRoster()) _clanHideout.BanditsGangStrenght += troop.Character.Tier;
+                    }
+                    else //mode == 2
+                    {
+                        PartyBase.MainParty.AddMembers(partyBase.MemberRoster);
+                    }
+
+                }
+            }
+            Settlement settlement = Settlement.CurrentSettlement;
+
+            //Destroy other parties
+            foreach (MobileParty party in Settlement.CurrentSettlement.Parties)
+            {
+                if (!party.IsMainParty)
+                {
+                    party.RemoveParty();
+                }
+            }
+            //Leave hideout
+            PlayerEncounter.LeaveSettlement();
+            PlayerEncounter.Finish(true);
+            Campaign.Current.SaveHandler.SignalAutoSave();
+
+            //Destroy Hideout
+            settlement.IsActive = false;
+        }
+        #endregion
+
+
         public void RegisterRacketeeringMenuOptions(CampaignGameStarter campaignGameStarter)
         {
             TextObject racketeeringText = new TextObject("{NULNWOODPRODUCTIONTEXTUP}");
@@ -288,7 +352,7 @@ namespace PrestigiousBank
                     SoundEvent.PlaySound2D(SoundEvent.GetEventIdFromString("event:/ui/notification/coins_negative"));
                     _clanHideout.Racketeering_Level += 1;
                     Hero.MainHero.ChangeHeroGold(-_clanHideout.Racketeering_Level * ClanHideout.Racketeering_LevelPrice);
-                    SetRacketeeringMenuText();
+                    RefreshRacketeeringMenuText();
                     GameMenu.SwitchToMenu("clanHideout_racketeering_menu");
                     CreateOrUpdateGameMenuDesc(campaignGameStarter);
                     PrestigiousBank.LogMessage("Amélioration des techniques d'extorsion");
@@ -315,20 +379,10 @@ namespace PrestigiousBank
 
         }
 
-        public void SetRacketeeringMenuText()
+        public void RefreshRacketeeringMenuText()
         {
             TextObject levelUpText = new TextObject("[" + _clanHideout.Racketeering_Level * ClanHideout.Racketeering_LevelPrice + "{GOLD_ICON}] Améliorer les techniques d'extorsion");
             GameTexts.SetVariable("NULNWOODPRODUCTIONTEXTUP", levelUpText);
         }
     }
 }
-
-
-
-
-/*
-
-
-    }
-}
-*/

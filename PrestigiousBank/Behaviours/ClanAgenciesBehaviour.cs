@@ -132,7 +132,7 @@ namespace PrestigiousBank
 
             //Clan Hideout Racketeering
             
-            if (settlement != null && settlement.IsTown && mobileParty.IsVillager)
+            if (settlement != null && settlement.IsTown && mobileParty != null  && mobileParty.IsVillager && settlement.Town.StringId != ClanHideoutCampaignBehavior.ClanHideout.TownID )
             {
                 ClanAgency agency = ClanAgencies.GetAgencyByTownStringId(settlement.Town.StringId);
                 if (agency != null)

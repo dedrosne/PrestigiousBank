@@ -152,6 +152,8 @@ La capitale de chaque faction ne peut pas être assiégée
 Prix de construction de la planque : 50_000
 Level <= ClanLevel
 
+GangStrenght : Cost 0.1gold/day / strenght (à changer car actuellement réglé à 1)
+
 Level 1 :
 Racket Level 1-5 : 10_000*level | Peut pas être supérieur au niveau du clan
     => Racketer les villageois qui entrent dans la ville=> Don de troupes "Bandits" pour fonctionner, et récupère une partie du butin dans un stash.
@@ -159,6 +161,9 @@ Racket Level 1-5 : 10_000*level | Peut pas être supérieur au niveau du clan
     Force de gang impliquée : 10*level
     Chance d'échec+perte des forces impliquées : 
         valeur récupérée /10 / level => Niveau 1 : 2% pour 20 récupéré, 10% pour 100 (max) récupéré
+        valRécupérée/level => Valeur absolue
+        /MaximumValue =>chiffre entre 0 et 1
+        * 10 => %Failure
     
 Level 2 :
     Pouvoir recruter des bandits dans les bas-fonds => Coûte argent =>Implique d'avoir plusieurs upgrade uniques pour avoir un systèmes intéressant à mettre en place
@@ -170,14 +175,16 @@ Bombe dans un camp de Party : Peut blesser un certain nombre de troupes dans une
 
 Level 5 :    
 - Assassin => Fort taux d'échec, mais gain d'influence ? Ou assassiner un seigneur/personnage ?
+- Poser une bombe => Ouvrir les portes ou détruire les murs
 
 
-
-Une fois débloqué, peut recruter dans les hideout
+Une fois débloqué, peut recruter dans les hideout dans la party ou envoyer dans la planque
 
 Porte dérobée : Permet d'entrer dans la ville même si en guerre
 
+Payer pour Améliorer la fenêtre d'heure d'attaque des planques
 
+Pouvoir désactiver le ClanHideout dans la ville de 
 
 Drakenhof : Perks pour Compagnions ?
 

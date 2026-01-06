@@ -4,6 +4,9 @@ using System.Diagnostics.Eventing.Reader;
 using System.Globalization;
 using System.Linq;
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.Extensions;
+using TaleWorlds.CampaignSystem.Issues;
+using TaleWorlds.CampaignSystem.MapEvents;
 using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.Roster;
 using TaleWorlds.CampaignSystem.Settlements;
@@ -35,10 +38,13 @@ namespace PrestigiousBank
         private ItemRoster ItemStash { get; set; }
 
         public static int HideoutLevelPrice = 50_000;
+        public static float GangStrenghtUpkeep = 0.1f;
         public static int Racketeering_LevelPrice = 10_000;
         public static int Racketeering_MinimumValue = 20;
         public static int Racketeering_MaximumValue = 100;
         public static int Racketeering_BanditStrenghtNeededPerLevel = 10;
+
+        public static int Hideout_CostPerUnitRecruitTier = 10;
 
         private Town _town;
 
@@ -90,7 +96,9 @@ namespace PrestigiousBank
 
         public bool Racketeering_CalculateSuccess(ItemRoster roster)
         {
-            return roster.TotalValue / (10 * Racketeering_Level) <= new Random().Next(0,100);
+            float random = new Random().Next(0, 100);
+            float val = ((float)(roster.TotalValue) / (float)(Racketeering_Level) / (float)(Racketeering_MaximumValue  )) * 10f;
+            return val <= random;
         }
 
         //Need to have verified before that the city is eligilable (ClanHideout or ClanAgency)
@@ -99,44 +107,79 @@ namespace PrestigiousBank
             if (mobileParty is null || !mobileParty.IsVillager) return;
             if (settlement == null || !settlement.IsTown) return;
             if (Racketeering_Level == 0) return;
-            if (((int)(Racketeering_Level * Racketeering_BanditStrenghtNeededPerLevel * agencyFactor)) < BanditsGangStrenght) return;
+            if (((int)(Racketeering_Level * Racketeering_BanditStrenghtNeededPerLevel * agencyFactor)) > BanditsGangStrenght) return;
 
             if (mobileParty.ItemRoster.Count != 0)
             {
                 int maxRacketValue = (int)(Racketeering_CalculateMaxValueTaken()*agencyFactor);
                 int remainingToRacket = maxRacketValue;
-                ItemRoster rosterTmp = new ItemRoster();
-                while (mobileParty.ItemRoster.Count != 0)
+                ItemRoster rosterTakenTmp = new ItemRoster();
+
+
+                ItemRoster mobilePartyRosterTmp = new ItemRoster();
+                foreach (var item in mobileParty.ItemRoster)
                 {
-                    var equipmentToRacket = mobileParty.ItemRoster[0].EquipmentElement;
-                    if (equipmentToRacket.ItemValue > remainingToRacket)
+                    if (item.EquipmentElement.Item.StringId != "sumpter_horse")
+                    {
+                        mobilePartyRosterTmp.Add(item);
+                    }
+                }
+                while (mobilePartyRosterTmp.Count != 0)
+                {
+                    var equipmentToRacket = mobilePartyRosterTmp[0].EquipmentElement;
+
+                    if (equipmentToRacket.ItemValue <= remainingToRacket)
                     //take equipment
                     {
                         remainingToRacket -= equipmentToRacket.ItemValue;
-                        rosterTmp.AddToCounts(mobileParty.ItemRoster[0].EquipmentElement, 1);
+                        rosterTakenTmp.AddToCounts(equipmentToRacket, 1);
+                        mobileParty.ItemRoster.AddToCounts(equipmentToRacket, -1);
                     }
                     else break;//Not enough value anymore for items to racket
                 }
 
-                if (rosterTmp.Count != 0)
+                if (rosterTakenTmp.Count != 0)
                 {
-                    if (Racketeering_CalculateSuccess(rosterTmp)) //Case of success
+                    if (Racketeering_CalculateSuccess(rosterTakenTmp)) //Case of success
                     {
-                        GetItemStash().Add(rosterTmp);
-                        foreach (var item in  rosterTmp)
-                        {
-                            mobileParty.ItemRoster.Remove(item);
-                        }
+                        GetItemStash().Add(rosterTakenTmp);
+
                     }
 
                     else //Fail of racketeering.
                     {
                         BanditsGangStrenght -= Racketeering_Level * Racketeering_BanditStrenghtNeededPerLevel;
                         PrestigiousBank.LogMessage("Racket fail in " + settlement.GetName().Value);
+                        //Restitue Items to Mobile Party
+                        foreach (var item in rosterTakenTmp)
+                        {
+                            mobileParty.ItemRoster.Add(item);
+                        }
                     }
                 }
 
             }
+        }
+
+        public static int CalculateHideoutRecruitValue()
+        {
+            int costValue = 0;
+            if (Settlement.CurrentSettlement != null && Settlement.CurrentSettlement.IsHideout)
+            {
+
+
+                List<PartyBase> partiesGetDefenderParties = Settlement.CurrentSettlement.Hideout.GetDefenderParties(MapEvent.BattleTypes.Hideout).Where(party => party.NumberOfAllMembers != 0).ToList();
+
+                foreach (PartyBase partyBase in partiesGetDefenderParties)
+                {
+                    if (partyBase.MemberRoster != null)
+                    {
+                        foreach (TroopRosterElement troop in partyBase.MemberRoster.GetTroopRoster()) costValue += troop.Character.Tier;
+                    }
+                }
+            }
+
+            return costValue;
         }
     }
 }

@@ -166,7 +166,7 @@ namespace PrestigiousBank
 
             //Clan Agencies Upkeep
             ClanAgenciesBehaviour ClanAgenciesBehaviour = Campaign.Current?.GetCampaignBehavior<ClanAgenciesBehaviour>();
-            if (NulnFactoryCampaignBehavior == null) return;
+            if (ClanAgenciesBehaviour == null) return;
             if (ClanAgenciesBehaviour.ClanAgencies.GetClanAgenciesList().Count > 0)
             {
                 int agencyUpkeep = 0;
@@ -177,6 +177,14 @@ namespace PrestigiousBank
                 result.Add(-agencyUpkeep, new TextObject("Entretien des Agences"));
             }
 
+            //Clan Hideout Gangstrenght Upkeep
+            ClanHideoutCampaignBehavior ClanHideoutCampaignBehavior = Campaign.Current?.GetCampaignBehavior<ClanHideoutCampaignBehavior>();
+            if (ClanHideoutCampaignBehavior == null) return;
+            if (ClanHideoutCampaignBehavior.ClanHideout.BanditsGangStrenght > 0)
+            {
+                int value =(int) (ClanHideoutCampaignBehavior.ClanHideout.BanditsGangStrenght * ClanHideout.GangStrenghtUpkeep);
+                result.Add(-ClanHideoutCampaignBehavior.ClanHideout.BanditsGangStrenght*ClanHideout.GangStrenghtUpkeep, new TextObject("Partage du butin de la planque"));
+            }
 
         }
     }
