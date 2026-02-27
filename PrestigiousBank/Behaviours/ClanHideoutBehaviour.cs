@@ -75,7 +75,7 @@ namespace PrestigiousBank
             CampaignEvents.OnSessionLaunchedEvent.AddNonSerializedListener((object)this, new Action<CampaignGameStarter>(this.OnSessionLaunched));
             CampaignEvents.SettlementEntered.AddNonSerializedListener(this, new Action<MobileParty, Settlement, Hero>(this.SettlementEntered));
             CampaignEvents.DailyTickEvent.AddNonSerializedListener(this, this.DailyTickEvent);
-
+            CampaignEvents.OnPlayerEarnedGoldFromAssetEvent.AddNonSerializedListener(this, new Action<DefaultClanFinanceModel.AssetIncomeType, int>(this.OnPlayerEarnedGoldFromAssetEvent));
         }
 
         private void OnSessionLaunched(CampaignGameStarter campaignGameStarter)
@@ -89,11 +89,25 @@ namespace PrestigiousBank
         {
             //Ajout de l'XP
             Hero.MainHero.AddSkillXp(DefaultSkills.Roguery, ClanHideout.GetDailySkillXP());
-
-
-
-
         }
+
+        public void HourlyTickEvent()
+        {
+            var time = Campaign.CurrentTime;
+
+            if ((int)time % 24 == 14)
+            {
+                //Casino
+                if (ClanHideout.Casino_Level > 0)
+                {
+                    ClanHideout.Casino_Benefits = new Random().Next(ClanHideout.CasinoMinValue, ClanHideout.CasinoMaxValue);
+                }
+
+                NulnFactory.PreviousDayBenefits = NulnFactory.Benefits;
+                NulnFactory.Benefits = 0;
+            }
+        }
+
 
 
 
@@ -118,7 +132,7 @@ namespace PrestigiousBank
             if (settlement != null && settlement.IsTown && settlement.Town.StringId == ClanHideout.TownID && mobileParty != null && mobileParty.IsVillager)
                 ClanHideout.Apply_Racketeering(mobileParty, settlement);
             
-
+            
 
         }
 

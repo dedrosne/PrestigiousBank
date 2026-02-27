@@ -121,7 +121,7 @@ namespace PrestigiousBank
                 else NulnFactory.ConsumeRessourcesToRun();
 
                 //Gestion des Workshops si production MachiningPart
-                if (NulnFactory.chosenProduction == NulnFactory.PossibleProduction.MachiningPart && NulnFactory.NbDaysLeftBetweenProductionChange == 0)//Check days left not necessary, but optimization ?
+                if (NulnFactory.ChosenProduction == NulnFactory.PossibleProduction.MachiningPart && NulnFactory.NbDaysLeftBetweenProductionChange == 0)//Check days left not necessary, but optimization ?
                 {
                     Workshop[] workshops = NulnFactory.Ville.Town.Workshops;
                     if (workshops.Length != 0)

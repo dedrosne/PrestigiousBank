@@ -29,7 +29,8 @@ Altdorf :
 Drakenhof : 
     - Argent :
     - Or : XP dans le Charm
-    - Platine : Acheter des points de focus + attribute (50_000 pour focus, 100_000 pour attribute)
+    - Platine : Acheter des points de focus + attribute (50_000 pour focus, 60_000 pour attribute)
+    - Diamant : Perks pour Compagnions => 25_000 pour focus, 30_000 pour attibut
 
 Couronne : 
     - Argent : Chevalerie : 10000=>1 Chevalerie/jour
@@ -121,7 +122,7 @@ XP en engineering : 100*FactoryLevel+20*WoodLevel+20*CharcoalLevel+20*IronLevel+
 ////////////////////////Agence de Clan
 
 Agence : 
-Etend l'activité Nuln/Marieembourg/Vampire => Nom ?
+Etend l'activité Nuln et de la Planque à la ville dans laquelle elle est construite
 Agence du Clan => -20g/jour/niveau => Level augmente effets 10/20/30/40/50%
     20_000 * level acheté
 
@@ -141,6 +142,35 @@ Téléportation entre agences :
     - Une fois débloqué à Altdorf
      20_000 pour construire le téléporteur dans l'agence (niveau d'agence requis : 4), puis 20*taille d'armée pour se téléporter
 
+Porte Secrète :
+    - Une fois débloqué dans la Planque :
+    12_000 pour construire une entrée secrète dans la ville (niveau d'agence requis : 2)
+
+////////////////////////////////////////Gang => Clan Hideout
+
+Prix de construction de la planque : 50_000
+Level <= ClanLevel
+
+GangStrenght : Cost 0.1gold/day / strenght
+
+
+Level 1 :
+Une fois débloqué, peut recruter dans les hideout dans la party ou envoyer dans la planque
+
++Activité de Racket Level 1-5 : 10_000*level | Peut pas être supérieur au niveau du clan
+    => Racketer les villageois qui entrent dans la ville=> Don de troupes "Bandits" pour fonctionner, et récupère une partie du butin dans un stash.
+    valeur max des Items récupérés : 20-100 * level
+    Force de gang impliquée : 25*level
+    Chance d'échec+perte des forces impliquées : 
+        valeur récupérée /30 / level => Niveau 1 : 2% pour 20 récupéré, 30% pour 100 (max) récupéré
+        valRécupérée/level => Valeur absolue
+        /MaximumValue =>chiffre entre 0 et 1
+        * 10 => %Failure
+
+Level 2 :
+Porte dérobée : Permet d'entrer dans la ville même si en guerre
+
+
 ////////////////////////////Protection des capitales
 La capitale de chaque faction ne peut pas être assiégée
 
@@ -149,26 +179,15 @@ La capitale de chaque faction ne peut pas être assiégée
 #In Progress
 #########################################################
 
-Prix de construction de la planque : 50_000
-Level <= ClanLevel
-
-GangStrenght : Cost 0.1gold/day / strenght (à changer car actuellement réglé à 1)
-
-Level 1 :
-Racket Level 1-5 : 10_000*level | Peut pas être supérieur au niveau du clan
-    => Racketer les villageois qui entrent dans la ville=> Don de troupes "Bandits" pour fonctionner, et récupère une partie du butin dans un stash.
-    valeur max des Items récupérés : 20-100 * level
-    Force de gang impliquée : 10*level
-    Chance d'échec+perte des forces impliquées : 
-        valeur récupérée /10 / level => Niveau 1 : 2% pour 20 récupéré, 10% pour 100 (max) récupéré
-        valRécupérée/level => Valeur absolue
-        /MaximumValue =>chiffre entre 0 et 1
-        * 10 => %Failure
-    
-Level 2 :
-    Pouvoir recruter des bandits dans les bas-fonds => Coûte argent =>Implique d'avoir plusieurs upgrade uniques pour avoir un systèmes intéressant à mettre en place
+   
 
 Level 3 : Débloque Faux monayer de l'usine de Nuln
+Recruitment rate of prisoners (comme 2eme perk de leadership)
+
+Level 4 : Casino :
+    Chaque jour gagne des golds entre -1000 et +1200 * level
+    Amélioration possible pour shifter ce nombre
+
 
 Level 4 : Sabotage : 
 Bombe dans un camp de Party : Peut blesser un certain nombre de troupes dans une party dans la ville
@@ -178,15 +197,12 @@ Level 5 :
 - Poser une bombe => Ouvrir les portes ou détruire les murs
 
 
-Une fois débloqué, peut recruter dans les hideout dans la party ou envoyer dans la planque
-
-Porte dérobée : Permet d'entrer dans la ville même si en guerre
 
 Payer pour Améliorer la fenêtre d'heure d'attaque des planques
 
 Pouvoir désactiver le ClanHideout dans la ville de 
 
-Drakenhof : Perks pour Compagnions ?
+
 
 ######################################################
 #Todo
@@ -202,7 +218,7 @@ Choisir la production :
 	- Augmenter la prosperité ? => Outils de production ? Nourriture ? => 
     - Faux Monayer : Argent qui produit des pièces ? => beaucoup de gold mais diminue la prosperité
             Selon la sécurité/milice, chance de perdre l'usine/comptoir ? Chance de ne pas produire+Perdre stock argent brut => Upgrade pour cacher la production
-
+Augmenter vitesse de construction des engins de siege
 
 1 Argile = 1fT
 Level 1 1=>1
@@ -211,11 +227,15 @@ Level 3 8=>10
 Level 4 12=>20
 Level 5 25=>50
 
+Permets à sesd caravanes qui passent de récupérer automatiquement le butin de la planque si voulu, et le vendre
 
 
 Temple de son Dieu/religion
     
 
+Clan Hideout :
+Level 2 :
+    Pouvoir recruter des bandits dans les bas-fonds => Coûte argent =>Implique d'avoir plusieurs upgrade uniques pour avoir un systèmes intéressant à mettre en place
 
 
 
@@ -224,18 +244,22 @@ Waldenhof : Acheter des collecteurs d'âmes
 Crypte vampire : Collecteur d'âmes=>Batailles à moins de Xmètres 
 
 
+
 Or
     - Trade : Marieembourg
     - 2handed : Carroburg
     - Gunpowder : Hergig
     - Bow : Halls of Araereth
-    - Leadership : Paravon ?
 
 Effets Secondaires
-Marieembroug : Acheter améliorations pour caravanes (assurances ? Attirent moins ?)+ Gold pour chaque passage de caravane dans la ville+
+Hergig : Augmenter la fenêtre horaire d'attaque de Hideout
+Marieembroug : Acheter améliorations pour caravanes (assurances ? Attirent moins ?)+ Gold pour chaque passage de caravane dans la ville+caravanes:Vendent les biens du ClanHideout
 Couronne : Augmenter le nombre de compagnions
 Averheim : HP des compagnions ?
-Recruitment rate of prisoners (comme 2eme perk de leadership)
+Eonir : Imposer guerre/Paix
+
+Diamant Middenheim : + de Party
+
 
 PV du cheval
 Envoyer Or à un clan de son royaume=>Niveau Or ?
@@ -245,7 +269,6 @@ Altdorf : possibilité d'imposer la paix entre factions de l'empire + imposer gu
 Capturé = On perd tout son argent
 
 MarieEmbourg : Acheter des droits de péage (argent par caravane). + Meilleurs prix pour caravanes, assurance pour Caravane, etc
-		○ Marchands : + de gold : Augmenter liquidités (seulement les lieux avec un TradingPost) => 20 000 -> 1000
         + Limite de Workshop supplémentaire
 	
 Bretonie : Villages/Agriculture => Une foi le village détenu, déposer des prisonniers pour les recruter comme serfs, et générer du revenu.
@@ -254,8 +277,12 @@ Bretonie : Villages/Agriculture => Une foi le village détenu, déposer des pris
 Chez les nains : Endurance de forge qui se régénère
 + d'Endurance
 
+ClanHideout : Ambush caravans ? Party moins visible
+
+Trier la liste de téléportation par ordre alphabétique
 
 
+Event Invasion du chaos
 
 ///////////////////////////////Companions
 /////Get companions :

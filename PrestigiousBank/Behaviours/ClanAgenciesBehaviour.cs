@@ -99,7 +99,7 @@ namespace PrestigiousBank
             {
 
                 //Gestion des Workshops si production MachiningPart
-                if (NulnFactoryCampaignBehavior.NulnFactory.chosenProduction == NulnFactory.PossibleProduction.MachiningPart 
+                if (NulnFactoryCampaignBehavior.NulnFactory.ChosenProduction == NulnFactory.PossibleProduction.MachiningPart 
                     && NulnFactoryCampaignBehavior.NulnFactory.NbDaysLeftBetweenProductionChange == 0) //Check days left not necessary, but optimization ?
                 {
                     if (ClanAgencies.GetClanAgenciesList().Count > 0) 
@@ -115,7 +115,7 @@ namespace PrestigiousBank
                                     //PrestigiousBank.LogMessage("Workshop profit :" + workshop.ProfitMade);
                                     //PrestigiousBank.LogMessage("Workshop Capital :" + workshop.Capital);
                                     //PrestigiousBank.LogMessage("Workshop Expense :" + workshop.Expense);
-                                    NulnFactoryCampaignBehavior.NulnFactory.ApplyWorkshopGains(workshop, agency.LevelAgency * ClanAgency.AgencyProductionFactorPerLevel);
+                                    NulnFactoryCampaignBehavior.NulnFactory.ApplyWorkshopGains(workshop, agency.SelectedLevel * ClanAgency.AgencyProductionFactorPerLevel);
                                 }
                             }
                         }

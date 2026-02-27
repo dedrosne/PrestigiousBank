@@ -27,6 +27,9 @@ namespace PrestigiousBank
         [SaveableProperty(4)]
         public bool IsTeleportUnlocked { get;set;}
 
+        [SaveableProperty(5)]
+        public bool IsSecretEntranceUnlocked { get; set; }
+
         private Town _town;
 
         public Town Town { 
@@ -50,6 +53,9 @@ namespace PrestigiousBank
         public static int PriceToBuildTeleporter = 20_000;
         public static int PriceToTeleportPerUnir = 20;
         public static int LevelToBeAbleToBuildTeleporter = 4;
+
+        //Secret Entrance
+        public static int PriceToBuildSecretEntrance = 12_000;
 
         public ClanAgency(string townID)
         {

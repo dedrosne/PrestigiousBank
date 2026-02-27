@@ -183,7 +183,7 @@ namespace PrestigiousBank
             if (ClanHideoutCampaignBehavior.ClanHideout.BanditsGangStrenght > 0)
             {
                 int value =(int) (ClanHideoutCampaignBehavior.ClanHideout.BanditsGangStrenght * ClanHideout.GangStrenghtUpkeep);
-                result.Add(-ClanHideoutCampaignBehavior.ClanHideout.BanditsGangStrenght*ClanHideout.GangStrenghtUpkeep, new TextObject("Partage du butin de la planque"));
+                result.Add(-value, new TextObject("Partage du butin de la planque"));
             }
 
         }

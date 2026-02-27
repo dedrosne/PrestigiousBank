@@ -83,7 +83,8 @@ namespace PrestigiousBank
                                                         if (currentAgency == null || currentAgency.LevelAgency == 0) return false;
                                                         else return true;
                                                     },
-                                                    _ => { GameMenu.SwitchToMenu("clanAgency"); CreateOrUpdateGameMenuDesc(campaignGameStarter); },
+                                                    _ => { GameMenu.SwitchToMenu("clanAgency"); CreateOrUpdateGameMenuDesc(campaignGameStarter);
+                                                    },
                                                     isLeave: false,
                                                     index: 1);
 
@@ -93,13 +94,24 @@ namespace PrestigiousBank
                                                     "Gérer l'usine de Nuln",
                                                     args =>
                                                     {
-                                                        ClanAgency currentAgency = ClanAgencies.GetAgencyByTownStringId(Settlement.CurrentSettlement.Town.StringId);
                                                         args.optionLeaveType = GameMenuOption.LeaveType.Manage;
-                                                        return true;
+                                                        return NulnFactoryCampaignBehavior.NulnFactory.FactoryLevel>0;
                                                     },
                                                     _ => { GameMenu.SwitchToMenu("nulnFactory_menu"); },
-                                                    isLeave: false,
-                                                    index: 1);
+                                                    isLeave: false);
+
+            //Clan Hideout
+            //Nuln Factory
+            campaignGameStarter.AddGameMenuOption("clanAgency",
+                                                    "clanAgency_clanHideout",
+                                                    "Gérer a planque du Clan",
+                                                    args =>
+                                                    {
+                                                        args.optionLeaveType = GameMenuOption.LeaveType.Manage;
+                                                        return ClanHideoutCampaignBehavior.ClanHideout.LevelHideout>0;
+                                                    },
+                                                    _ => { GameMenu.SwitchToMenu("clanHideoutMenu"); },
+                                                    isLeave: false);
 
             //Acheter la téléportation pour l'agence
             campaignGameStarter.AddGameMenuOption("clanAgency",
@@ -119,15 +131,16 @@ namespace PrestigiousBank
                                             Hero.MainHero.ChangeHeroGold(-ClanAgency.PriceToBuildTeleporter);
                                             GameMenu.SwitchToMenu("clanAgency");
                                         },
-                                        isLeave: false,
-                                        index: 2);
+                                        isLeave: false);
 
             //Téléportation entre agences
+            TextObject TeleportationPriceText = new TextObject("{TELEPORTATION_PRICE_TEXT}");
             campaignGameStarter.AddGameMenuOption("clanAgency",
                                         "clanAgency_teleport",
-                                        "["+ ClanAgency.CalculatePriceToTeleport() + "{GOLD_ICON}] Se téléporter dans une autre agence",
+                                        TeleportationPriceText.Value,
                                         args =>
                                         {
+                                            GameTexts.SetVariable("TELEPORTATION_PRICE_TEXT", "[" + ClanAgency.CalculatePriceToTeleport() + "{GOLD_ICON}] Se téléporter dans une autre agence");
                                             ClanAgency currentAgency = ClanAgencies.GetAgencyByTownStringId(Settlement.CurrentSettlement.Town.StringId);
                                             args.optionLeaveType = GameMenuOption.LeaveType.OrderTroopsToAttack;
                                             args.IsEnabled = Hero.MainHero.Gold >= ClanAgency.CalculatePriceToTeleport() && currentAgency.IsTeleportUnlocked && ClanAgenciesBehaviour.ClanAgencies.GetAgenciesTeleportUnblocked().Count >= 2;
@@ -137,8 +150,30 @@ namespace PrestigiousBank
                                                 return currentAgency.IsTeleportUnlocked;
                                         },
                                         _ => ChooseTeleportOptions(),
-                                        isLeave: false,
-                                        index: 3);
+                                        isLeave: false);
+
+            //Build Secret Entrance
+            campaignGameStarter.AddGameMenuOption("clanAgency",
+                                        "clanAgency_BuySecretEntrance",
+                                        "[" + ClanAgency.PriceToBuildSecretEntrance + "{GOLD_ICON}] Creuser un passage secret via les et l'extérieur de la ville",
+                                        args =>
+                                        {
+                                            ClanAgency currentAgency = ClanAgencies.GetAgencyByTownStringId(Settlement.CurrentSettlement.Town.StringId);
+                                            args.optionLeaveType = GameMenuOption.LeaveType.Craft;
+                                            if (currentAgency.LevelAgency < 2) args.Tooltip = new TextObject("Agence niveau 2 requis");
+                                            else if (Hero.MainHero.Gold < ClanAgency.PriceToBuildTeleporter) args.Tooltip = new TextObject("Pas assez d'or");
+                                            args.IsEnabled = currentAgency.LevelAgency >= 2 && Hero.MainHero.Gold >= ClanAgency.PriceToBuildTeleporter;
+                                            return ClanHideoutCampaignBehavior.ClanHideout.IsSecretEntranceUnlocked && !currentAgency.IsSecretEntranceUnlocked;
+                                        },
+                                        _ => {
+                                            ClanAgencies.GetAgencyByTownStringId(Settlement.CurrentSettlement.Town.StringId).IsSecretEntranceUnlocked = true;
+                                            Hero.MainHero.ChangeHeroGold(-ClanAgency.PriceToBuildSecretEntrance);
+                                            SoundEvent.PlaySound2D(SoundEvent.GetEventIdFromString("event:/ui/notification/coins_negative"));
+                                            GameMenu.SwitchToMenu("clanAgency");
+                                        },
+                                        isLeave: false
+                                        //index: 4
+                                        );
 
 
             //EmptySpaces
@@ -159,16 +194,21 @@ namespace PrestigiousBank
                                         {
                                             ClanAgency currentAgency = ClanAgencies.GetAgencyByTownStringId(Settlement.CurrentSettlement.Town.StringId);
                                             args.optionLeaveType = GameMenuOption.LeaveType.Craft;//TODO
-                                            args.Tooltip = Clan.PlayerClan.Tier >= 5 ? null : new TextObject("Clan Tiers 5 nécessaire");
-                                            args.IsEnabled = Clan.PlayerClan.Tier >= 5;
+                                            if (Clan.PlayerClan.Tier < 5) args.Tooltip = new TextObject("Clan Tiers 5 nécessaire");
+                                            else if (Hero.MainHero.Gold < ClanAgencies.UpgradeMaxLimitAgencyCost) args.Tooltip = new TextObject("Pas assez d'or");
+                                            args.IsEnabled = Clan.PlayerClan.Tier >= 5 && Hero.MainHero.Gold >= ClanAgencies.UpgradeMaxLimitAgencyCost;
                                             if (currentAgency == null || currentAgency.LevelAgency != 5) return false;
                                             else return true;
                                         },
                                         _ => {
+                                            Hero.MainHero.ChangeHeroGold(-ClanAgencies.UpgradeMaxLimitAgencyCost);
+                                            SoundEvent.PlaySound2D(SoundEvent.GetEventIdFromString("event:/ui/notification/coins_negative"));
                                             ClanAgencies.MaxLimitAgencyUpgradeBought += 1;
+                                            CreateOrUpdateGameMenuDesc(campaignGameStarter);
                                             GameMenu.SwitchToMenu("clanAgency"); },
-                                        isLeave: false,
-                                        index: 1);
+                                        isLeave: false
+                                        //index: 1
+                                        );
 
             //EmptySpaces
             campaignGameStarter.AddGameMenuOption("clanAgency", "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
@@ -392,6 +432,7 @@ namespace PrestigiousBank
 
 
         #endregion
+
 
         public void ChooseTeleportOptions()
         {

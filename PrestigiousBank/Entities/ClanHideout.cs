@@ -37,6 +37,18 @@ namespace PrestigiousBank
         [SaveableProperty(6)]
         private ItemRoster ItemStash { get; set; }
 
+        [SaveableProperty(7)]
+        public bool IsSecretEntranceUnlocked { get; set; }
+
+        [SaveableProperty(8)]
+        public int Casino_Level { get; set; }
+
+        [SaveableProperty(9)]
+        public int Casino_IncreaseBought { get; set; }
+
+        [SaveableProperty(10)]
+        public int Casino_Benefits { get; set; }
+
         public static int HideoutLevelPrice = 50_000;
         public static float GangStrenghtUpkeep = 0.1f;
         public static int Racketeering_LevelPrice = 10_000;
@@ -44,7 +56,24 @@ namespace PrestigiousBank
         public static int Racketeering_MaximumValue = 100;
         public static int Racketeering_BanditStrenghtNeededPerLevel = 10;
 
+        public static int Casino_LevelPrice = 40_000;
+        public static int Casino_MinimumValue = -2000;
+        public static int Casino_MaximumValue = 2400;
+        public static int Casino_IncreaseCost = 1000;
+        public static int Casino_IncreaseMinValue = -20;
+        public static int Casino_IncreaseMaxValue = 24;
+
         public static int Hideout_CostPerUnitRecruitTier = 10;
+        public static int Hideout_UnblockSecretEntrancePrice = 30_000;
+
+        public int CasinoMinValue {
+            get { return Casino_Level * Casino_MinimumValue + Casino_IncreaseBought * Casino_IncreaseMinValue; }
+        }
+
+        public int CasinoMaxValue
+        {
+            get { return Casino_Level * Casino_MaximumValue + Casino_IncreaseBought * Casino_IncreaseMaxValue; }
+        }
 
         private Town _town;
 
@@ -94,10 +123,10 @@ namespace PrestigiousBank
             return random * Racketeering_Level;
         }
 
-        public bool Racketeering_CalculateSuccess(ItemRoster roster)
+        public bool Racketeering_CalculateSuccess(ItemRoster roster, float agencyFactor)
         {
             float random = new Random().Next(0, 100);
-            float val = ((float)(roster.TotalValue) / (float)(Racketeering_Level) / (float)(Racketeering_MaximumValue  )) * 10f;
+            float val = ((float)(roster.TotalValue) / (float)(Racketeering_Level) / (Racketeering_MaximumValue * agencyFactor)  ) * 30f;
             return val <= random;
         }
 
@@ -116,6 +145,7 @@ namespace PrestigiousBank
                 ItemRoster rosterTakenTmp = new ItemRoster();
 
 
+                //Copy party roster to tmp
                 ItemRoster mobilePartyRosterTmp = new ItemRoster();
                 foreach (var item in mobileParty.ItemRoster)
                 {
@@ -124,6 +154,8 @@ namespace PrestigiousBank
                         mobilePartyRosterTmp.Add(item);
                     }
                 }
+
+                //try to steal
                 while (mobilePartyRosterTmp.Count != 0)
                 {
                     var equipmentToRacket = mobilePartyRosterTmp[0].EquipmentElement;
@@ -140,7 +172,7 @@ namespace PrestigiousBank
 
                 if (rosterTakenTmp.Count != 0)
                 {
-                    if (Racketeering_CalculateSuccess(rosterTakenTmp)) //Case of success
+                    if (Racketeering_CalculateSuccess(rosterTakenTmp, agencyFactor)) //Case of success
                     {
                         GetItemStash().Add(rosterTakenTmp);
 
@@ -148,7 +180,7 @@ namespace PrestigiousBank
 
                     else //Fail of racketeering.
                     {
-                        BanditsGangStrenght -= Racketeering_Level * Racketeering_BanditStrenghtNeededPerLevel;
+                        BanditsGangStrenght -=(int) ( Racketeering_Level * Racketeering_BanditStrenghtNeededPerLevel*agencyFactor);
                         PrestigiousBank.LogMessage("Racket fail in " + settlement.GetName().Value);
                         //Restitue Items to Mobile Party
                         foreach (var item in rosterTakenTmp)
@@ -174,12 +206,14 @@ namespace PrestigiousBank
                 {
                     if (partyBase.MemberRoster != null)
                     {
-                        foreach (TroopRosterElement troop in partyBase.MemberRoster.GetTroopRoster()) costValue += troop.Character.Tier;
+                        foreach (TroopRosterElement troop in partyBase.MemberRoster.GetTroopRoster()) costValue += troop.Character.Tier * troop.Number * 10;
                     }
                 }
             }
 
             return costValue;
         }
+
+        
     }
 }

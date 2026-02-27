@@ -18,10 +18,14 @@ namespace PrestigiousBank
         {
             ExplainedNumber number = base.CalculateBaseSpeed(mobileParty, true);
 
-            int pegaseBought = ParravonBankCampaignBehavior.ParravonBank.PegaseBought;
-            if (pegaseBought != 0) {
-                number.Add(0.01f* pegaseBought, new TextObject("Pégases de Parravon"));
-            };
+            if (mobileParty.IsMainParty)
+            {
+                int pegaseBought = ParravonBankCampaignBehavior.ParravonBank.PegaseBought;
+                if (pegaseBought != 0)
+                {
+                    number.Add(0.01f * pegaseBought, new TextObject("Pégases de Parravon"));
+                }
+            }
 
             return number;
         }

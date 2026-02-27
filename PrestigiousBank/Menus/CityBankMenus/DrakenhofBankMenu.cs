@@ -14,11 +14,14 @@ using TaleWorlds.ObjectSystem;
 using TaleWorlds.Localization;
 using Messages.FromClient.ToLobbyServer;
 using TaleWorlds.Engine;
+using TaleWorlds.CampaignSystem.Party;
+using TOR_Core.Extensions;
 
 namespace PrestigiousBank
 {
     public class DrakenhofBankMenu : BankMenu
     {
+        public bool isAttributeSelectedForCompagnion;
 
         public override void CreateOrUpdateGameMenuDesc(CampaignGameStarter campaignGameStarter)
         {
@@ -60,29 +63,69 @@ namespace PrestigiousBank
         {
             campaignGameStarter.AddGameMenuOption(String.Format("{0}_dark_ritual_enlightment", _cityID), 
                 "Drakenhof_bank_prestigious_account_focus", 
-                "[+1 Point de Focus] Rituel de renforcement de l'âme\n[50 000 {GOLD_ICON}]",
+                "[+1 Point de Focus] Rituel de renforcement de l'âme\n["+DrakenhofBank.PricePerFocusPoint+"{GOLD_ICON}]",
                 a => {
                     a.optionLeaveType = GameMenuOption.LeaveType.Devastate;
-                    a.IsEnabled = IsAbleToDeposit(50_000);
-                    a.Tooltip = IsAbleToDeposit(50_000) ? null : new TextObject("Pas assez d'argent", null);
+                    a.IsEnabled = IsAbleToDeposit(DrakenhofBank.PricePerFocusPoint);
+                    a.Tooltip = IsAbleToDeposit(DrakenhofBank.PricePerFocusPoint) ? null : new TextObject("Pas assez d'argent", null);
                     return true;
                 },
-                _ => PerformeDarkRitualFocus(campaignGameStarter),
+                _ => PerformeDarkRitualFocus(),
                 isLeave: false,
                 index: 1, isRepeatable: true);
 
             campaignGameStarter.AddGameMenuOption(String.Format("{0}_dark_ritual_enlightment", _cityID),
                     "Drakenhof_bank_prestigious_account_attribute",
-                    "[+1 Point d'Attribut] Rituel de renforcement du corps\n[100 000 {GOLD_ICON}]",
+                    "[+1 Point d'Attribut] Rituel de renforcement du corps\n["+DrakenhofBank.PricePerAttributePoint+"{GOLD_ICON}]",
                     a => {
                         a.optionLeaveType = GameMenuOption.LeaveType.Devastate;
-                        a.IsEnabled = IsAbleToDeposit(100_000);
-                        a.Tooltip = IsAbleToDeposit(100_000) ? null : new TextObject("Pas assez d'argent", null);
+                        a.IsEnabled = Hero.MainHero.Gold >= DrakenhofBank.PricePerAttributePoint;
+                        a.Tooltip = IsAbleToDeposit(DrakenhofBank.PricePerAttributePoint) ? null : new TextObject("Pas assez d'argent", null);
                         return true;
                     },
-                    _ => PerformeDarkRitualAttribute(campaignGameStarter),
+                    _ => PerformeDarkRitualAttribute(),
                     isLeave: false,
-                    index: 1, isRepeatable: true);
+                    index: 2, isRepeatable: true);
+
+            //Empty Space
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_dark_ritual_enlightment", _cityID), "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false, index: 3);
+
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_dark_ritual_enlightment", _cityID),
+                "Drakenhof_bank_prestigious_account_focus",
+                "[+1 Point de Focus] Rituel de renforcement de l'âme pour un compagnion\n[" + DrakenhofBank.PricePerCompanionFocusPoint + "{GOLD_ICON}]",
+                a => {
+                    a.optionLeaveType = GameMenuOption.LeaveType.Devastate;
+                    a.IsEnabled = IsAbleToDeposit(DrakenhofBank.PricePerCompanionFocusPoint);
+                    a.Tooltip = IsAbleToDeposit(DrakenhofBank.PricePerCompanionFocusPoint) ? null : new TextObject("Pas assez d'argent", null);
+                    return true;
+                },
+                _ => {
+                    isAttributeSelectedForCompagnion = false;
+                    DarkRitualChooseCompagnionOptions(); },
+                isLeave: false,
+                index: 4, isRepeatable: true);
+
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_dark_ritual_enlightment", _cityID),
+                "Drakenhof_bank_prestigious_account_attribute_compagnion",
+                "[+1 Point d'Attribut] Rituel de renforcement du corps pour un compagnion\n[" + DrakenhofBank.PricePerCompanionAttributePoint + "{GOLD_ICON}]",
+                a => {
+                    a.optionLeaveType = GameMenuOption.LeaveType.Devastate;
+                    a.IsEnabled = Hero.MainHero.Gold >= DrakenhofBank.PricePerCompanionAttributePoint && _bank.GetCustomerLevel()>=5;
+                    if (_bank.GetCustomerLevel() < 5) a.Tooltip = new TextObject("Niveau de client Diamant requis", null);
+                    else if (IsAbleToDeposit(DrakenhofBank.PricePerCompanionAttributePoint)) a.Tooltip = new TextObject("Pas assez d'argent", null);
+                    return true;
+                },
+                _ => {
+
+                    isAttributeSelectedForCompagnion = true;
+                    DarkRitualChooseCompagnionOptions(); },
+                isLeave: false,
+                index: 5, isRepeatable: true);
+
+
+            //Empty Spaces
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_dark_ritual_enlightment", _cityID), "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false, index: 6);
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_dark_ritual_enlightment", _cityID), "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false, index: 7);
 
             //Leave
             campaignGameStarter.AddGameMenuOption(String.Format("{0}_dark_ritual_enlightment", _cityID), String.Format("{0}_dark_ritual_enlightment_back", _cityID), "Retour",
@@ -91,22 +134,61 @@ namespace PrestigiousBank
                 isLeave: true, index: 999, isRepeatable: false);
         }
 
+        public void DarkRitualChooseCompagnionOptions()
+        {
+            List<Hero> compagnions = MobileParty.MainParty.GetMemberHeroes(); //Clan.PlayerClan.Companions.ToList();
+            compagnions.Remove(Hero.MainHero);
+            List<InquiryElement> list = new List<InquiryElement>();
+            string CompagnionText;
+            string compagnionFirstName;
 
-        private void PerformeDarkRitualFocus(CampaignGameStarter campaignGameStarter)
+            foreach (Hero hero in compagnions)
+            {
+                compagnionFirstName = hero.FirstName.Value;
+                if (compagnionFirstName.Contains("}")) compagnionFirstName = compagnionFirstName.Split('}')[1];
+
+                CompagnionText = hero.Name.Value;
+                if (CompagnionText.Count(f=> f=='}') >= 1) CompagnionText = CompagnionText.Split('}')[CompagnionText.Count(f => f == '}')];
+
+                CompagnionText = compagnionFirstName + CompagnionText;
+                list.Add(new InquiryElement(hero, CompagnionText, null, true, null));
+            }
+            var inquirydata = new MultiSelectionInquiryData("Compagnions", "Choisissez un Compagnion", list, true, 1, 1, "Confirm", "Cancel", SelectedDarkRitualCompanion, null, "", true);
+            MBInformationManager.ShowMultiSelectionInquiry(inquirydata, true);
+        }
+
+
+        public void PerformeDarkRitualFocus()
         {
             Hero.MainHero.HeroDeveloper.UnspentFocusPoints += 1;
-            Hero.MainHero.ChangeHeroGold(-50_000);
+            Hero.MainHero.ChangeHeroGold(-DrakenhofBank.PricePerFocusPoint);
             SoundEvent.PlaySound2D(SoundEvent.GetEventIdFromString("event:/ui/notification/levelup"));
             GameMenu.SwitchToMenu(String.Format("{0}_dark_ritual_enlightment", _cityID));
         }
-        private void PerformeDarkRitualAttribute(CampaignGameStarter campaignGameStarter)
+        public void PerformeDarkRitualAttribute()
         {
             Hero.MainHero.HeroDeveloper.UnspentAttributePoints += 1;
-            Hero.MainHero.ChangeHeroGold(-100_000);
+            Hero.MainHero.ChangeHeroGold(-DrakenhofBank.PricePerAttributePoint);
             SoundEvent.PlaySound2D(SoundEvent.GetEventIdFromString("event:/ui/notification/levelup"));
             GameMenu.SwitchToMenu(String.Format("{0}_dark_ritual_enlightment", _cityID));
         }
 
+        public void SelectedDarkRitualCompanion(List<InquiryElement> inquiryElements)
+        {
+            Hero hero = (Hero)inquiryElements[0].Identifier;
+            if (isAttributeSelectedForCompagnion)
+            {
+                hero.HeroDeveloper.UnspentAttributePoints += 1;
+                Hero.MainHero.ChangeHeroGold(-DrakenhofBank.PricePerCompanionAttributePoint);
+            }
+            else
+            {
+                hero.HeroDeveloper.UnspentFocusPoints += 1;
+                Hero.MainHero.ChangeHeroGold(-DrakenhofBank.PricePerCompanionFocusPoint);
+            }
+            SoundEvent.PlaySound2D(SoundEvent.GetEventIdFromString("event:/ui/notification/levelup"));
+            GameMenu.SwitchToMenu(String.Format("{0}_dark_ritual_enlightment", _cityID));
+        }
         #endregion
 
     }

@@ -134,7 +134,7 @@ namespace PrestigiousBank
         {
 
             int factoryLevel = _nulnFactory.FactoryLevel;
-            NulnFactory.PossibleProduction chosenProduction = _nulnFactory.chosenProduction;
+            NulnFactory.PossibleProduction chosenProduction = _nulnFactory.ChosenProduction;
             string chosenProductionString = chosenProduction.ToString();
 
             // Factory Menu
@@ -354,12 +354,12 @@ namespace PrestigiousBank
             var production1 = new TextObject("{NULNPRODUCTIONTEXT1}");
             SetProductionText();
 
-            NulnFactory.PossibleProduction prodActuelle = _nulnFactory.chosenProduction;
+            NulnFactory.PossibleProduction prodActuelle = _nulnFactory.ChosenProduction;
             campaignGameStarter.AddGameMenuOption(String.Format("{0}_productionChoice", _cityID), String.Format("{0}_productionChoice_weapon", _cityID),
                 production0.Value,
                 a => { a.optionLeaveType = GameMenuOption.LeaveType.HostileAction; return true; },
                 _ => {
-                    if (_nulnFactory.chosenProduction == NulnFactory.PossibleProduction.Weapon) return;
+                    if (_nulnFactory.ChosenProduction == NulnFactory.PossibleProduction.Weapon) return;
                     prodActuelle = _nulnFactory.TryChangeProduction(NulnFactory.PossibleProduction.Weapon);;
                     SetProductionText();
                     GameMenu.SwitchToMenu(String.Format("{0}_productionChoice", _cityID));
@@ -371,7 +371,7 @@ namespace PrestigiousBank
                 production1.Value,
                 a => { a.optionLeaveType = GameMenuOption.LeaveType.StagePrisonBreak; return true; },
                 _ => {
-                    if (_nulnFactory.chosenProduction == NulnFactory.PossibleProduction.MachiningPart) return;
+                    if (_nulnFactory.ChosenProduction == NulnFactory.PossibleProduction.MachiningPart) return;
                     prodActuelle = _nulnFactory.TryChangeProduction(NulnFactory.PossibleProduction.MachiningPart);
                     SetProductionText();
                     GameMenu.SwitchToMenu(String.Format("{0}_productionChoice", _cityID));
@@ -395,11 +395,11 @@ namespace PrestigiousBank
             TextObject weaponText = new TextObject("Armes");
             TextObject machiningPartText = new TextObject("Pièces d'usinage");
 
-            if (_nulnFactory.chosenProduction == NulnFactory.PossibleProduction.Weapon)
+            if (_nulnFactory.ChosenProduction == NulnFactory.PossibleProduction.Weapon)
             {
                 weaponText = new TextObject($"[{weaponText.Value}]");
             }
-            else if (_nulnFactory.chosenProduction == NulnFactory.PossibleProduction.MachiningPart)
+            else if (_nulnFactory.ChosenProduction == NulnFactory.PossibleProduction.MachiningPart)
             {
                 machiningPartText = new TextObject($"[{machiningPartText.Value}]");
             }

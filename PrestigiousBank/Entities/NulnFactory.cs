@@ -86,6 +86,9 @@ namespace PrestigiousBank.Entities
         [SaveableProperty(20)]
         public int SelectedIronFurnaceLevel {get;set;}
 
+        //[SaveableProperty(21)]
+        public PossibleProduction ChosenProduction { get; set; }
+
         public Settlement _ville;
 
         public Settlement Ville
@@ -99,9 +102,9 @@ namespace PrestigiousBank.Entities
 
         public static Dictionary<int, int> ValueGainedPerRecruitTier = new Dictionary<int, int>
         {
-            { 1 ,3 },
-            { 2 ,5 },
-            { 3 ,15 },
+            { 1 ,5 },
+            { 2 ,10 },
+            { 3 ,20 },
             { 4 ,50 },
             { 5 ,100 },
             { 6 ,300 },
@@ -193,13 +196,13 @@ namespace PrestigiousBank.Entities
 
         public enum PossibleProduction { MachiningPart, Weapon, ConstructionMaterials }
 
-        public PossibleProduction chosenProduction;
+        
 
         public NulnFactory(Settlement ville) 
         {
             FactoryLevel = 0;  
             Ville = ville;
-            chosenProduction = PossibleProduction.Weapon;
+            ChosenProduction = PossibleProduction.Weapon;
             Benefits = 0;
             PreviousDayBenefits = 0;
             ItemStash = new ItemRoster();
@@ -241,9 +244,9 @@ namespace PrestigiousBank.Entities
 
         public PossibleProduction TryChangeProduction(PossibleProduction selectedProduction)
         {
-            if (selectedProduction != chosenProduction)
+            if (selectedProduction != ChosenProduction)
             {
-                chosenProduction = selectedProduction;
+                ChosenProduction = selectedProduction;
                 NbDaysLeftBetweenProductionChange = NbDaysDelayBetweenProductionChange;
                 PrestigiousBank.LogMessage("Production demandée : "+selectedProduction.ToString()+
                     "\nDélai de changement deproduction : "+NbDaysDelayBetweenProductionChange+" jours");
@@ -251,6 +254,7 @@ namespace PrestigiousBank.Entities
             return selectedProduction;
         }
 
+        #region Ressources
         //Ne fonctionne pas
         public ItemObject GetMinimumItemNumberInStash(List<ItemObject> list)
         {
@@ -372,21 +376,21 @@ namespace PrestigiousBank.Entities
 
         private bool CheckRessourceAvailabilitiesForFactory(int level)
         {
-            if (chosenProduction==PossibleProduction.Weapon)
+            if (ChosenProduction==PossibleProduction.Weapon)
             {
-                if (WeaponProductionRessourceConsumption[level].WoodConsumption >= GetItemStash().GetItemNumber(item: DefaultItems.HardWood)
-                    && WeaponProductionRessourceConsumption[level].CharcoalConsumption >= GetItemStash().GetItemNumber(item: DefaultItems.Charcoal)
-                    && WeaponProductionRessourceConsumption[level].IronConsumption >= GetItemStash().GetItemNumber(item: DefaultItems.IronOre))
+                if (GetItemStash().GetItemNumber(item: DefaultItems.HardWood) >= WeaponProductionRessourceConsumption[level].WoodConsumption
+                    && GetItemStash().GetItemNumber(item: DefaultItems.Charcoal) >= WeaponProductionRessourceConsumption[level].CharcoalConsumption
+                    && GetItemStash().GetItemNumber(item: DefaultItems.IronOre) >= WeaponProductionRessourceConsumption[level].IronConsumption)
                 {
                     return true;
                 }
                     
             }
-            if (chosenProduction == PossibleProduction.MachiningPart)
+            if (ChosenProduction == PossibleProduction.MachiningPart)
             {
-                if (MachiningPartProductionRessourceConsumption[level].WoodConsumption >= GetItemStash().GetItemNumber(item: DefaultItems.HardWood)
-                    && MachiningPartProductionRessourceConsumption[level].CharcoalConsumption >= GetItemStash().GetItemNumber(item: DefaultItems.Charcoal)
-                    && MachiningPartProductionRessourceConsumption[level].IronConsumption >= GetItemStash().GetItemNumber(item: DefaultItems.IronOre))
+                if (GetItemStash().GetItemNumber(item: DefaultItems.HardWood) >= MachiningPartProductionRessourceConsumption[level].WoodConsumption
+                    && GetItemStash().GetItemNumber(item: DefaultItems.Charcoal) >= MachiningPartProductionRessourceConsumption[level].CharcoalConsumption
+                    && GetItemStash().GetItemNumber(item: DefaultItems.IronOre) >= MachiningPartProductionRessourceConsumption[level].IronConsumption)
                 {
                     return true;
                 }
@@ -396,13 +400,13 @@ namespace PrestigiousBank.Entities
 
         private void ConsumeRessource(int level)
         {
-            if (chosenProduction==PossibleProduction.Weapon)
+            if (ChosenProduction==PossibleProduction.Weapon)
             {
                 GetItemStash().Remove(new ItemRosterElement(DefaultItems.HardWood, WeaponProductionRessourceConsumption[level].WoodConsumption));
                 GetItemStash().Remove(new ItemRosterElement(DefaultItems.Charcoal, WeaponProductionRessourceConsumption[level].CharcoalConsumption));
                 GetItemStash().Remove(new ItemRosterElement(DefaultItems.IronOre, WeaponProductionRessourceConsumption[level].IronConsumption));
             }
-            if (chosenProduction==PossibleProduction.MachiningPart)
+            if (ChosenProduction==PossibleProduction.MachiningPart)
             {
                 GetItemStash().Remove(new ItemRosterElement(DefaultItems.HardWood, MachiningPartProductionRessourceConsumption[level].WoodConsumption));
                 GetItemStash().Remove(new ItemRosterElement(DefaultItems.Charcoal, MachiningPartProductionRessourceConsumption[level].CharcoalConsumption));
@@ -425,23 +429,28 @@ namespace PrestigiousBank.Entities
             }
         }
 
+        #endregion
+
         public void ApplyWorkshopGains(Workshop workshop, float factorClanAgency = 1f)
         {
-            //Chiffre d'affaire = Profit+Expense
-            int Turnover = workshop.ProfitMade + workshop.Expense;
+            /*            //Chiffre d'affaire = Profit+Expense
+                        int Turnover = workshop.ProfitMade + workshop.Expense;
 
-            //Production gain = Chiffre d'affaire * level*0.05 * ClanAgencyLevelFactor
-            int ProductionGain = (int)(Turnover * (RunFactoryLevel * 0.20)* factorClanAgency);
-            //Increase Gold as new Machining part increase production
-            workshop.ChangeGold(ProductionGain);
+                        //Production gain = Chiffre d'affaire * level*0.05 * ClanAgencyLevelFactor
+                        int ProductionGain = (int)(Turnover * (RunFactoryLevel * 0.20)* factorClanAgency);
+                        //Increase Gold as new Machining part increase production
+                        workshop.ChangeGold(ProductionGain);
 
-            //Price of Machining parts
-            if (workshop.Owner != Hero.MainHero)
-            {
-                workshop.ChangeGold((int)(-ProductionGain * 0.8));
-                this.Benefits += (int)(ProductionGain * 0.8);
+                        //Price of Machining parts
+                        if (workshop.Owner != Hero.MainHero)
+                        {
+                            workshop.ChangeGold((int)(-ProductionGain * 0.8));
+                            this.Benefits += (int)(ProductionGain * 0.8);
+                        }*/
+            float valueGained = workshop.Capital * (RunFactoryLevel * 0.005f * factorClanAgency);
+            if (workshop.Owner == Hero.MainHero) workshop.ChangeGold((int)valueGained*2);
+            else Benefits += valueGained;
 
-            }
         }
 
         public string GetToolTipFactoryPerLevel(int level)
@@ -451,18 +460,18 @@ namespace PrestigiousBank.Entities
 
             //Consommation de bois
             result += "Consommation de bois :";
-            if (chosenProduction == PossibleProduction.Weapon) result += WeaponProductionRessourceConsumption[level].WoodConsumption;
-            if (chosenProduction == PossibleProduction.MachiningPart) result += MachiningPartProductionRessourceConsumption[level].WoodConsumption;
+            if (ChosenProduction == PossibleProduction.Weapon) result += WeaponProductionRessourceConsumption[level].WoodConsumption;
+            if (ChosenProduction == PossibleProduction.MachiningPart) result += MachiningPartProductionRessourceConsumption[level].WoodConsumption;
 
             //Consommation de charbon
             result += "\nConsommation de charbon :";
-            if (chosenProduction == PossibleProduction.Weapon) result += WeaponProductionRessourceConsumption[level].CharcoalConsumption;
-            if (chosenProduction == PossibleProduction.MachiningPart) result += MachiningPartProductionRessourceConsumption[level].CharcoalConsumption;
+            if (ChosenProduction == PossibleProduction.Weapon) result += WeaponProductionRessourceConsumption[level].CharcoalConsumption;
+            if (ChosenProduction == PossibleProduction.MachiningPart) result += MachiningPartProductionRessourceConsumption[level].CharcoalConsumption;
 
             //Consommation de fer
             result += "\nConsommation de fer :";
-            if (chosenProduction == PossibleProduction.Weapon) result += WeaponProductionRessourceConsumption[level].IronConsumption;
-            if (chosenProduction == PossibleProduction.MachiningPart) result += MachiningPartProductionRessourceConsumption[level].IronConsumption;
+            if (ChosenProduction == PossibleProduction.Weapon) result += WeaponProductionRessourceConsumption[level].IronConsumption;
+            if (ChosenProduction == PossibleProduction.MachiningPart) result += MachiningPartProductionRessourceConsumption[level].IronConsumption;
 
             return result;
         }
@@ -471,7 +480,7 @@ namespace PrestigiousBank.Entities
         public void ApplyTroopRecruited(Hero recruiter, Settlement settlement, Hero recruitmentSource, CharacterObject troop, int amount, float factorAgency =1, string townNulnID = "town_comp_WI1")
         {
             if (FactoryLevel == 0) return;
-            if (chosenProduction != NulnFactory.PossibleProduction.Weapon) return;
+            if (ChosenProduction != NulnFactory.PossibleProduction.Weapon) return;
             if (NbDaysLeftBetweenProductionChange > 0) return;
             if (recruiter == null) return;
             if (settlement == null) return;
