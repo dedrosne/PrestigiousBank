@@ -233,11 +233,8 @@ Permets à sesd caravanes qui passent de récupérer automatiquement le butin de
 Temple de son Dieu/religion
     
 
-Clan Hideout :
-Level 2 :
-    Pouvoir recruter des bandits dans les bas-fonds => Coûte argent =>Implique d'avoir plusieurs upgrade uniques pour avoir un systèmes intéressant à mettre en place
-
-
+Régénération (vampire ? 
+	(comme les trolls de TOR)
 
 Waldenhof : Acheter des collecteurs d'âmes
     - Acheter une crypte
