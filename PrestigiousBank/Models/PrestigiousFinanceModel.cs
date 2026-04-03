@@ -186,6 +186,13 @@ namespace PrestigiousBank
                 result.Add(-value, new TextObject("Partage du butin de la planque"));
             }
 
+            //Clan Hideout Casino
+            if (ClanHideoutCampaignBehavior.ClanHideout.Casino_Level > 0)
+            {
+                int value = (int)ClanHideoutCampaignBehavior.ClanHideout.Casino_Benefits;
+                result.Add(value, new TextObject("Casino"));
+            }
+
         }
     }
 }

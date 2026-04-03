@@ -274,7 +274,7 @@ namespace PrestigiousBank
                     a.optionLeaveType = GameMenuOption.LeaveType.OrderTroopsToAttack;
                     return _clanHideout.Casino_Level >= 1;
                 },
-                _ => { RefreshCasinoMenuText(); GameMenu.SwitchToMenu("clanHideout_casino_menu"); },
+                _ => { },//TODO },// RefreshCasinoMenuText(); GameMenu.SwitchToMenu("clanHideout_casino_menu"); },
                 isLeave: false, index: 10);
             RegisterCasinoMenuOptions(campaignGameStarter);
 

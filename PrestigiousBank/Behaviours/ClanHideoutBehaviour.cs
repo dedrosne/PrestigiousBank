@@ -75,7 +75,6 @@ namespace PrestigiousBank
             CampaignEvents.OnSessionLaunchedEvent.AddNonSerializedListener((object)this, new Action<CampaignGameStarter>(this.OnSessionLaunched));
             CampaignEvents.SettlementEntered.AddNonSerializedListener(this, new Action<MobileParty, Settlement, Hero>(this.SettlementEntered));
             CampaignEvents.DailyTickEvent.AddNonSerializedListener(this, this.DailyTickEvent);
-            CampaignEvents.OnPlayerEarnedGoldFromAssetEvent.AddNonSerializedListener(this, new Action<DefaultClanFinanceModel.AssetIncomeType, int>(this.OnPlayerEarnedGoldFromAssetEvent));
         }
 
         private void OnSessionLaunched(CampaignGameStarter campaignGameStarter)
@@ -103,8 +102,8 @@ namespace PrestigiousBank
                     ClanHideout.Casino_Benefits = new Random().Next(ClanHideout.CasinoMinValue, ClanHideout.CasinoMaxValue);
                 }
 
-                NulnFactory.PreviousDayBenefits = NulnFactory.Benefits;
-                NulnFactory.Benefits = 0;
+                ClanHideout.Casino_Benefits = ClanHideout.Casino_PreviousBenefits;
+                ClanHideout.Casino_Benefits = 0;
             }
         }
 

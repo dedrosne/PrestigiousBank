@@ -49,6 +49,9 @@ namespace PrestigiousBank
         [SaveableProperty(10)]
         public int Casino_Benefits { get; set; }
 
+        [SaveableProperty(10)]
+        public int Casino_PreviousBenefits { get; set; }
+
         public static int HideoutLevelPrice = 50_000;
         public static float GangStrenghtUpkeep = 0.1f;
         public static int Racketeering_LevelPrice = 10_000;
