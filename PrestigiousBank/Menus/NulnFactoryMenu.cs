@@ -1206,7 +1206,7 @@ namespace PrestigiousBank
             campaignGameStarter.AddGameMenuOption(String.Format("{0}_silverProduction", _cityID), String.Format("{0}_silverProduction_levelup", _cityID),
                             silverProductionLevelUp.Value,
                             a => {
-                                a.optionLeaveType = GameMenuOption.LeaveType.HostileAction; //TODO
+                                a.optionLeaveType = GameMenuOption.LeaveType.Bribe;
                                 a.IsEnabled = Hero.MainHero.Gold >= _nulnFactory.CalculatePriceToLevelUpRessource(_nulnFactory.SilverLevel);
                                 a.Tooltip = Hero.MainHero.Gold >= _nulnFactory.CalculatePriceToLevelUpRessource(_nulnFactory.SilverLevel) ? null : new TextObject("Pas assez d'or");
                                 return _nulnFactory.SilverLevel < 5;
@@ -1237,7 +1237,7 @@ namespace PrestigiousBank
 
         public bool SilverCondition(int i, MenuCallbackArgs a)
         {
-            a.optionLeaveType = GameMenuOption.LeaveType.HostileAction; //TODO
+            a.optionLeaveType = GameMenuOption.LeaveType.Continue;
             if (i == 0) a.Tooltip = new TextObject("Désactiver la production. \nPas de consommation de main d'oeuvre");
             else
             {

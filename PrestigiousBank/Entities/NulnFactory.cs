@@ -368,8 +368,8 @@ namespace PrestigiousBank.Entities
                 if (minItem.StringId == "hardwood") TryToProduceWood();
                 if (minItem.StringId == "charcoal") TryToProduceCharcoal();
                 if (minItem.StringId == "iron") TryToProduceIronOre();
-                if (minItem.StringId == "silver") TryToProduceSilver();//TODO
-                if (minItem.StringId == "ironIngot4") TryToProduceIronIngot();//TODO
+                if (minItem.StringId == "silver") TryToProduceSilver();
+                if (minItem.StringId == "ironIngot4") TryToProduceIronIngot();
                 listItems.Remove(minItem);
             }
         }

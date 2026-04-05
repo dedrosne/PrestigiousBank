@@ -93,7 +93,8 @@ namespace PrestigiousBank
             if (Solde <= 149_999) return 2;
             if (Solde <= 299_999) return 3;
             if (Solde <= 499_999) return 4;
-            else return 5;
+            if (Solde <= 499_999) return 5;
+            else return 6;
         }
 
         public String GetCustomerLevelString()
@@ -102,8 +103,9 @@ namespace PrestigiousBank
             if (level == 1) return "Bronze";
             if (level == 2) return "Argent";
             if (level == 3) return "Or";
-            if (level == 4) return "Platine";
-            else return "Diamant";
+            if (level == 4) return "Mythril";
+            if (level == 5) return "Diamant";
+            else return "Malepierre";
         }
 
         public int GetDailySkillXP()

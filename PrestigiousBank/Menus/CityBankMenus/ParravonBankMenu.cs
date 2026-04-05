@@ -42,7 +42,7 @@ namespace PrestigiousBank
             campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_menu", _cityID), String.Format("{0}_bank_pegase", _cityID),
                 "Ecuries des pégases",
                 a => {
-                    a.optionLeaveType = GameMenuOption.LeaveType.TroopSelection;//TODO
+                    a.optionLeaveType = GameMenuOption.LeaveType.Leaderboard;
                     a.Tooltip = ((ParravonBank)_bank).GetCustomerLevel() > 1 ? null : new TextObject("Niveau de client Argent requis", null);
                     a.IsEnabled = ((ParravonBank)_bank).GetCustomerLevel() > 1;
                     return true;

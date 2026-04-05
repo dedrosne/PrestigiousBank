@@ -17,9 +17,9 @@ namespace PrestigiousBank
         {
             if (AltdorfBankCampaignBehavior.BankAltdorf != null && AltdorfBankCampaignBehavior.BankAltdorf.ChannelerNumber != 0)
             {
-                PrestigiousBank.LogMessage(String.Format("Ancienne valeur vent de magie :{0}", __result));
+                //PrestigiousBank.LogMessage(String.Format("Ancienne valeur vent de magie :{0}", __result));
                 __result += AltdorfBankCampaignBehavior.BankAltdorf.ChannelerNumber;
-                PrestigiousBank.LogMessage(String.Format("Nouvelle valeur vent de magie :{0}", __result));
+                //PrestigiousBank.LogMessage(String.Format("Nouvelle valeur vent de magie :{0}", __result));
             }
 
             

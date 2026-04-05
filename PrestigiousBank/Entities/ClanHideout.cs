@@ -49,7 +49,7 @@ namespace PrestigiousBank
         [SaveableProperty(10)]
         public int Casino_Benefits { get; set; }
 
-        [SaveableProperty(10)]
+        [SaveableProperty(11)]
         public int Casino_PreviousBenefits { get; set; }
 
         public static int HideoutLevelPrice = 50_000;
@@ -217,6 +217,13 @@ namespace PrestigiousBank
             return costValue;
         }
 
-        
+        public (int,int) Casino_CalculateMinMaxValue()
+        {
+            int minValue = Casino_MinimumValue * Casino_Level - 5*BanditsGangStrenght;
+            int maxValue = Casino_MaximumValue * Casino_Level + 5 * BanditsGangStrenght;
+
+            return (minValue, maxValue);
+        }
+
     }
 }

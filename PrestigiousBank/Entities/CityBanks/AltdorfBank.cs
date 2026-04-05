@@ -4,7 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Settlements;
+using TaleWorlds.Core;
+using TaleWorlds.LinQuick;
 using TaleWorlds.SaveSystem;
+using TOR_Core.AbilitySystem.Spells;
+using TOR_Core.Extensions;
+using TOR_Core.Utilities;
 
 namespace PrestigiousBank
 {
@@ -43,6 +48,30 @@ namespace PrestigiousBank
         {
             //Prix par 
             return ChannelerNumber*UpkeepPerChanneler;
+        }
+
+        public void LearnNewLore()
+        {
+            List<InquiryElement> list = new List<InquiryElement>();
+
+            var lores = LoreObject.GetAll();
+
+            lores = lores.WhereQ(X => !Hero.MainHero.HasKnownLore(X.ID)).ToList();
+
+            foreach (var lore in lores)
+            {
+                list.Add(new InquiryElement(lore, lore.Name, null, true, "Learn new lore"));
+            }
+
+            var inquirydata = new MultiSelectionInquiryData("New Lore", "Select a new lore to learn", list, true, 1, 1, "Confirm", "Cancel", SelectLore, null, "", true);
+            MBInformationManager.ShowMultiSelectionInquiry(inquirydata, true);
+
+            void SelectLore(List<InquiryElement> inquiryElements)
+            {
+                var newlore = (LoreObject)inquiryElements[0].Identifier;
+
+                Hero.MainHero.AddKnownLore(newlore.ID);
+            }
         }
 
     }

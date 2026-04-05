@@ -48,7 +48,7 @@ namespace PrestigiousBank
                     "["+ClanAgency.AgencyInitialPrice+"{GOLD_ICON}] Installer une agence du Clan",
                     args =>
                     {
-                        args.optionLeaveType = GameMenuOption.LeaveType.Craft;//TODO
+                        args.optionLeaveType = GameMenuOption.LeaveType.BribeAndEscape;
                         args.IsEnabled = Hero.MainHero.Gold >= ClanAgency.AgencyInitialPrice;
                         if (Hero.MainHero.Gold < ClanAgency.AgencyInitialPrice) { 
                             args.Tooltip = new TextObject("Pas assez d'or");
@@ -79,7 +79,7 @@ namespace PrestigiousBank
                                                     args =>
                                                     {
                                                         ClanAgency currentAgency = ClanAgencies.GetAgencyByTownStringId(Settlement.CurrentSettlement.Town.StringId);
-                                                        args.optionLeaveType = GameMenuOption.LeaveType.Craft;//TODO
+                                                        args.optionLeaveType = GameMenuOption.LeaveType.Manage;
                                                         if (currentAgency == null || currentAgency.LevelAgency == 0) return false;
                                                         else return true;
                                                     },
@@ -155,7 +155,7 @@ namespace PrestigiousBank
             //Build Secret Entrance
             campaignGameStarter.AddGameMenuOption("clanAgency",
                                         "clanAgency_BuySecretEntrance",
-                                        "[" + ClanAgency.PriceToBuildSecretEntrance + "{GOLD_ICON}] Creuser un passage secret via les et l'extérieur de la ville",
+                                        "[" + ClanAgency.PriceToBuildSecretEntrance + "{GOLD_ICON}] Creuser un passage secret via les égoûts vers l'extérieur de la ville",
                                         args =>
                                         {
                                             ClanAgency currentAgency = ClanAgencies.GetAgencyByTownStringId(Settlement.CurrentSettlement.Town.StringId);
@@ -193,7 +193,7 @@ namespace PrestigiousBank
                                         //Conditions : Clan Level 5 && Agence Level 5
                                         {
                                             ClanAgency currentAgency = ClanAgencies.GetAgencyByTownStringId(Settlement.CurrentSettlement.Town.StringId);
-                                            args.optionLeaveType = GameMenuOption.LeaveType.Craft;//TODO
+                                            args.optionLeaveType = GameMenuOption.LeaveType.Manage;
                                             if (Clan.PlayerClan.Tier < 5) args.Tooltip = new TextObject("Clan Tiers 5 nécessaire");
                                             else if (Hero.MainHero.Gold < ClanAgencies.UpgradeMaxLimitAgencyCost) args.Tooltip = new TextObject("Pas assez d'or");
                                             args.IsEnabled = Clan.PlayerClan.Tier >= 5 && Hero.MainHero.Gold >= ClanAgencies.UpgradeMaxLimitAgencyCost;
@@ -272,6 +272,7 @@ namespace PrestigiousBank
                     ClanAgencies.CurrentSettlementAgency.SelectedLevel = 0;
                     SetClanAgencyLevelProductionText();
                     GameMenu.SwitchToMenu("clanAgency");
+                    SetClanAgencyLevelProductionText();
                     CreateOrUpdateGameMenuDesc(campaignGameStarter);
                     PrestigiousBank.LogMessage("Agence fermée");
                 },
@@ -290,7 +291,7 @@ namespace PrestigiousBank
                     SetClanAgencyLevelProductionText();
                     GameMenu.SwitchToMenu("clanAgency");
                     CreateOrUpdateGameMenuDesc(campaignGameStarter);
-                    PrestigiousBank.LogMessage("L'usine tourne au niveau 1");
+                    PrestigiousBank.LogMessage("L'agence tourne au niveau 1");
                     },
                 isLeave: false);
 
@@ -307,7 +308,7 @@ namespace PrestigiousBank
                     SetClanAgencyLevelProductionText();
                     GameMenu.SwitchToMenu("clanAgency");
                     CreateOrUpdateGameMenuDesc(campaignGameStarter);
-                    PrestigiousBank.LogMessage("L'usine tourne au niveau 2");
+                    PrestigiousBank.LogMessage("L'agence tourne au niveau 2");
                 },
                 isLeave: false);
 
@@ -324,7 +325,7 @@ namespace PrestigiousBank
                     SetClanAgencyLevelProductionText();
                     GameMenu.SwitchToMenu("clanAgency");
                     CreateOrUpdateGameMenuDesc(campaignGameStarter);
-                    PrestigiousBank.LogMessage("L'usine tourne au niveau 3");
+                    PrestigiousBank.LogMessage("L'agence tourne au niveau 3");
                 },
                 isLeave: false);
 
@@ -341,7 +342,7 @@ namespace PrestigiousBank
                     SetClanAgencyLevelProductionText();
                     GameMenu.SwitchToMenu("clanAgency");
                     CreateOrUpdateGameMenuDesc(campaignGameStarter);
-                    PrestigiousBank.LogMessage("L'usine tourne au niveau 4");
+                    PrestigiousBank.LogMessage("L'agence tourne au niveau 4");
                 },
                 isLeave: false);
 
@@ -358,7 +359,7 @@ namespace PrestigiousBank
                     SetClanAgencyLevelProductionText();
                     GameMenu.SwitchToMenu("clanAgency");
                     CreateOrUpdateGameMenuDesc(campaignGameStarter);
-                    PrestigiousBank.LogMessage("L'usine tourne au niveau 5");
+                    PrestigiousBank.LogMessage("L'agence tourne au niveau 5");
                 },
                 isLeave: false);
 
@@ -377,7 +378,7 @@ namespace PrestigiousBank
                         SetClanAgencyLevelProductionText();
                         GameMenu.SwitchToMenu("clanAgency");
                         CreateOrUpdateGameMenuDesc(campaignGameStarter);
-                        PrestigiousBank.LogMessage("L'usine tourne au niveau "+i);
+                        PrestigiousBank.LogMessage("L'agence tourne au niveau "+i);
     },
     isLeave: false);
             }*/

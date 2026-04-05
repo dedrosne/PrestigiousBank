@@ -9,39 +9,41 @@ Banque :
     - Bronze : argent déposé entre 0 et 49_999
     - Argent : argent déposé entre 50k et 149_999
     - Or : Argent déposé entre 150k et 299_999
-    - Platine : Au dessus
-    - Diamant : Plus de gold au marchand de la ville : 10% de tout dépôt au dessus de 500_000
+    - Mythril : 300_000 et 499_999
+    - Diamant : 500_000 et 999_999
+    - Malepierre : 1_000_000+
 
 Avantages :
     - Bronze : Dépot/Retrait
     - Argent : Avantage principal de la Banque
     - Or : XP dans un skill selon la Banque -> 1XP/1000or pour tout or au dessus du palier Or. Max 1000/jour
-    - Platine : Avantage secondaire de la Banque
+    - Mythril : Avantage secondaire de la Banque
+    - Diamant : Plus de gold au marchand de la ville : 10% de tout dépôt au dessus de 500_000
 
 
 Altdorf : 
     - Argent : Corrompre les scribes pour mettre en valeur ses faits d'arme => 1 prestige journaliers/10000 gold offert
     - Or : XP dans le Skill Magic
-    - Platine : Augmenter vents de magie : Engager des canalysateur. 1 canalysateur pour 5000g, puis 10g/jour, pour 1 mana max
+    - Mythril : Augmenter vents de magie : Engager des canalysateur. 1 canalysateur pour 5000g, puis 10g/jour, pour 1 mana max
     - Diamant : Débloquer la téléportation entre agences
             Prix de déblocage : 100_000, puis 20_000 pour construire le téléporteur dans l'agence (niveau d'agence requis : 4), puis 20*taille d'armée pour se téléporter
 
 Drakenhof : 
     - Argent :
     - Or : XP dans le Charm
-    - Platine : Acheter des points de focus + attribute (50_000 pour focus, 60_000 pour attribute)
+    - Mythril : Acheter des points de focus + attribute (50_000 pour focus, 60_000 pour attribute)
     - Diamant : Perks pour Compagnions => 25_000 pour focus, 30_000 pour attibut
 
 Couronne : 
     - Argent : Chevalerie : 10000=>1 Chevalerie/jour
     - Or : XP dans le skill Riding
-    - Platine : 
+    - Mythril : 
 
 
 Yn Edryl Koiran : 
     - Argent : Harmonie de la foret : 10000=>1 Harmonie/jour
     - Or : XP dans le skill Medecine
-    - Platine : Bénédiction d'Isha : Si une unité est sur le point de mourir, 1 point de bénédiction = 1% de chance qu'elle survive quand même. 100 points = 100%chance qu'elle survive.
+    - Mythril : Bénédiction d'Isha : Si une unité est sur le point de mourir, 1 point de bénédiction = 1% de chance qu'elle survive quand même. 100 points = 100%chance qu'elle survive.
         Cout : 3000/point + Entretien : [Point de Bénédiction]²  => 50 points = 2500/jour d'entretien
 
 
@@ -56,7 +58,7 @@ Middenheim :
 
 Parravon :
     - Argent : Augmenter le PartySpeed de 0.01. Prix : 2000 + 200*NbBought : 
-    - Or : XP dans le skill Tactics
+    - Or : XP dans le skill Leadership
 
 
 
@@ -185,8 +187,8 @@ Level 3 : Débloque Faux monayer de l'usine de Nuln
 Recruitment rate of prisoners (comme 2eme perk de leadership)
 
 Level 4 : Casino :
-    Chaque jour gagne des golds entre -1000 et +1200 * level
-    Amélioration possible pour shifter ce nombre
+    Chaque jour gagne des golds entre -2000*level-5*GangStrenght et +2400*level+5*GangStrenght
+    
 
 
 Level 4 : Sabotage : 
@@ -196,13 +198,14 @@ Level 5 :
 - Assassin => Fort taux d'échec, mais gain d'influence ? Ou assassiner un seigneur/personnage ?
 - Poser une bombe => Ouvrir les portes ou détruire les murs
 
+Altdorf :     - Malepierre : Acquerir un nouveau lore de magie. Cout : 500_000/lore
 
 
-Payer pour Améliorer la fenêtre d'heure d'attaque des planques
+Pouvoir désactiver le ClanHideout dans sa ville
 
-Pouvoir désactiver le ClanHideout dans la ville de 
-
-
+Marieembroug : Acheter améliorations pour caravanes (assurances ? Attirent moins ?)+ Gold pour chaque passage de caravane dans la ville+caravanes:Vendent les biens du ClanHideout
+MarieEmbourg : Acheter des droits de péage (argent par caravane). + Meilleurs prix pour caravanes, assurance pour Caravane, etc
+        + Limite de Workshop supplémentaire
 
 ######################################################
 #Todo
@@ -250,7 +253,8 @@ Or
 
 Effets Secondaires
 Hergig : Augmenter la fenêtre horaire d'attaque de Hideout
-Marieembroug : Acheter améliorations pour caravanes (assurances ? Attirent moins ?)+ Gold pour chaque passage de caravane dans la ville+caravanes:Vendent les biens du ClanHideout
+
+
 Couronne : Augmenter le nombre de compagnions
 Averheim : HP des compagnions ?
 Eonir : Imposer guerre/Paix
@@ -265,8 +269,7 @@ Altdorf : possibilité d'imposer la paix entre factions de l'empire + imposer gu
 
 Capturé = On perd tout son argent
 
-MarieEmbourg : Acheter des droits de péage (argent par caravane). + Meilleurs prix pour caravanes, assurance pour Caravane, etc
-        + Limite de Workshop supplémentaire
+
 	
 Bretonie : Villages/Agriculture => Une foi le village détenu, déposer des prisonniers pour les recruter comme serfs, et générer du revenu.
 

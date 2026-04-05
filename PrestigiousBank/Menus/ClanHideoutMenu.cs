@@ -60,8 +60,8 @@ namespace PrestigiousBank
             //Casino
             campaignGameStarter.AddGameMenu("clanHideout_casino_menu",
                 "Casino\n" +
-                "Niveau du Casino : " + _clanHideout.Racketeering_Level +
-                "\nRevenus entre "+_clanHideout.CasinoMinValue+" et "+_clanHideout.CasinoMaxValue,
+                "Niveau du Casino : " + _clanHideout.Casino_Level +
+                "\nRevenus entre "+_clanHideout.Casino_CalculateMinMaxValue().Item1+" et "+_clanHideout.Casino_CalculateMinMaxValue().Item2,
                 null, TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
 
         }
@@ -139,7 +139,7 @@ namespace PrestigiousBank
                     //leftParty.SetCustomName(new TextObject("Gangsters"));
                     TroopRoster leftRoster = new TroopRoster(null);
 
-                    //PartyScreenManager.OpenScreenForManagingAlley  //TODO
+
                     PartyScreenManager.OpenScreenForManagingAlley(leftRoster,
                         isTroopTransferable: delegate (CharacterObject character, PartyScreenLogic.TroopType type, PartyScreenLogic.PartyRosterSide side, PartyBase LeftOwnerParty)
                         {
@@ -272,9 +272,12 @@ namespace PrestigiousBank
                 a =>
                 {
                     a.optionLeaveType = GameMenuOption.LeaveType.OrderTroopsToAttack;
-                    return _clanHideout.Casino_Level >= 1;
+                    return _clanHideout.Casino_Level >= 4;
                 },
-                _ => { },//TODO },// RefreshCasinoMenuText(); GameMenu.SwitchToMenu("clanHideout_casino_menu"); },
+                _ => {
+                    CreateOrUpdateGameMenuDesc(campaignGameStarter);
+                    RefreshCasinoLevelUpText(); 
+                    GameMenu.SwitchToMenu("clanHideout_casino_menu"); },
                 isLeave: false, index: 10);
             RegisterCasinoMenuOptions(campaignGameStarter);
 
@@ -324,7 +327,7 @@ namespace PrestigiousBank
                     a.optionLeaveType = GameMenuOption.LeaveType.Manage;
                     a.IsEnabled = true;
                     if (_clanHideout.LevelHideout >= Clan.PlayerClan.Tier) { a.Tooltip = new TextObject("Clan Tiers "+ (_clanHideout.LevelHideout+1) +" nécessaire"); a.IsEnabled = false; }
-                    else if (Hero.MainHero.Gold < _clanHideout.LevelHideout * ClanHideout.HideoutLevelPrice) { a.Tooltip = new TextObject("Pas assez d'or"); a.IsEnabled = false; }
+                    else if (Hero.MainHero.Gold < (_clanHideout.LevelHideout+1) * ClanHideout.HideoutLevelPrice) { a.Tooltip = new TextObject("Pas assez d'or"); a.IsEnabled = false; }
                     return _clanHideout.LevelHideout < 5;
                 },
                 _ =>
@@ -352,7 +355,7 @@ namespace PrestigiousBank
         }
         public void RefreshClanHideoutLevelUpText()
         {
-            TextObject levelUpText = new TextObject("[" + _clanHideout.LevelHideout * ClanHideout.HideoutLevelPrice + "{GOLD_ICON}] Agrandir la planque");
+            TextObject levelUpText = new TextObject("[" + (_clanHideout.LevelHideout+1) * ClanHideout.HideoutLevelPrice + "{GOLD_ICON}] Agrandir la planque");
             GameTexts.SetVariable("CLANHIDEOUTUP", levelUpText);
         }
 
@@ -505,6 +508,48 @@ namespace PrestigiousBank
         }
         #endregion
 
+
+        #region Casino
+
+        public void RegisterCasinoMenuOptions(CampaignGameStarter campaignGameStarter)
+        {
+            TextObject casinoLevelUpText = new TextObject("{CASINOUP}");
+            campaignGameStarter.AddGameMenuOption("clanHideout_casino_menu", "clanHideout_casino_menu_levelup", casinoLevelUpText.Value,
+                a => {
+                    a.optionLeaveType = GameMenuOption.LeaveType.Manage;
+                    a.IsEnabled = true;
+                    a.Tooltip = new TextObject("Min diminué de 1000 / Max augmenté de 1200");
+                    if (_clanHideout.Casino_Level >= _clanHideout.LevelHideout) { a.Tooltip = new TextObject("Planque niveau  " + (_clanHideout.Casino_Level + 1) + " nécessaire"); a.IsEnabled = false; }
+                    else if (Hero.MainHero.Gold < (_clanHideout.Casino_Level+1) * ClanHideout.Casino_LevelPrice) { a.Tooltip = new TextObject("Pas assez d'or"); a.IsEnabled = false; }
+                    return _clanHideout.Casino_Level<5;
+                },
+                _ =>
+                {
+                    SoundEvent.PlaySound2D(SoundEvent.GetEventIdFromString("event:/ui/notification/coins_negative"));
+                    _clanHideout.Casino_Level += 1;
+                    Hero.MainHero.ChangeHeroGold(-_clanHideout.Casino_Level * ClanHideout.Casino_LevelPrice);
+                    RefreshCasinoLevelUpText();
+                    GameMenu.SwitchToMenu("clanHideout_casino_menu");
+                    CreateOrUpdateGameMenuDesc(campaignGameStarter);
+                    PrestigiousBank.LogMessage("Amélioration de la planque de Clan");
+                },
+                isLeave: true, index: 990);
+
+            //Retour
+            campaignGameStarter.AddGameMenuOption("clanHideout_casino_menu", "clanHideout_casino_menu_back", "Retour",
+                a => { a.optionLeaveType = GameMenuOption.LeaveType.Leave; return true; },
+                _ => GameMenu.SwitchToMenu("clanHideoutMenu"),
+                isLeave: true, index: 999);
+        }
+
+        public void RefreshCasinoLevelUpText()
+        {
+            TextObject levelUpText = new TextObject("[" + _clanHideout.Casino_Level * (ClanHideout.Casino_LevelPrice + 1) + "{GOLD_ICON}] Agrandir le casino");
+            GameTexts.SetVariable("CASINOUP", levelUpText);
+        }
+
+        #endregion
+
         public void RegisterSecretEntranceMenuOption(CampaignGameStarter campaignGameStarter)
         {
             campaignGameStarter.AddGameMenuOption("town_outside", "town_outside_secret_entrance", "Rentrer dans la ville par le passage secret",
@@ -528,9 +573,6 @@ namespace PrestigiousBank
                 isLeave: false, index: 3);
         }
 
-        public void RegisterCasinoMenuOptions(CampaignGameStarter campaignGameStarter)
-        {
 
-        }
     }
 }

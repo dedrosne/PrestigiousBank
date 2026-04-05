@@ -87,11 +87,11 @@ namespace PrestigiousBank
 
             //AccountMenu
             campaignGameStarter.AddGameMenu(String.Format("{0}_account", _cityID),
-                String.Format("Solde : {0}\nTaux d'intérêts : {1}%/jour", currentSolde, interestRatePercentage.ToString("G3")), null, TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters); //TODOW
+                String.Format("Solde : {0}\nTaux d'intérêts : {1}%/jour", currentSolde, interestRatePercentage.ToString("G3")), null, TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
 
             //Deposit Menu
             campaignGameStarter.AddGameMenu(String.Format("{0}_bank_deposit", _cityID),
-                String.Format("Solde : {0}\nTaux d'intérêts : {1}%/jour", currentSolde, interestRatePercentage.ToString("G3")), null, TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters); //TODOW
+                String.Format("Solde : {0}\nTaux d'intérêts : {1}%/jour", currentSolde, interestRatePercentage.ToString("G3")), null, TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
 
             //Withdraw Menu
             campaignGameStarter.AddGameMenu(String.Format("{0}_bank_withdraw", _cityID),
