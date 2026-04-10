@@ -45,7 +45,7 @@ namespace PrestigiousBank
                 a =>
                 {
                     a.optionLeaveType = GameMenuOption.LeaveType.Devastate;
-                    a.Tooltip = ((DrakenhofBank)_bank).GetCustomerLevel() > 3 ? null : new TextObject("Niveau de client Platine requis", null);
+                    a.Tooltip = ((DrakenhofBank)_bank).GetCustomerLevel() > 3 ? null : new TextObject("Niveau de client Mythril requis", null);
                     a.IsEnabled = ((DrakenhofBank)_bank).GetCustomerLevel() > 3;
                     return true;
                 },

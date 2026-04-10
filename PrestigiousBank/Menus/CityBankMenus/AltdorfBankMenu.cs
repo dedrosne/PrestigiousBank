@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Messages.FromClient.ToLobbyServer;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,14 +8,16 @@ using TaleWorlds.CampaignSystem.Encounters;
 using TaleWorlds.CampaignSystem.GameMenus;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.Core;
-using TaleWorlds.Library;
-using TaleWorlds.MountAndBlade.View;
-using TaleWorlds.ScreenSystem;
-using TaleWorlds.ObjectSystem;
-using TaleWorlds.Localization;
-using Messages.FromClient.ToLobbyServer;
 using TaleWorlds.Engine;
+using TaleWorlds.Library;
+using TaleWorlds.LinQuick;
+using TaleWorlds.Localization;
+using TaleWorlds.MountAndBlade.View;
+using TaleWorlds.ObjectSystem;
+using TaleWorlds.ScreenSystem;
+using TOR_Core.AbilitySystem.Spells;
 using TOR_Core.CampaignMechanics.CustomResources;
+using TOR_Core.Extensions;
 
 namespace PrestigiousBank
 {
@@ -62,7 +65,7 @@ namespace PrestigiousBank
                 "Services de Magie",
                 a => {
                     a.optionLeaveType = GameMenuOption.LeaveType.ShowMercy;
-                    a.Tooltip = ((AltdorfBank)_bank).GetCustomerLevel() > 3 ? null : new TextObject("Niveau de client Platine requis", null);
+                    a.Tooltip = ((AltdorfBank)_bank).GetCustomerLevel() > 3 ? null : new TextObject("Niveau de client Mythril requis", null);
                     a.IsEnabled = ((AltdorfBank)_bank).GetCustomerLevel() > 3;
                     return true;
                 },
@@ -83,11 +86,29 @@ namespace PrestigiousBank
                 _ =>
                 {
                     Hero.MainHero.ChangeHeroGold(-AltdorfBank.PriceUnblockTeleport);
+                    SoundEvent.PlaySound2D(SoundEvent.GetEventIdFromString("event:/ui/notification/coins_negative"));
                     ((AltdorfBank)_bank).IsTeleportUnblocked = true;
                     GameMenu.SwitchToMenu(String.Format("{0}_bank_menu", _cityID));
                     PrestigiousBank.LogMessage("Téléportation entre agences débloquée.\nAchetez une agence et construisez-y un téléporteur.");
                 },
                 isLeave: false, index: 4);
+
+            //Bank Menu => Gain a new Magic Lore
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_menu", _cityID), String.Format("{0}_bank_newLore", _cityID),
+                "[" + AltdorfBank.PriceNewMagicLore + "{GOLD_ICON}] S'initier à un nouveau domaine de magie",
+                a => {
+                    a.optionLeaveType = GameMenuOption.LeaveType.ShowMercy;
+                    if (((AltdorfBank)_bank).GetCustomerLevel() <= 5) a.Tooltip = new TextObject("Niveau de client Malepierre requis", null);
+                    else if (Hero.MainHero.Gold < AltdorfBank.PriceNewMagicLore) a.Tooltip = new TextObject("Pas assez d'or", null);
+                    a.IsEnabled = ((AltdorfBank)_bank).GetCustomerLevel() > 5 && Hero.MainHero.Gold >= AltdorfBank.PriceNewMagicLore;
+                    return !LoreObject.GetAll().WhereQ(X => !Hero.MainHero.HasKnownLore(X.ID)).ToList().IsEmpty();
+                },
+                _ =>
+                {
+                    ((AltdorfBank)_bank).LearnNewLore();
+                },
+                isLeave: false, index: 5);
+
         }
 
 

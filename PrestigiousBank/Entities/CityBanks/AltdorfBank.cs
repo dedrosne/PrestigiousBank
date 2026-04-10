@@ -5,6 +5,7 @@ using System.Linq;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.Core;
+using TaleWorlds.Engine;
 using TaleWorlds.LinQuick;
 using TaleWorlds.SaveSystem;
 using TOR_Core.AbilitySystem.Spells;
@@ -29,6 +30,7 @@ namespace PrestigiousBank
         public static int UpkeepPerChanneler = 10;
         public static int PricePerChanneler = 4000;
         public static int PriceUnblockTeleport = 100_000;
+        public static int PriceNewMagicLore = 500_000;
 
         public AltdorfBank(Settlement ville) : base(ville)
         {
@@ -56,7 +58,7 @@ namespace PrestigiousBank
 
             var lores = LoreObject.GetAll();
 
-            lores = lores.WhereQ(X => !Hero.MainHero.HasKnownLore(X.ID)).ToList();
+            lores = lores.WhereQ(X => !Hero.MainHero.HasKnownLore(X.ID) && !X.DisabledForCultures.Contains("empire")).ToList();
 
             foreach (var lore in lores)
             {
@@ -71,6 +73,9 @@ namespace PrestigiousBank
                 var newlore = (LoreObject)inquiryElements[0].Identifier;
 
                 Hero.MainHero.AddKnownLore(newlore.ID);
+                Hero.MainHero.ChangeHeroGold(-PriceNewMagicLore);
+                SoundEvent.PlaySound2D(SoundEvent.GetEventIdFromString("event:/ui/notification/coins_negative"));
+
             }
         }
 

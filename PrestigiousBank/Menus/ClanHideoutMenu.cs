@@ -41,7 +41,7 @@ namespace PrestigiousBank
         public virtual void CreateOrUpdateGameMenuDesc(CampaignGameStarter campaignGameStarter)
         {
             int hideoutLevel = _clanHideout.LevelHideout;
-
+            RefreshClanHideoutLevelUpText();
             // Clan Hideout Menu
             campaignGameStarter.AddGameMenu("clanHideoutMenu",
                 "Planque du clan\nNiveau de la planque :" + hideoutLevel + "\nForce du gang : " + _clanHideout.BanditsGangStrenght,
@@ -253,7 +253,7 @@ namespace PrestigiousBank
                 a =>
                 {
                     a.optionLeaveType = GameMenuOption.LeaveType.ForceToGiveGoods;
-                    if (_clanHideout.LevelHideout >= 4) a.Tooltip = new TextObject("Planque niveau 4 nécessaire");
+                    if (_clanHideout.LevelHideout < 4) a.Tooltip = new TextObject("Planque niveau 4 nécessaire");
                     else if (Hero.MainHero.Gold < ClanHideout.Racketeering_LevelPrice) a.Tooltip = new TextObject("Pas assez d'or");
                     a.IsEnabled = Hero.MainHero.Gold >= ClanHideout.Casino_LevelPrice && _clanHideout.LevelHideout >= 4;
                     return _clanHideout.Casino_Level == 0;
@@ -272,7 +272,7 @@ namespace PrestigiousBank
                 a =>
                 {
                     a.optionLeaveType = GameMenuOption.LeaveType.OrderTroopsToAttack;
-                    return _clanHideout.Casino_Level >= 4;
+                    return _clanHideout.Casino_Level >= 1;
                 },
                 _ => {
                     CreateOrUpdateGameMenuDesc(campaignGameStarter);

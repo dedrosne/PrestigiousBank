@@ -99,10 +99,10 @@ namespace PrestigiousBank
                 //Casino
                 if (ClanHideout.Casino_Level > 0)
                 {
-                    ClanHideout.Casino_Benefits = new Random().Next(ClanHideout.CasinoMinValue, ClanHideout.CasinoMaxValue);
+                    ClanHideout.Casino_PreviousBenefits = new Random().Next(ClanHideout.CasinoMinValue, ClanHideout.CasinoMaxValue);
                 }
 
-                ClanHideout.Casino_Benefits = ClanHideout.Casino_PreviousBenefits;
+                ClanHideout.Casino_PreviousBenefits = ClanHideout.Casino_Benefits;
                 ClanHideout.Casino_Benefits = 0;
             }
         }

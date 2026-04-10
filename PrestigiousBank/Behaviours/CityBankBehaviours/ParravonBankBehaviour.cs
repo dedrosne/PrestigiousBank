@@ -78,6 +78,7 @@ namespace PrestigiousBank
             CampaignEvents.OnSessionLaunchedEvent.AddNonSerializedListener((object)this, new Action<CampaignGameStarter>(this.OnSessionLaunched));
             CampaignEvents.DailyTickEvent.AddNonSerializedListener(this, this.DailyTickClan);
             CampaignEvents.HourlyTickEvent.AddNonSerializedListener(this, this.HourlyTickEvent);
+
         }
 
         private void OnSessionLaunched(CampaignGameStarter campaignGameStarter)

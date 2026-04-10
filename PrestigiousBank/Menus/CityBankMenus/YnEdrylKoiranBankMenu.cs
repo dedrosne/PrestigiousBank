@@ -79,7 +79,7 @@ namespace PrestigiousBank
                 a =>
                 {
                     a.optionLeaveType = GameMenuOption.LeaveType.DefendAction;
-                    a.Tooltip = _bank.GetCustomerLevel() > 3 ? null : new TextObject("Niveau de client Platine requis", null);
+                    a.Tooltip = _bank.GetCustomerLevel() > 3 ? null : new TextObject("Niveau de client Mythril requis", null);
                     a.IsEnabled = _bank.GetCustomerLevel() > 3;
                     return true;
                 },

@@ -189,7 +189,7 @@ namespace PrestigiousBank
             //Clan Hideout Casino
             if (ClanHideoutCampaignBehavior.ClanHideout.Casino_Level > 0)
             {
-                int value = (int)ClanHideoutCampaignBehavior.ClanHideout.Casino_Benefits;
+                int value = (int)ClanHideoutCampaignBehavior.ClanHideout.Casino_PreviousBenefits;
                 result.Add(value, new TextObject("Casino"));
             }
 

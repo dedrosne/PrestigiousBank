@@ -171,7 +171,8 @@ Une fois débloqué, peut recruter dans les hideout dans la party ou envoyer dan
 
 Level 2 :
 Porte dérobée : Permet d'entrer dans la ville même si en guerre
-
+Level 4 : Casino :
+    Chaque jour gagne des golds entre -2000*level-5*GangStrenght et +2400*level+5*GangStrenght
 
 ////////////////////////////Protection des capitales
 La capitale de chaque faction ne peut pas être assiégée
@@ -186,8 +187,7 @@ La capitale de chaque faction ne peut pas être assiégée
 Level 3 : Débloque Faux monayer de l'usine de Nuln
 Recruitment rate of prisoners (comme 2eme perk de leadership)
 
-Level 4 : Casino :
-    Chaque jour gagne des golds entre -2000*level-5*GangStrenght et +2400*level+5*GangStrenght
+
     
 
 
@@ -234,7 +234,7 @@ Permets à sesd caravanes qui passent de récupérer automatiquement le butin de
 
 
 Temple de son Dieu/religion
-    
+    Pouvoir lancer des prières
 
 Régénération (vampire ? 
 	(comme les trolls de TOR)
@@ -277,12 +277,16 @@ Bretonie : Villages/Agriculture => Une foi le village détenu, déposer des pris
 Chez les nains : Endurance de forge qui se régénère
 + d'Endurance
 
-ClanHideout : Ambush caravans ? Party moins visible
+
 
 Trier la liste de téléportation par ordre alphabétique
 
 
 Event Invasion du chaos
+
+
+Ambuscade : Plus on reste longtemps sur la map immobile, plus le champ de détection se réduit.
+Comment faire techniquement ?  Campaign.Current.Models.MapVisibilityModel.GetPartySpottingRange
 
 ///////////////////////////////Companions
 /////Get companions :
@@ -351,33 +355,6 @@ using TaleWorlds.CampaignSystem.Actions;
                 }
 
 
-
-//////////////////////////////////////////////////////Apprendre des nouveaux Lores. Même si pas possible ? + List InquiryElements
-        void LearnNewLoresPrompt()
-        {
-            List<InquiryElement> list = [];
-
-            var lores = LoreObject.GetAll();
-
-            lores = lores.WhereQ(X => !X.DisabledForCultures.Contains(TORConstants.Cultures.EONIR)&& X.ID!="DarkMagic" && !Hero.MainHero.HasKnownLore(X.ID)).ToList();
-
-            foreach (var lore in lores)
-            {
-                list.Add(new InquiryElement(lore,lore.Name,null,true,"Learn new lore"));
-            }
-            
-            var inquirydata = new MultiSelectionInquiryData("Force Peace", "Select a new lore to learn ( maximum 3)", list, true, 1, 1, "Confirm", "Cancel", SelectLore, null,"",true);
-            MBInformationManager.ShowMultiSelectionInquiry(inquirydata, true);
-
-            void SelectLore(List<InquiryElement> inquiryElements)
-            {
-                var newlore =(LoreObject) inquiryElements[0].Identifier;
-                
-                Hero.MainHero.AddKnownLore(newlore.ID);
-                Hero.MainHero.AddCultureSpecificCustomResource(-500);
-            }
-
-        }
 
 //////////////////////////////////////////////////////Distance entre deux éléments de la map
 
