@@ -56,27 +56,21 @@ namespace PrestigiousBank
                 campaignGameStarter.AddBehavior(new ParravonBankCampaignBehavior());
                 campaignGameStarter.AddBehavior(new AverheimBankCampaignBehavior());
                 campaignGameStarter.AddBehavior(new NulnFactoryCampaignBehavior());
+                campaignGameStarter.AddBehavior(new TorLithanelBankCampaignBehavior());
                 campaignGameStarter.AddBehavior(new ClanAgenciesBehaviour());
-                campaignGameStarter.AddBehavior(new ClanHideoutCampaignBehavior());
+                //campaignGameStarter.AddBehavior(new ClanHideoutCampaignBehavior());
 
                 // ============================================================
                 // Core models and processors
                 // ============================================================
-                //campaignGameStarter.AddModel(new FinanceProcessor());
-                //campaignGameStarter.AddBehavior(new BankLoanProcessor());
-                //campaignGameStarter.AddModel(new BankProsperityModel());
                 starter.AddModel((ClanFinanceModel)new PrestigiousFinanceModel());
                 starter.AddModel((PartyHealingModel)new PrestigiousPartyHealingModel());
                 starter.AddModel((CharacterStatsModel)new PrestigiousCharacterStatsModel());
                 starter.AddModel((PartySizeLimitModel)new PrestigiousPartySizeModel());
                 starter.AddModel((TargetScoreCalculatingModel)new PrestigiousCapitalProtectionModel());
                 starter.AddModel((PartySpeedModel)new PrestigiousPartySpeedModel());
-                // ============================================================
-                // Bank menus
-                // ============================================================
-                //AltdorfBankMenu.registerMenu(campaignGameStarter);
-                //BankMenu_Loan.RegisterMenu(campaignStarter, bankBehavior);
-                //BankMenu_LoanPay.RegisterMenu(campaignStarter, bankBehavior);
+                starter.AddModel((HideoutModel) new PrestigiousHideoutModel());
+
 
                 // ============================================================
                 // Initialization message (localization-safe)
@@ -86,7 +80,7 @@ namespace PrestigiousBank
             catch (Exception e)
             {
                 InformationManager.DisplayMessage(new InformationMessage(
-                    "[BanksOfCalradia][ERROR] Initialization failed: " + e.Message,
+                    "[PrestigiousBank][ERROR] Initialization failed: " + e.Message,
                     Color.FromUint(0xFFFF6666)
                 ));
             }

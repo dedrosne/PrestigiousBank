@@ -9,6 +9,7 @@ using System.Runtime.Remoting.Messaging;
 using System.Threading.Tasks;
 using TaleWorlds.ActivitySystem;
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.Actions;
 using TaleWorlds.CampaignSystem.Encounters;
 using TaleWorlds.CampaignSystem.GameMenus;
 using TaleWorlds.CampaignSystem.GameState;
@@ -45,7 +46,7 @@ namespace PrestigiousBank
             // Clan Hideout Menu
             campaignGameStarter.AddGameMenu("clanHideoutMenu",
                 "Planque du clan\nNiveau de la planque :" + hideoutLevel + "\nForce du gang : " + _clanHideout.BanditsGangStrenght,
-                null, TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
+                null, GameMenu.MenuOverlayType.SettlementWithCharacters);
 
             //Racketeering Menu
             campaignGameStarter.AddGameMenu("clanHideout_racketeering_menu",
@@ -55,14 +56,14 @@ namespace PrestigiousBank
                 "\nForce du gang : " + _clanHideout.BanditsGangStrenght +
                 "\nChance de se faire attraper par la garde :\n2%/" + ClanHideout.Racketeering_MinimumValue * _clanHideout.Racketeering_Level + "{GOLD_ICON} volés\n" +
                 "Force impliqué par tentative : " + ClanHideout.Racketeering_BanditStrenghtNeededPerLevel * _clanHideout.Racketeering_Level,
-                null, TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
+                null, GameMenu.MenuOverlayType.SettlementWithCharacters);
 
             //Casino
             campaignGameStarter.AddGameMenu("clanHideout_casino_menu",
                 "Casino\n" +
                 "Niveau du Casino : " + _clanHideout.Casino_Level +
                 "\nRevenus entre "+_clanHideout.Casino_CalculateMinMaxValue().Item1+" et "+_clanHideout.Casino_CalculateMinMaxValue().Item2,
-                null, TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
+                null, GameMenu.MenuOverlayType.SettlementWithCharacters);
 
         }
 
@@ -140,7 +141,7 @@ namespace PrestigiousBank
                     TroopRoster leftRoster = new TroopRoster(null);
 
 
-                    PartyScreenManager.OpenScreenForManagingAlley(leftRoster,
+                    PartyScreenHelper.OpenScreenForManagingAlley(false, leftRoster,
                         isTroopTransferable: delegate (CharacterObject character, PartyScreenLogic.TroopType type, PartyScreenLogic.PartyRosterSide side, PartyBase LeftOwnerParty)
                         {
                             return !character.IsTemplate && (
@@ -212,7 +213,7 @@ namespace PrestigiousBank
             //Open Stash
             campaignGameStarter.AddGameMenuOption("clanHideoutMenu", "clanHideoutMenu_openStash", "Ouvrir la cache",
                 a => { a.optionLeaveType = GameMenuOption.LeaveType.OpenStash; return true; },
-                _ => InventoryManager.OpenScreenAsStash(_clanHideout.GetItemStash()),//Crash. Why ? InventoryManager Null
+                _ => InventoryScreenHelper.OpenScreenAsStash(_clanHideout.GetItemStash()),//Crash. Why ? InventoryManager Null
                 isLeave: false, index: 2);
 
             //EmptySpaces
@@ -424,25 +425,26 @@ namespace PrestigiousBank
             Settlement settlement = Settlement.CurrentSettlement;
 
             //Destroy other parties
-            int IndexToCheck = 0;
-            while (Settlement.CurrentSettlement.Parties.Count > 1)
+            //int IndexToCheck = 0;
+/*            while (Settlement.CurrentSettlement.Parties.Count > 1)
             {
                 if (!Settlement.CurrentSettlement.Parties[IndexToCheck].IsMainParty)
                 {
-                    Settlement.CurrentSettlement.Parties[IndexToCheck].RemoveParty();
+					DestroyPartyAction.Apply(
+					Settlement.CurrentSettlement.Parties[IndexToCheck].Remo();
                 }
                 else
                 {
                     IndexToCheck = 1;
                 }
 
-            }
+            }*/
 
             foreach (MobileParty party in Settlement.CurrentSettlement.Parties)
             {
                 if (!party.IsMainParty)
                 {
-                    party.RemoveParty();
+                    DestroyPartyAction.Apply(party.Party,party);
                 }
             }
             //Leave hideout

@@ -14,17 +14,16 @@ using TOR_Core.Utilities;
 
 namespace PrestigiousBank
 {
-    [SaveableRootClass(99999998)]
     public class AltdorfBank : Bank
     {
-        [SaveableProperty(2)]
+        [SaveableProperty(1)]
         public int PrestigiousAccountSolde { get; set; }
 
         //1 Channeler = 1 Max de vent de magie en plus
-        [SaveableProperty(3)]
+        [SaveableProperty(2)]
         public int ChannelerNumber { get; set; }
 
-        [SaveableProperty(4)]
+        [SaveableProperty(3)]
         public bool IsTeleportUnblocked { get; set; }
 
         public static int UpkeepPerChanneler = 10;
@@ -77,6 +76,19 @@ namespace PrestigiousBank
                 SoundEvent.PlaySound2D(SoundEvent.GetEventIdFromString("event:/ui/notification/coins_negative"));
 
             }
+        }
+        protected override void InitMercenariesUnits()
+        {
+            InitMercenariesUnitFromListString(new List<string>
+            {
+                "tor_ror_altdorf_company_sergeant",
+                "tor_reiksguard_preceptor_innercircle",
+                "tor_demigryph_innercircle",
+                "tor_valiant_outrider",
+                "tor_valiant_outrider_grenade"
+            });
+
+            SortAndCleanMercenaryUnitList();
         }
 
     }

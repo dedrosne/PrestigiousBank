@@ -180,9 +180,6 @@
     <Reference Include="TaleWorlds.Localization">
       <HintPath>F:\SteamLibrary\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.Localization.dll</HintPath>
     </Reference>
-    <Reference Include="TaleWorlds.ModuleManager">
-      <HintPath>F:\SteamLibrary\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.ModuleManager.dll</HintPath>
-    </Reference>
     <Reference Include="TaleWorlds.MountAndBlade">
       <HintPath>F:\SteamLibrary\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.MountAndBlade.dll</HintPath>
     </Reference>
@@ -270,14 +267,16 @@
     <Reference Include="TaleWorlds.TwoDimension.Standalone">
       <HintPath>F:\SteamLibrary\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.TwoDimension.Standalone.dll</HintPath>
     </Reference>
-    <Reference Include="TOR_Core">
-      <HintPath>F:\SteamLibrary\steamapps\common\Mount &amp; Blade II Bannerlord\Modules\TOR_Core\bin\Win64_Shipping_Client\TOR_Core.dll</HintPath>
+    <Reference Include="TOR_Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>F:\SteamLibrary\steamapps\workshop\content\261550\3025574678\bin\Win64_Shipping_Client\TOR_Core.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Behaviours\CityBankBehaviours\AverheimBankBehaviour.cs" />
     <Compile Include="Behaviours\CityBankBehaviours\ParravonBankBehaviour.cs" />
     <Compile Include="Behaviours\CityBankBehaviours\MiddenheimBankBehaviour.cs" />
+    <Compile Include="Behaviours\CityBankBehaviours\TorLithanelBankBehaviour.cs" />
     <Compile Include="Behaviours\ClanAgenciesBehaviour.cs" />
     <Compile Include="Behaviours\ClanHideoutBehaviour.cs" />
     <Compile Include="Behaviours\NulnFactoryBehaviour.cs" />
@@ -289,6 +288,7 @@
     <Compile Include="Entities\CityBanks\AverheimBank.cs" />
     <Compile Include="Entities\CityBanks\MiddenheimBank.cs" />
     <Compile Include="Entities\CityBanks\ParravonBank.cs" />
+    <Compile Include="Entities\CityBanks\TorLithanelBank.cs" />
     <Compile Include="Entities\CityBanks\YnEdrylKoiranBank.cs" />
     <Compile Include="Entities\CityBanks\DrakenhofBank.cs" />
     <Compile Include="Entities\Bank.cs" />
@@ -300,21 +300,14 @@
     <Compile Include="Entities\InsuredCaravan.cs" />
     <Compile Include="Entities\CityBanks\AltdorfBank.cs" />
     <Compile Include="Entities\NulnFactory.cs" />
-    <Compile Include="Entities\Saveable\ClanAgenciesSaveableTypeDefiner.cs" />
-    <Compile Include="Entities\Saveable\ParravonBankSaveableTypeDefiner.cs" />
-    <Compile Include="Entities\Saveable\NulnFactorySaveableTypeDefiner.cs" />
-    <Compile Include="Entities\Saveable\CouronneBankSaveableTypeDefiner.cs" />
-    <Compile Include="Entities\Saveable\MiddenheimBankSaveableTypeDefiner.cs" />
-    <Compile Include="Entities\Saveable\AverheimBankSaveableTypeDefiner.cs" />
-    <Compile Include="Entities\Saveable\ClanHideoutSaveableTypeDefiner.cs" />
-    <Compile Include="Entities\Saveable\YnEdrylKoiranBankSaveableTypeDefiner.cs" />
-    <Compile Include="Entities\Saveable\DrakenhofBankSaveableTypeDefiner.cs" />
-    <Compile Include="Entities\Saveable\AltdorfBankSaveableTypeDefiner.cs" />
+    <Compile Include="Entities\Saveable\BankSaveableTypeDefiner.cs" />
+    <Compile Include="Harmony\MobilePartyPatch.cs" />
     <Compile Include="Harmony\AltdorfBankPatch.cs" />
     <Compile Include="Menus\CityBankMenus\CouronneBankMenu.cs" />
     <Compile Include="Menus\CityBankMenus\AverheimBankMenu.cs" />
     <Compile Include="Menus\CityBankMenus\ParravonBankMenu.cs" />
     <Compile Include="Menus\CityBankMenus\MiddenheimBankMenu.cs" />
+    <Compile Include="Menus\CityBankMenus\TorLithanelBankMenu.cs" />
     <Compile Include="Menus\CityBankMenus\YnEdrylKoiranBankMenu.cs" />
     <Compile Include="Menus\CityBankMenus\DrakenhofBankMenu.cs" />
     <Compile Include="Menus\CityBankMenus\AltdorfBankMenu.cs" />
@@ -322,6 +315,7 @@
     <Compile Include="Menus\ClanAgencyMenu.cs" />
     <Compile Include="Menus\ClanHideoutMenu.cs" />
     <Compile Include="Menus\NulnFactoryMenu.cs" />
+    <Compile Include="Models\HideoutModel.cs" />
     <Compile Include="Models\PrestigiousPartyHealingModel.cs" />
     <Compile Include="Models\PrestigiousCapitalProtectionModel.cs" />
     <Compile Include="Models\PrestigiousPartySpeedModel.cs" />

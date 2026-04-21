@@ -59,11 +59,27 @@ namespace PrestigiousBank
                 isLeave: false, index: 1);
             RegisterAccountMenuOptions(campaignGameStarter);
 
+            //Bank Menu -> Mercenaries
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_menu", _cityID), String.Format("{0}_mercenaries", _cityID), "Guilde des Guerriers",
+                a => { a.optionLeaveType = GameMenuOption.LeaveType.DonateTroops;
+                    a.IsEnabled = _bank.CanRecruitMercenariesInThisBank && _bank.CheckKingdomsRequirement();
+                    a.Tooltip = _bank.CheckKingdomsRequirement() ? null : new TextObject("Seulement disponible pour les Clans du Royaume, ou clan alliés au Royaume");
+                    return _bank.CanRecruitMercenariesInThisBank; },
+                _ => GameMenu.SwitchToMenu(String.Format("{0}_mercenaries", _cityID)),
+                isLeave: false, index: 1);
+            if (_bank.CanRecruitMercenariesInThisBank) RegisterMercenariesMenuOptions(campaignGameStarter);
+
+            //Empty space
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_menu", _cityID), "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
+
+
             CallChildrenBankMenu(campaignGameStarter, bank);
 
 
             //Empty space
             campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_menu", _cityID), "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
+
+
 
             //Quitter la banque
             campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_menu", _cityID), String.Format("{0}_bank_menu_back", _cityID), "Quitter la banque",
@@ -83,15 +99,15 @@ namespace PrestigiousBank
             // Bank Menu
             campaignGameStarter.AddGameMenu(String.Format("{0}_bank_menu", _cityID),
                 String.Format("Bienvenue à la banque de {0}.\nNiveau du client : {1}\nSolde : {2}\nTaux d'intérêts : {3}%/jour", _cityName, clientLevelString, currentSolde, interestRatePercentage.ToString("G3")),
-                null, TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
+                null, GameMenu.MenuOverlayType.SettlementWithCharacters);
 
             //AccountMenu
             campaignGameStarter.AddGameMenu(String.Format("{0}_account", _cityID),
-                String.Format("Solde : {0}\nTaux d'intérêts : {1}%/jour", currentSolde, interestRatePercentage.ToString("G3")), null, TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
+                String.Format("Solde : {0}\nTaux d'intérêts : {1}%/jour", currentSolde, interestRatePercentage.ToString("G3")), null, GameMenu.MenuOverlayType.SettlementWithCharacters);
 
             //Deposit Menu
             campaignGameStarter.AddGameMenu(String.Format("{0}_bank_deposit", _cityID),
-                String.Format("Solde : {0}\nTaux d'intérêts : {1}%/jour", currentSolde, interestRatePercentage.ToString("G3")), null, TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
+                String.Format("Solde : {0}\nTaux d'intérêts : {1}%/jour", currentSolde, interestRatePercentage.ToString("G3")), null, GameMenu.MenuOverlayType.SettlementWithCharacters);
 
             //Withdraw Menu
             campaignGameStarter.AddGameMenu(String.Format("{0}_bank_withdraw", _cityID),
@@ -99,7 +115,13 @@ namespace PrestigiousBank
                 currentSolde,
                 interestRatePercentage.ToString("G3")),
                 null,
-                TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
+                GameMenu.MenuOverlayType.SettlementWithCharacters);
+
+            //Mercenary Menu
+            campaignGameStarter.AddGameMenu(String.Format("{0}_mercenaries", _cityID),
+                "Recruter des Mercenaires\nTaux de recrutement : "+_bank.RegenPerDayMercenaries+"/jour",
+                null,
+                GameMenu.MenuOverlayType.SettlementWithCharacters);
 
 
         }
@@ -257,7 +279,112 @@ namespace PrestigiousBank
 
         #endregion
 
+        #region Mercenaries
+        private void RegisterMercenariesMenuOptions(CampaignGameStarter campaignGameStarter)
+        {
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_mercenaries", _cityID),
+                String.Format("{0}_mercenaries_rate", _cityID),
+                "[" + 50_000*_bank.RegenPerDayMercenaries + "{GOLD_ICON}] Améliorer le taux de recrutement",
+                a =>
+                {
+                    a.optionLeaveType = GameMenuOption.LeaveType.OrderTroopsToAttack;
+                    a.IsEnabled = true;
+                    a.Tooltip = null;
+                    if (Hero.MainHero.Gold < 50_000 * _bank.RegenPerDayMercenaries)
+                    {
+                        a.IsEnabled = false;
+                        a.Tooltip = new TextObject("Pas assez d'or");
+                    }
+                    return true;
+                },
+                _ => {
+                    Hero.MainHero.ChangeHeroGold((int)(50_000 * _bank.RegenPerDayMercenaries));
+                    _bank.RegenPerDayMercenaries += 0.1f;
+                    SoundEvent.PlaySound2D(SoundEvent.GetEventIdFromString("event:/ui/notification/coins_negative"));
+                    GameMenu.SwitchToMenu(String.Format("{0}_mercenaries", _cityID));
+                },
+                isLeave: false,
+                index: 1, isRepeatable: true);
+
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_mercenaries", _cityID),
+                String.Format("{0}_mercenaries_max", _cityID),
+                "[" + 5_000 * _bank.MaxMercenaries + "{GOLD_ICON}] Améliorer la capacité Maximum des baraquements",
+                a =>
+                {
+                    a.optionLeaveType = GameMenuOption.LeaveType.OrderTroopsToAttack;
+                    a.IsEnabled = true;
+                    a.Tooltip = null;
+                    if (Hero.MainHero.Gold < 5000 * _bank.MaxMercenaries)
+                    {
+                        a.IsEnabled = false;
+                        a.Tooltip = new TextObject("Pas assez d'or");
+                    }
+                    return true;
+                },
+                _ => {
+                    Hero.MainHero.ChangeHeroGold(5_000 * _bank.MaxMercenaries);
+                    _bank.MaxMercenaries ++;
+                    SoundEvent.PlaySound2D(SoundEvent.GetEventIdFromString("event:/ui/notification/coins_negative"));
+                    GameMenu.SwitchToMenu(String.Format("{0}_mercenaries", _cityID));
+                },
+                isLeave: false,
+                index: 2, isRepeatable: true);
+
+            //Empty space
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_mercenaries", _cityID), "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false, index: 3);
 
 
+            if (_bank.ListUniteesRecrutables != null && _bank.ListUniteesRecrutables.Count != 0)
+            {
+                foreach (Bank.UniteeRecrutable unitString in _bank.ListUniteesRecrutables)
+                {
+                    var unit = Bank.GetUnitPerStringID(unitString.IdString);
+                    campaignGameStarter.AddGameMenuOption(String.Format("{0}_mercenaries", _cityID),
+                        String.Format("{0}_mercenaries_{1}", _cityID, unitString.IdString),
+                        "["+(int)unitString.NbRecrutable+ "]["+ Bank.GetRecruitmentCostMercenaries(unit) +"{GOLD_ICON}] Recruter " + unit.Name.Value,
+                        a =>
+                        {
+                            a.optionLeaveType = GameMenuOption.LeaveType.DonateTroops;
+                            a.IsEnabled = true;
+                            a.Tooltip = null;
+                            if (!_bank.CheckClanAndBankRequirement(unit.Tier))
+                            {
+                                a.IsEnabled = false;
+                                a.Tooltip = new TextObject("Clan Tiers " + Bank.mercenariesRequirementPerUnitTiers[unit.Tier].clanTiers +
+                                    " et banque niveau " + Bank.GetCustomerLevelStringPerLevel(Bank.mercenariesRequirementPerUnitTiers[unit.Tier].bankLevel));
+                            }
+                            else if (unitString.NbRecrutable < 1)
+                            {
+                                a.IsEnabled = false;
+                                a.Tooltip = new TextObject("Personne disponible au recrutement\nAttendez un jour prochain");
+                            }
+                            else if (Hero.MainHero.Gold < Bank.GetRecruitmentCostMercenaries(unit))
+                            {
+                                a.IsEnabled = false;
+                                a.Tooltip = new TextObject("Pas assez d'or");
+                            }
+                            
+                                return true;
+                        },
+                        _ => { 
+                            _bank.ApplyMercenaryRecruited(unitString.IdString);
+                            GameMenu.SwitchToMenu(String.Format("{0}_mercenaries", _cityID));
+                        },
+                        isLeave: false,
+                        index: -1, isRepeatable: true);
+                }
+            }
+
+            //Empty space
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_mercenaries", _cityID), "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false, index: 998);
+
+
+            //Retour
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_mercenaries", _cityID), String.Format("{0}_mercenaries_back", _cityID), "Retour",
+                a => { a.optionLeaveType = GameMenuOption.LeaveType.Leave; return true; },
+                _ => GameMenu.SwitchToMenu(String.Format("{0}_bank_menu", _cityID)),
+                isLeave: true, index: 999);
+        }
+        #endregion
     }
 }

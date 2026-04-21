@@ -8,11 +8,10 @@ using TaleWorlds.SaveSystem;
 
 namespace PrestigiousBank
 {
-    [SaveableRootClass(99999993)]
     public class AverheimBank : Bank
     {
         //  1  Blessing = 1HP
-        [SaveableProperty(2)]
+        [SaveableProperty(12)]
         public int BlessingAmount { get; set; }
 
         public static int InitialPricePerHP = 2000;
@@ -27,6 +26,24 @@ namespace PrestigiousBank
         public int CalculatePriceAdditionnalHP()
         {
             return InitialPricePerHP + PriceIncreasePerHP * BlessingAmount;
+        }
+
+        
+        protected override void InitMercenariesUnits()
+        {
+            InitMercenariesUnitFromListString(new List<string>
+            {
+                "tor_empire_ironsider",
+                "tor_empire_master_engineer",
+                "tor_empire_veteran_artillery_crew",
+                "tor_empire_novice_engineer",
+                "tor_ror_kragsburg_house_guard",
+                "tor_ror_kragsburg_personal_guard",
+                "tor_ror_blazing_sun_innercircle",
+                "tor_ror_blazing_sun_demigryph_innercircle"
+            });
+
+            SortAndCleanMercenaryUnitList();
         }
 
     }

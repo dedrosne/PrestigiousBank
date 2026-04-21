@@ -31,7 +31,7 @@ namespace PrestigiousBank
                 "La bénédiction de Sigmar permet de renforcer son corps\nCette bénédiction a cependant un certain prix\nPuissance de la bénédiction : " +
                 ((AverheimBank)_bank).BlessingAmount,
                 null,
-                TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
+                GameMenu.MenuOverlayType.SettlementWithCharacters);
 
         }
 

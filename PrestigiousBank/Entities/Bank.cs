@@ -6,42 +6,26 @@ using System.Diagnostics.Eventing.Reader;
 using System.Globalization;
 using System.Linq;
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.CampaignSystem.ViewModelCollection.Encyclopedia.List;
 using TaleWorlds.Core;
+using TaleWorlds.Engine;
+using TaleWorlds.LinQuick;
+using TaleWorlds.ObjectSystem;
 using TaleWorlds.SaveSystem;
+using TOR_Core.BattleMechanics.StatusEffect;
 
 namespace PrestigiousBank
 {
-    [SaveableRootClass(99999999)]
     public class Bank
     {
+        
+
+
         [SaveableProperty(1)]
         public int Solde { get; set; }
 
-        //[SaveableProperty(2)]
-        //public int DaysSinceLastPayment { get; set; }
-
-        //[SaveableProperty(3)]
-        //public Settlement VisitedSettlement { get; set; }
-
-
-
-        //[SaveableProperty(4)]
-        //public List<string> CultureChangedSettlements { get; set; }
-
-        //[SaveableProperty(5)]
-        //public List<InsuredSettlement> InsuredSettlements { get; set; }
-
-        //[SaveableProperty(6)]
-        //public List<InsuredCaravan> InsuredCaravans { get; set; }
-
-        //[SaveableProperty(7)]
-        //public Dictionary<string, CultureObject> CultureChangedSettlementsDic { get; set; }
-
-        public bool CanDoLoan { get; set; }
-
-        public bool CanAccessMarket { get; set; }
 
         public Settlement _ville;
 
@@ -57,14 +41,9 @@ namespace PrestigiousBank
         public Bank(Settlement ville)
         {
             Solde = 0;
-            //DaysSinceLastPayment = 0;
-            CanDoLoan = true;
-            CanAccessMarket = true;
+            ListUniteesRecrutables = null;
             Ville = ville;
-            //InsuredCaravans = new List<InsuredCaravan>();
-            //InsuredSettlements = new List<InsuredSettlement>();
-            //CultureChangedSettlements = new List<string>();
-            //CultureChangedSettlementsDic = new Dictionary<string, CultureObject>();
+            CanRecruitMercenariesInThisBank = false;
         }
 
         public float CalculateInterestRate()
@@ -100,6 +79,11 @@ namespace PrestigiousBank
         public String GetCustomerLevelString()
         {
             int level = GetCustomerLevel();
+            return GetCustomerLevelStringPerLevel(level);
+        }
+
+        public static string GetCustomerLevelStringPerLevel(int level)
+        {
             if (level == 1) return "Bronze";
             if (level == 2) return "Argent";
             if (level == 3) return "Or";
@@ -123,5 +107,149 @@ namespace PrestigiousBank
             }
         }
 
+        #region Mercenaries
+
+        /// <summary>
+        /// Variables
+        /// </summary>
+
+        public static Dictionary<int, (int clanTiers, int bankLevel)> mercenariesRequirementPerUnitTiers = new Dictionary<int, (int clanTiers, int bankLevel)>
+        {
+            { 1, (1,1) },
+            { 2, (2,1) },
+            { 3, (2,1) },
+            { 4, (3,2) },
+            { 5, (3,2) },
+            { 6, (4,3) },
+            { 7, (4,4) },
+            { 8, (5,5) },
+            { 9, (5,6) },
+            { 10, (6,6) }
+        };
+
+        public static float initRegenPerDayMercenaries = 0.2f;
+        public static int initMaxMercenaries = 5;
+
+        public class UniteeRecrutable
+        {
+            [SaveableProperty(1)]
+            public string IdString {  get; set; }
+
+            [SaveableProperty(2)]
+            public float NbRecrutable {  get; set; }
+
+            public UniteeRecrutable(string idString, float nbRecrutable=0)
+            {
+                IdString = idString;
+                NbRecrutable = nbRecrutable;
+            }
+        }
+
+        [SaveableProperty(2)]
+        public List<UniteeRecrutable> ListUniteesRecrutables { get; set; }
+
+        [SaveableProperty(3)]
+        public bool CanRecruitMercenariesInThisBank { get; set; }
+
+        [SaveableProperty(4)]
+        public float RegenPerDayMercenaries {  get; set; }
+
+        [SaveableProperty(5)]
+        public int MaxMercenaries { get; set; }
+
+        //End Variables
+
+        public void InitMercenariesUnitFromListString(List<string> listIdString)
+        {
+            ListUniteesRecrutables = new List<UniteeRecrutable>();
+            foreach (string idString in listIdString)
+            {
+                ListUniteesRecrutables.Add(new UniteeRecrutable(idString)); 
+            }
+        }
+
+        //Can recruit if the clan is part or allied of Bank Kingdom
+        public bool CheckKingdomsRequirement()
+        {
+            var clanKingdom = Clan.PlayerClan.Kingdom;
+            var bankKingdom = _ville.OwnerClan.Kingdom;
+            if (clanKingdom != null && bankKingdom != null)
+            {
+                if (clanKingdom.StringId == bankKingdom.StringId) return true;
+                else if (clanKingdom.AlliedKingdoms != null && clanKingdom.AlliedKingdoms.Count != 0)
+                {
+                    foreach (Kingdom allied in clanKingdom.AlliedKingdoms)
+                    {
+                        if (allied.StringId == bankKingdom.StringId) { return true; }
+                    }
+                }
+            }
+            return false;
+        }
+
+        public bool CheckClanAndBankRequirement(int unitTiers)
+        {
+            return Clan.PlayerClan.Tier >= mercenariesRequirementPerUnitTiers[unitTiers].clanTiers &
+                this.GetCustomerLevel() >= mercenariesRequirementPerUnitTiers[unitTiers].bankLevel;
+        }
+
+        public static int GetRecruitmentCostMercenaries(CharacterObject characterObject)
+        {
+            var tmp = (int)Math.Pow(characterObject.Tier, 2);
+            var tmp2 = tmp * characterObject.HitPoints;
+            //return (characterObject.Tier ^ 2) * characterObject.HitPoints; 
+            return tmp2;
+        }
+
+        public static CharacterObject GetUnitPerStringID(string id)
+        {
+            return MBObjectManager.Instance.GetObject<CharacterObject>(id);
+        }
+
+        private void AddMercenaryToPlayerParty(CharacterObject characterObject)
+        {
+            PartyBase.MainParty.AddMember(characterObject, 1, 0);
+        }
+
+        public void ApplyMercenaryRecruited(string idUnit)
+        {
+            CharacterObject characterObject = GetUnitPerStringID(idUnit);
+            ListUniteesRecrutables.ForEach(recruitment => { if (recruitment.IdString == idUnit) recruitment.NbRecrutable -= 1; }); 
+            AddMercenaryToPlayerParty(characterObject);
+            Hero.MainHero.ChangeHeroGold(-GetRecruitmentCostMercenaries(characterObject));
+            SoundEvent.PlaySound2D(SoundEvent.GetEventIdFromString("event:/ui/notification/coins_negative"));
+
+        }
+
+        public void InitMercenariesVariables()
+        {
+            CanRecruitMercenariesInThisBank = true;
+            InitMercenariesUnits();
+        }
+
+        protected virtual void InitMercenariesUnits()
+        {
+
+        }
+
+        protected void SortAndCleanMercenaryUnitList()
+        {
+            ListUniteesRecrutables = ListUniteesRecrutables.WhereQ(x => GetUnitPerStringID(x.IdString) != null).ToList();
+
+            if (ListUniteesRecrutables != null && ListUniteesRecrutables.Count > 1)
+            {
+                ListUniteesRecrutables = ListUniteesRecrutables.OrderBy(i => GetUnitPerStringID(i.IdString) == null ? 0 : GetUnitPerStringID(i.IdString).Tier).ToList();
+                var party = PartyBase.MainParty.MemberRoster;
+            }
+        }
+
+        public void ApplyRegenMercenariesPerDay()
+        {
+            if (ListUniteesRecrutables != null && ListUniteesRecrutables.Count != 0)
+            {
+                ListUniteesRecrutables.ForEach(i => { i.NbRecrutable = Math.Min(i.NbRecrutable + RegenPerDayMercenaries,MaxMercenaries); });
+            }
+        }
+        #endregion
     }
 }

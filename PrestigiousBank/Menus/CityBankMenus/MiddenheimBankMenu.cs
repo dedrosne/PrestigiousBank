@@ -33,7 +33,7 @@ namespace PrestigiousBank
                 "Aides de camp embauchés : " + partyHelperCount +
                 "\nCoût par jour : " + partyHelperCostPerDay+"{GOLD_ICON}",
                 null,
-                TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
+                GameMenu.MenuOverlayType.SettlementWithCharacters);
 
 
         }

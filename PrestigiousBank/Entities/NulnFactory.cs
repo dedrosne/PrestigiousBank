@@ -16,7 +16,6 @@ using TaleWorlds.SaveSystem;
 
 namespace PrestigiousBank.Entities
 {
-    [SaveableRootClass(99999992)]
     public class NulnFactory
     {
         public static int InitialFactoryPrice = 50_000;

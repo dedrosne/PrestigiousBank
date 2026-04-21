@@ -82,115 +82,137 @@ namespace PrestigiousBank
 
             //Altdorf
             AltdorfBankCampaignBehavior AltdorfBankBehavior = Campaign.Current?.GetCampaignBehavior<AltdorfBankCampaignBehavior>();
-            if (AltdorfBankBehavior == null) return;
-
-            int InterestsAltdorfBank = AltdorfBankCampaignBehavior.BankAltdorf.CalculateInterests();
-            if (InterestsAltdorfBank != 0) 
-                result.Add(InterestsAltdorfBank, new TextObject("Banque d'Altdorf"));
-            if (AltdorfBankCampaignBehavior.BankAltdorf.ChannelerNumber != 0)
+            if (AltdorfBankBehavior != null)
             {
-                result.Add(-AltdorfBankCampaignBehavior.BankAltdorf.CalculateChannelerCostPerDay(), new TextObject("Canalysateurs d'Altdorf"));
+                int InterestsAltdorfBank = AltdorfBankCampaignBehavior.BankAltdorf.CalculateInterests();
+                if (InterestsAltdorfBank != 0)
+                    result.Add(InterestsAltdorfBank, new TextObject("Banque d'Altdorf"));
+                if (AltdorfBankCampaignBehavior.BankAltdorf.ChannelerNumber != 0)
+                {
+                    result.Add(-AltdorfBankCampaignBehavior.BankAltdorf.CalculateChannelerCostPerDay(), new TextObject("Canalysateurs d'Altdorf"));
+                }
             }
 
             //Drakenhof
             DrakenhofBankCampaignBehavior DrakenhofBankBehavior = Campaign.Current?.GetCampaignBehavior<DrakenhofBankCampaignBehavior>();
 
-            if (DrakenhofBankBehavior == null) return;
+            if (DrakenhofBankBehavior != null)
+            {
 
-            int InterestsDrakenhoffBank = DrakenhofBankCampaignBehavior.BankDrakenhof.CalculateInterests();
-            if (InterestsDrakenhoffBank != 0)
-                result.Add(InterestsDrakenhoffBank, new TextObject("Banque de Drakenhof"));
-
+                int InterestsDrakenhoffBank = DrakenhofBankCampaignBehavior.BankDrakenhof.CalculateInterests();
+                if (InterestsDrakenhoffBank != 0)
+                    result.Add(InterestsDrakenhoffBank, new TextObject("Banque de Drakenhof"));
+            }
 
             //YnEdrylKoiran
             YnEdrylKoiranBankCampaignBehavior ynEdrylKoiranBankCampaignBehavior = Campaign.Current?.GetCampaignBehavior<YnEdrylKoiranBankCampaignBehavior>();
 
-            if (ynEdrylKoiranBankCampaignBehavior == null) return;
+            if (ynEdrylKoiranBankCampaignBehavior != null)
+            {
+                int InterestsYnEdrylKoiran = YnEdrylKoiranBankCampaignBehavior.YnEdrylKoiranBank.CalculateInterests();
+                if (InterestsYnEdrylKoiran != 0)
+                    result.Add(InterestsYnEdrylKoiran, new TextObject("Banque d'Yn Edryl Koiran"));
 
-            int InterestsYnEdrylKoiran = YnEdrylKoiranBankCampaignBehavior.YnEdrylKoiranBank.CalculateInterests();
-            if (InterestsYnEdrylKoiran != 0)
-                result.Add(InterestsYnEdrylKoiran, new TextObject("Banque d'Yn Edryl Koiran"));
+                int IshaBlessingUpkeep = YnEdrylKoiranBankCampaignBehavior.YnEdrylKoiranBank.CalculateBlessingUpkeep();
+                if (IshaBlessingUpkeep != 0) result.Add(-IshaBlessingUpkeep, new TextObject("Bénédiction d'Isha"));
+            }
 
-            int IshaBlessingUpkeep = YnEdrylKoiranBankCampaignBehavior.YnEdrylKoiranBank.CalculateBlessingUpkeep();
-            if (IshaBlessingUpkeep != 0) result.Add(-IshaBlessingUpkeep, new TextObject("Bénédiction d'Isha"));
 
             //Couronne
             CouronneBankCampaignBehavior CouronneBankCampaignBehavior = Campaign.Current?.GetCampaignBehavior<CouronneBankCampaignBehavior>();
 
-            if (CouronneBankCampaignBehavior == null) return;
-
-            int InterestsCouronne = CouronneBankCampaignBehavior.BankCouronne.CalculateInterests();
-            if (InterestsCouronne != 0)
-                result.Add(InterestsCouronne, new TextObject("Banque de Couronne"));
-
+            if (CouronneBankCampaignBehavior != null)
+            {
+                int InterestsCouronne = CouronneBankCampaignBehavior.BankCouronne.CalculateInterests();
+                if (InterestsCouronne != 0)
+                    result.Add(InterestsCouronne, new TextObject("Banque de Couronne"));
+            }
 
             //Averheim
             AverheimBankCampaignBehavior AverheimBankCampaignBehavior = Campaign.Current?.GetCampaignBehavior<AverheimBankCampaignBehavior>();
 
-            if (AverheimBankCampaignBehavior == null) return;
-
-            int InterestsAverheim = AverheimBankCampaignBehavior.AverheimBank.CalculateInterests();
-            if (InterestsAverheim != 0)
-                result.Add(InterestsAverheim, new TextObject("Banque d'Averheim"));
-
+            if (AverheimBankCampaignBehavior != null)
+            {
+                int InterestsAverheim = AverheimBankCampaignBehavior.AverheimBank.CalculateInterests();
+                if (InterestsAverheim != 0)
+                    result.Add(InterestsAverheim, new TextObject("Banque d'Averheim"));
+            }
 
             //Middenheim
             MiddenheimBankCampaignBehavior MiddenheimBankCampaignBehavior = Campaign.Current?.GetCampaignBehavior<MiddenheimBankCampaignBehavior>();
+            if (MiddenheimBankCampaignBehavior != null)
+            {
+                int InterestsMiddenheim = MiddenheimBankCampaignBehavior.MiddenheimBank.CalculateInterests();
+                if (InterestsMiddenheim != 0)
+                    result.Add(InterestsMiddenheim, new TextObject("Banque de Middenheim"));
 
-            if (MiddenheimBankCampaignBehavior == null) return;
+                int PartyHelperUpkeep = MiddenheimBankCampaignBehavior.MiddenheimBank.CalculatePartyHelperUpkeep();
+                if (PartyHelperUpkeep != 0) result.Add(-PartyHelperUpkeep, new TextObject("Aides de camp de Middenheim"));
+            }
 
-            int InterestsMiddenheim = MiddenheimBankCampaignBehavior.MiddenheimBank.CalculateInterests();
-            if (InterestsMiddenheim != 0)
-                result.Add(InterestsMiddenheim, new TextObject("Banque de Middenheim"));
-
-            int PartyHelperUpkeep = MiddenheimBankCampaignBehavior.MiddenheimBank.CalculatePartyHelperUpkeep();
-            if (PartyHelperUpkeep != 0) result.Add(-PartyHelperUpkeep, new TextObject("Aides de camp de Middenheim"));
 
             //Parravon
             ParravonBankCampaignBehavior ParravonBankCampaignBehavior = Campaign.Current?.GetCampaignBehavior<ParravonBankCampaignBehavior>();
+            if (ParravonBankCampaignBehavior != null)
+            {
+                int InterestsParravon = ParravonBankCampaignBehavior.ParravonBank.CalculateInterests();
+                if (InterestsParravon != 0)
+                    result.Add(InterestsParravon, new TextObject("Banque de Parravon"));
+            }
 
-            if (ParravonBankCampaignBehavior == null) return;
 
-            int InterestsParravon = ParravonBankCampaignBehavior.ParravonBank.CalculateInterests();
-            if (InterestsParravon != 0)
-                result.Add(InterestsParravon, new TextObject("Banque de Parravon"));
+            //Tor Lithanel
+            TorLithanelBankCampaignBehavior torLithanelBankCampaignBehavior = Campaign.Current?.GetCampaignBehavior<TorLithanelBankCampaignBehavior>();
+            if (torLithanelBankCampaignBehavior != null)
+            {
+
+                int InterestsTorLithanel = TorLithanelBankCampaignBehavior.TorLithanelBank.CalculateInterests();
+                if (InterestsTorLithanel != 0)
+                    result.Add(InterestsTorLithanel, new TextObject("Banque de Tor Lithanel"));
+            }
+
 
             //Nuln Factory
             NulnFactoryCampaignBehavior NulnFactoryCampaignBehavior = Campaign.Current?.GetCampaignBehavior<NulnFactoryCampaignBehavior>();
-
-            if (NulnFactoryCampaignBehavior == null) return;
-            if (NulnFactoryCampaignBehavior.NulnFactory.PreviousDayBenefits != 0)
+            if (NulnFactoryCampaignBehavior != null)
             {
-                result.Add(NulnFactoryCampaignBehavior.NulnFactory.PreviousDayBenefits, new TextObject("Usine de Nuln"));
+                if (NulnFactoryCampaignBehavior.NulnFactory.PreviousDayBenefits != 0)
+                {
+                    result.Add(NulnFactoryCampaignBehavior.NulnFactory.PreviousDayBenefits, new TextObject("Usine de Nuln"));
+                }
             }
 
             //Clan Agencies Upkeep
             ClanAgenciesBehaviour ClanAgenciesBehaviour = Campaign.Current?.GetCampaignBehavior<ClanAgenciesBehaviour>();
-            if (ClanAgenciesBehaviour == null) return;
-            if (ClanAgenciesBehaviour.ClanAgencies.GetClanAgenciesList().Count > 0)
+            if (ClanAgenciesBehaviour != null)
             {
-                int agencyUpkeep = 0;
-                foreach (ClanAgency agency in ClanAgenciesBehaviour.ClanAgencies.GetClanAgenciesList())
+                if (ClanAgenciesBehaviour.ClanAgencies.GetClanAgenciesList().Count > 0)
                 {
-                    agencyUpkeep += agency.LevelAgency * ClanAgency.AgencyUpkeepPerLevel;
+                    int agencyUpkeep = 0;
+                    foreach (ClanAgency agency in ClanAgenciesBehaviour.ClanAgencies.GetClanAgenciesList())
+                    {
+                        agencyUpkeep += agency.LevelAgency * ClanAgency.AgencyUpkeepPerLevel;
+                    }
+                    result.Add(-agencyUpkeep, new TextObject("Entretien des Agences"));
                 }
-                result.Add(-agencyUpkeep, new TextObject("Entretien des Agences"));
             }
 
             //Clan Hideout Gangstrenght Upkeep
             ClanHideoutCampaignBehavior ClanHideoutCampaignBehavior = Campaign.Current?.GetCampaignBehavior<ClanHideoutCampaignBehavior>();
-            if (ClanHideoutCampaignBehavior == null) return;
-            if (ClanHideoutCampaignBehavior.ClanHideout.BanditsGangStrenght > 0)
+            if (ClanHideoutCampaignBehavior != null)
             {
-                int value =(int) (ClanHideoutCampaignBehavior.ClanHideout.BanditsGangStrenght * ClanHideout.GangStrenghtUpkeep);
-                result.Add(-value, new TextObject("Partage du butin de la planque"));
-            }
+                if (ClanHideoutCampaignBehavior.ClanHideout.BanditsGangStrenght > 0)
+                {
+                    int value = (int)(ClanHideoutCampaignBehavior.ClanHideout.BanditsGangStrenght * ClanHideout.GangStrenghtUpkeep);
+                    result.Add(-value, new TextObject("Partage du butin de la planque"));
+                }
 
-            //Clan Hideout Casino
-            if (ClanHideoutCampaignBehavior.ClanHideout.Casino_Level > 0)
-            {
-                int value = (int)ClanHideoutCampaignBehavior.ClanHideout.Casino_PreviousBenefits;
-                result.Add(value, new TextObject("Casino"));
+                //Clan Hideout Casino
+                if (ClanHideoutCampaignBehavior.ClanHideout.Casino_Level > 0)
+                {
+                    int value = (int)ClanHideoutCampaignBehavior.ClanHideout.Casino_PreviousBenefits;
+                    result.Add(value, new TextObject("Casino"));
+                }
             }
 
         }

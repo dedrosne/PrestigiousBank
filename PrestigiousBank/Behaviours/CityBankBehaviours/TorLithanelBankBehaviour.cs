@@ -24,12 +24,12 @@ using TOR_Core.CharacterDevelopment;
 
 namespace PrestigiousBank
 {
-    public class MiddenheimBankCampaignBehavior : CampaignBehaviorBase
+    public class TorLithanelBankCampaignBehavior : CampaignBehaviorBase
     {
-        public static string townID = "town_comp_ML1";
-        public static MiddenheimBank _bank= null;
+        public static string townID = "town_comp_LL1";
+        public static TorLithanelBank _bank = null;
 
-        public static MiddenheimBank MiddenheimBank
+        public static TorLithanelBank TorLithanelBank
         {
             get
             {
@@ -40,7 +40,7 @@ namespace PrestigiousBank
                         {
                             if (town.StringId == townID)
                             {
-                                _bank = new MiddenheimBank(town.Settlement);
+                                _bank = new TorLithanelBank(town.Settlement);
                                 break;
                             }
                                 
@@ -70,7 +70,7 @@ namespace PrestigiousBank
             }
         }
 
-        public MiddenheimBankCampaignBehavior() : base()
+        public TorLithanelBankCampaignBehavior() : base()
         {
         }
 
@@ -83,18 +83,20 @@ namespace PrestigiousBank
 
         private void OnSessionLaunched(CampaignGameStarter campaignGameStarter)
         {
-            new MiddenheimBankMenu().RegisterBankMenu(campaignGameStarter, MiddenheimBank);
+            new TorLithanelBankMenu().RegisterBankMenu(campaignGameStarter, TorLithanelBank);
         }
 
         private void DailyTickClan()
         {
             //Ajout de l'XP
-            Hero.MainHero.AddSkillXp(DefaultSkills.Tactics, MiddenheimBank.GetDailySkillXP());
+            Hero.MainHero.AddSkillXp(DefaultSkills.Medicine, TorLithanelBank.GetDailySkillXP());
+
+            _bank.ApplyRegenMercenariesPerDay();
         }
 
         private void HourlyTickEvent()
         {
-            MiddenheimBank.ApplyDiamondLevelGoldTownIncrease();
+            TorLithanelBank.ApplyDiamondLevelGoldTownIncrease();
         }
 
 
@@ -104,11 +106,11 @@ namespace PrestigiousBank
             {
                 if (dataStore.IsLoading)
                 {
-                    dataStore.SyncData<MiddenheimBank>("MiddenheimBank", ref _bank);
+                    dataStore.SyncData<TorLithanelBank>("TorLithanelBank", ref _bank);
                 }
                 else
                 {
-                    dataStore.SyncData<MiddenheimBank>("MiddenheimBank", ref _bank);
+                    dataStore.SyncData<TorLithanelBank>("TorLithanelBank", ref _bank);
                 }
             }
             catch

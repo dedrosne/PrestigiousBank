@@ -102,7 +102,7 @@ namespace PrestigiousBank
             //Open Stash
             campaignGameStarter.AddGameMenuOption("nulnFactory_menu", String.Format("{0}_openStash", _cityID), "Ouvrir l'entrepôt",
                 a => { a.optionLeaveType = GameMenuOption.LeaveType.OpenStash; return true; },
-                _ => InventoryManager.OpenScreenAsStash(_nulnFactory.GetItemStash()),//Crash. Why ? InventoryManager Null
+                _ => InventoryScreenHelper.OpenScreenAsStash(_nulnFactory.GetItemStash()),//Crash. Why ? InventoryManager Null
                 isLeave: false, index: 2);
 
             // Factory Menu -> RawMaterials Production
@@ -140,7 +140,7 @@ namespace PrestigiousBank
             // Factory Menu
             campaignGameStarter.AddGameMenu("nulnFactory_menu",
                 String.Format("Usine de Nuln\nNiveau de l'usine : {0}\nProduction Actuelle : {1}", factoryLevel, chosenProductionString),
-                null, TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
+                null, GameMenu.MenuOverlayType.SettlementWithCharacters);
 
             //ProductionChoice
             campaignGameStarter.AddGameMenu(String.Format("{0}_productionChoice", _cityID),
@@ -148,7 +148,7 @@ namespace PrestigiousBank
                 "\nARMES : {GOLD_ICON} généré selon le tiers des unités recrutées dans la ville"+
                 "\nPIECES D'USINAGE : Récupère un pourcentage de la valeur produite des Workshops de la ville, ou augmente la production de ses propres Workshops"+
                 "\nMATERIAUX DE CONSTRUCTION : Ne fait rien pour l'instant"//TODO
-                , null, TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
+                , null, GameMenu.MenuOverlayType.SettlementWithCharacters);
 
             // Raw Materials
             campaignGameStarter.AddGameMenu(String.Format("{0}_rawMaterials_menu", _cityID),
@@ -156,42 +156,42 @@ namespace PrestigiousBank
                 "\nChaque jour, les ouvriers meurent à la tâche pour produire des matières premières\n"+
                 "Force de travail : "+_nulnFactory.WorkStrenght+
                 "\nDemande actuelle d'ouvrier/jour :"+_nulnFactory.CalculateTotalWorkStrenght(),
-                null, TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
+                null, GameMenu.MenuOverlayType.SettlementWithCharacters);
 
             // Wood Production
             campaignGameStarter.AddGameMenu(String.Format("{0}_woodProduction", _cityID),
                 "Scierie de bois :"+
                 "\nProduit chaque jour du bois en fonction du niveau de production et de la force de travail disponible\n"+
                 "Force de travail : "+_nulnFactory.WorkStrenght,
-                null, TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
+                null, GameMenu.MenuOverlayType.SettlementWithCharacters);
 
             // Charcoal Production
             campaignGameStarter.AddGameMenu(String.Format("{0}_charcoalProduction", _cityID),
                 "Four à charbon :"+
                 "\nProduit chaque jour du charbon en fonction du niveau de production, du bois disponible et de la force de travail disponible\n"+
                 "Force de travail : "+_nulnFactory.WorkStrenght,
-                null, TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
+                null, GameMenu.MenuOverlayType.SettlementWithCharacters);
 
             // Iron Production
             campaignGameStarter.AddGameMenu(String.Format("{0}_ironProduction", _cityID),
                 "Mine de fer :"+
                 "\nProduit chaque jour du fer en fonction du niveau de production et de la force de travail disponible\n"+
                 "Force de travail : "+_nulnFactory.WorkStrenght,
-                null, TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
+                null, GameMenu.MenuOverlayType.SettlementWithCharacters);
 
             // IRON INGOT Production
             campaignGameStarter.AddGameMenu(String.Format("{0}_ironFurnaceProduction", _cityID),
                 "Fonderie :" +
                 "\nProduit chaque jour des lingots de fer en fonction du niveau de production, charbon, minerai et de la force de travail disponible\n" +
                 "Force de travail : " + _nulnFactory.WorkStrenght,
-                null, TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
+                null, GameMenu.MenuOverlayType.SettlementWithCharacters);
 
             // SILVER Production
             campaignGameStarter.AddGameMenu(String.Format("{0}_silverProduction", _cityID),
                 "Mine d'argent :" +
                 "\nProduit chaque jour de l'argent en fonction du niveau de production et de la force de travail disponible\n" +
                 "Force de travail : " + _nulnFactory.WorkStrenght,
-                null, TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
+                null, GameMenu.MenuOverlayType.SettlementWithCharacters);
 
         }
 
@@ -422,8 +422,8 @@ namespace PrestigiousBank
                 a => { a.optionLeaveType = GameMenuOption.LeaveType.DonatePrisoners; return true; },
                 _ => {
                     MobileParty leftParty = new MobileParty();
-                    leftParty.SetCustomName(new TextObject("Ouvriers"));
-                    PartyScreenManager.OpenScreenAsManageTroopsAndPrisoners(
+                    leftParty.Party.SetCustomName(new TextObject("Ouvriers"));
+                    PartyScreenHelper.OpenScreenAsManageTroopsAndPrisoners(
                         leftParty, 
                         delegate (PartyBase leftOwnerParty, TroopRoster leftMemberRoster, TroopRoster leftPrisonRoster, PartyBase rightOwnerParty, TroopRoster rightMemberRoster, TroopRoster rightPrisonRoster, bool fromCancel) 
                         {

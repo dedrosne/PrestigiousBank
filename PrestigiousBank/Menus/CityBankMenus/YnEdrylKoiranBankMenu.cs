@@ -1,11 +1,14 @@
-﻿using Messages.FromClient.ToLobbyServer;
+﻿using Helpers;
+using Messages.FromClient.ToLobbyServer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Threading.Tasks;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Encounters;
 using TaleWorlds.CampaignSystem.GameMenus;
+using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
@@ -16,6 +19,7 @@ using TaleWorlds.ObjectSystem;
 using TaleWorlds.ScreenSystem;
 using TOR_Core.CampaignMechanics.CustomResources;
 using TOR_Core.Extensions;
+using TaleWorlds.CampaignSystem.Roster;
 
 namespace PrestigiousBank
 {
@@ -32,7 +36,8 @@ namespace PrestigiousBank
             campaignGameStarter.AddGameMenu(String.Format("{0}_bank_forestHarmony_account", _cityID),
                 String.Format("Fortune investie : {0}\nHarmonie générée : {1}", forestHarmonySolde, forestHarmonyInterests),
                 null,
-                TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
+                GameMenu.MenuOverlayType.SettlementWithCharacters);
+            
 
             //Isha Blessings
             campaignGameStarter.AddGameMenu(String.Format("{0}_bank_ishaBlessings", _cityID),
@@ -40,7 +45,7 @@ namespace PrestigiousBank
                 ((YnEdrylKoiranBank)_bank).BlessingAmount+
                 "\n(= chance de survie aux portes de la mort)\nCoût d'entretien de la bénédiction : "+ ((YnEdrylKoiranBank)_bank).CalculateBlessingUpkeep()+"{GOLD_ICON}",
                 null,
-                TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
+                GameMenu.MenuOverlayType.SettlementWithCharacters);
 
         }
 
@@ -51,12 +56,13 @@ namespace PrestigiousBank
                 "Harmoniser la forêt",
                 a => {
                     a.optionLeaveType = GameMenuOption.LeaveType.SneakIn;
-                    if (Hero.MainHero.GetCultureSpecificCustomResource().Name != "ForestHarmony")
+                    var ressource = Hero.MainHero.GetCultureSpecificCustomResource();
+                    if (Hero.MainHero.GetCultureSpecificCustomResource().StringId != "ForestHarmony")
                     {
                         a.Tooltip = new TextObject("Culture Asrai requise", null);
                         a.IsEnabled = false;
                     }
-                    else if (((CouronneBank)_bank).GetCustomerLevel() <= 1)
+                    else if (((YnEdrylKoiranBank)_bank).GetCustomerLevel() <= 1)
                     {
                         a.Tooltip = new TextObject("Niveau de client Argent requis", null);
                         a.IsEnabled = false;
@@ -86,6 +92,14 @@ namespace PrestigiousBank
                 _ => GameMenu.SwitchToMenu(String.Format("{0}_bank_ishaBlessings", _cityID)),
                 isLeave: false, index: 3);
             RegisterIshaBlessingMenuOptions(campaignGameStarter);
+
+            
+            
+            RegisterIshaBlessingMenuOptions(campaignGameStarter);
+
+
+            
+                
         }
 
 

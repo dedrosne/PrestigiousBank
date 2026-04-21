@@ -60,6 +60,7 @@ namespace PrestigiousBank
 
                     }
                 }
+                if (!_bank.CanRecruitMercenariesInThisBank) _bank.InitMercenariesVariables();
                 return _bank;
 
             }
@@ -92,12 +93,15 @@ namespace PrestigiousBank
                 Hero.MainHero.AddCultureSpecificCustomResource(YnEdrylKoiranBank.CalculateForestHarmonyInterests());
             //Ajout de l'XP
             Hero.MainHero.AddSkillXp(DefaultSkills.Medicine, YnEdrylKoiranBank.GetDailySkillXP());
+
+            _bank.ApplyRegenMercenariesPerDay();
         }
 
         private void HourlyTickEvent()
         {
             YnEdrylKoiranBank.ApplyDiamondLevelGoldTownIncrease();
         }
+
 
 
         public override void SyncData(IDataStore dataStore)

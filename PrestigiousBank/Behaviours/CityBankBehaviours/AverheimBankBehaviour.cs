@@ -60,6 +60,7 @@ namespace PrestigiousBank
 
                     }
                 }
+                if (!_bank.CanRecruitMercenariesInThisBank) _bank.InitMercenariesVariables();
                 return _bank;
 
             }

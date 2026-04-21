@@ -31,7 +31,7 @@ namespace PrestigiousBank
             campaignGameStarter.AddGameMenu(String.Format("{0}_bank_pegase", _cityID),
                 "Pégases achetés : " + PegaseNumber,
                 null,
-                TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
+                GameMenu.MenuOverlayType.SettlementWithCharacters);
 
 
         }

@@ -9,7 +9,6 @@ using TOR_Core.BattleMechanics.StatusEffect;
 
 namespace PrestigiousBank
 {
-    [SaveableRootClass(99999997)]
     public class DrakenhofBank : Bank
     {
         public static int PricePerAttributePoint = 60_000;
@@ -17,13 +16,13 @@ namespace PrestigiousBank
         public static int PricePerCompanionAttributePoint = 30_000;
         public static int PricePerCompanionFocusPoint = 25_000;
 
-        [SaveableProperty(2)]
+        [SaveableProperty(12)]
         public int DarkEnergyAccountSolde { get; set; }
 
-        [SaveableProperty(3)]
+        [SaveableProperty(13)]
         public int AttributePointBought { get; set; }
 
-        [SaveableProperty(4)]
+        [SaveableProperty(14)]
         public int FocusPointBought { get; set; }
 
         public DrakenhofBank(Settlement ville) : base(ville)

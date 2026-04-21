@@ -33,7 +33,7 @@ namespace PrestigiousBank
             campaignGameStarter.AddGameMenu(String.Format("{0}_dark_ritual_enlightment",_cityID),
                 "Renforcez votre âme grâce aux rituels noirs",
                 null,
-                TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
+                GameMenu.MenuOverlayType.SettlementWithCharacters);
 
         }
 

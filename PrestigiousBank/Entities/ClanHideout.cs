@@ -16,7 +16,6 @@ using TaleWorlds.SaveSystem;
 
 namespace PrestigiousBank
 {
-    [SaveableRootClass(99999989)]
     public class ClanHideout
     {
         [SaveableProperty(1)]

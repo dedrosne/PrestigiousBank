@@ -8,10 +8,9 @@ using TaleWorlds.SaveSystem;
 
 namespace PrestigiousBank
 {
-    [SaveableRootClass(99999994)]
     public class MiddenheimBank : Bank
     {
-        [SaveableProperty(2)]
+        [SaveableProperty(12)]
         public int PartyHelperCount { get; set; }
 
         public static int PriceHirePartyHelper = 2000;
@@ -29,6 +28,20 @@ namespace PrestigiousBank
             return PartyHelperCount * (PartyHelperCount + 1) / 2 + (InitialPartyHelperUpkeep-1)*PartyHelperCount;
         }
 
+        protected override void InitMercenariesUnits()
+        {
+            InitMercenariesUnitFromListString(new List<string> {
+                "tor_empire_whitewolf_knight",
+                "tor_empire_warrior_ulric",
+                "tor_empire_teutogen_guard",
+                "tor_ror_ostland_blackguard",
+                "tor_ror_horned_hunter",
+                "tor_ror_hergig_jaegerkorps",
+                "tor_ror_griffon_demi_preceptor_knight",
+                "tor_ror_griffon_innercircle_knight"
+                 });
+            SortAndCleanMercenaryUnitList();
+        }
 
     }
 }

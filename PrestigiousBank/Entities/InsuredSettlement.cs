@@ -2,7 +2,6 @@
 
 namespace PrestigiousBank
 {
-    [SaveableRootClass(99999997)]
     public class InsuredSettlement
     {
         //[SaveableProperty(1)]

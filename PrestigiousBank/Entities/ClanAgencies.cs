@@ -13,7 +13,6 @@ using TaleWorlds.SaveSystem;
 
 namespace PrestigiousBank
 {
-    [SaveableRootClass(99999990)]
     public class ClanAgencies
     {
         [SaveableProperty(1)]

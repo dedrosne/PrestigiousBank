@@ -80,7 +80,7 @@ namespace PrestigiousBank
         private void OnSessionLaunched(CampaignGameStarter campaignGameStarter)
         {
             new ClanHideoutMenu().RegisterFactoryMenu(campaignGameStarter, ClanHideout);
-            AllTimeHideoutAttackEnable();
+            //AllTimeHideoutAttackEnable();
         }
         
 
@@ -153,7 +153,7 @@ namespace PrestigiousBank
             }
         }
 
-        private HideoutCampaignBehavior _hideoutCampaignBehavior
+/*        private HideoutCampaignBehavior _hideoutCampaignBehavior
         {
             get
             {
@@ -178,6 +178,6 @@ namespace PrestigiousBank
 
         // Token: 0x04000017 RID: 23
         private static AccessTools.FieldRef<HideoutCampaignBehavior, int> _attackHideoutEndField = AccessTools.FieldRefAccess<HideoutCampaignBehavior, int>("CanAttackHideoutEnd");
-
+*/
     }
 }

@@ -27,6 +27,7 @@ Altdorf :
     - Mythril : Augmenter vents de magie : Engager des canalysateur. 1 canalysateur pour 5000g, puis 10g/jour, pour 1 mana max
     - Diamant : Débloquer la téléportation entre agences
             Prix de déblocage : 100_000, puis 20_000 pour construire le téléporteur dans l'agence (niveau d'agence requis : 4), puis 20*taille d'armée pour se téléporter
+    - Malepierre : Acquerir un nouveau lore de magie. Cout : 500_000/lore
 
 Drakenhof : 
     - Argent :
@@ -184,28 +185,7 @@ La capitale de chaque faction ne peut pas être assiégée
 
    
 
-Level 3 : Débloque Faux monayer de l'usine de Nuln
-Recruitment rate of prisoners (comme 2eme perk de leadership)
 
-
-    
-
-
-Level 4 : Sabotage : 
-Bombe dans un camp de Party : Peut blesser un certain nombre de troupes dans une party dans la ville
-
-Level 5 :    
-- Assassin => Fort taux d'échec, mais gain d'influence ? Ou assassiner un seigneur/personnage ?
-- Poser une bombe => Ouvrir les portes ou détruire les murs
-
-Altdorf :     - Malepierre : Acquerir un nouveau lore de magie. Cout : 500_000/lore
-
-
-Pouvoir désactiver le ClanHideout dans sa ville
-
-Marieembroug : Acheter améliorations pour caravanes (assurances ? Attirent moins ?)+ Gold pour chaque passage de caravane dans la ville+caravanes:Vendent les biens du ClanHideout
-MarieEmbourg : Acheter des droits de péage (argent par caravane). + Meilleurs prix pour caravanes, assurance pour Caravane, etc
-        + Limite de Workshop supplémentaire
 
 ######################################################
 #Todo
@@ -230,7 +210,29 @@ Level 3 8=>10
 Level 4 12=>20
 Level 5 25=>50
 
+Hideout :
+
 Permets à sesd caravanes qui passent de récupérer automatiquement le butin de la planque si voulu, et le vendre
+Level 3 : Débloque Faux monayer de l'usine de Nuln
+Recruitment rate of prisoners (comme 2eme perk de leadership)
+
+
+    
+
+
+Level 4 : Sabotage : 
+Bombe dans un camp de Party : Peut blesser un certain nombre de troupes dans une party dans la ville
+
+Level 5 :    
+- Assassin => Fort taux d'échec, mais gain d'influence ? Ou assassiner un seigneur/personnage ?
+- Poser une bombe => Ouvrir les portes ou détruire les murs
+
+
+Pouvoir désactiver le ClanHideout dans sa ville
+
+Marieembroug : Acheter améliorations pour caravanes (assurances ? Attirent moins ?)+ Gold pour chaque passage de caravane dans la ville+caravanes:Vendent les biens du ClanHideout
+MarieEmbourg : Acheter des droits de péage (argent par caravane). + Meilleurs prix pour caravanes, assurance pour Caravane, etc
+        + Limite de Workshop supplémentaire
 
 
 Temple de son Dieu/religion
@@ -261,6 +263,7 @@ Eonir : Imposer guerre/Paix
 
 Diamant Middenheim : + de Party
 
+Emprunts
 
 PV du cheval
 Envoyer Or à un clan de son royaume=>Niveau Or ?
@@ -274,8 +277,8 @@ Capturé = On perd tout son argent
 Bretonie : Villages/Agriculture => Une foi le village détenu, déposer des prisonniers pour les recruter comme serfs, et générer du revenu.
 
 
-Chez les nains : Endurance de forge qui se régénère
-+ d'Endurance
+Chez les nains : Endurance de forge qui se régénère. 
++ d'Endurance max
 
 
 
@@ -287,6 +290,26 @@ Event Invasion du chaos
 
 Ambuscade : Plus on reste longtemps sur la map immobile, plus le champ de détection se réduit.
 Comment faire techniquement ?  Campaign.Current.Models.MapVisibilityModel.GetPartySpottingRange
+
+
+Hire Mercenaries troops :
+    - Depuis la banque ?
+    A besoin que la ville soit soit partie du royaume du clan, (mercenaire ou allié), soit à un royaume allié au royaume actuel
+    Du coup recrutement via menu.
+    Prérequis :
+        Tiers 1 : Clan Tiers 1 + Banque Rang Bronze  
+        Tiers 2 : Clan Tiers 2 + Banque Rang Bronze  
+        Tiers 3 : Clan Tiers 2 + Banque Rang Bronze
+        Tiers 4 : Clan Tiers 3 + Banque Rang Argent
+        Tiers 5 : Clan Tiers 3 + Banque Rang Argent     
+        Tiers 6 : Clan Tiers 4 + Banque Rang Or         
+        Tiers 7 : Clan Tiers 4 + Banque Rang Mythril    
+        Tiers 8 : Clan Tiers 5 + Banque Rang Diamant    
+        Tiers 9 : Clan Tiers 5 + Banque Rang Malepierre
+    Cout du recrutement : Tier^2 * Hitpoints
+    Max 5 unités recrutables. Refill de 0.2/j => Améliorable :
+         Taux : 50_000*taux_actuel pour 0.1/j supplémentaire
+         Capmax : 5_000 * cap actuelle pour +1 max
 
 ///////////////////////////////Companions
 /////Get companions :

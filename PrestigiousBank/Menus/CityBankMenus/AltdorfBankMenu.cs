@@ -36,14 +36,14 @@ namespace PrestigiousBank
             campaignGameStarter.AddGameMenu(String.Format("{0}_bank_prestigious_account",_cityID), 
                 String.Format("Fortune investie : {0}\nScribes corrompus : {1}", prestigiousSolde, prestigiousInterests), 
                 null, 
-                TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
+                GameMenu.MenuOverlayType.SettlementWithCharacters);
 
             //Services de Magie
             campaignGameStarter.AddGameMenu(String.Format("{0}_bank_magic_services", _cityID),
                 "Canalysateurs embauchés : "+ hiredChanneler + CustomResourceManager.GetResourceObject("WindsOfMagic").GetCustomResourceIconAsText()+ 
                 "\nCoût par jour : "+ChannelerCostPerDay,
                 null,
-                TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
+                GameMenu.MenuOverlayType.SettlementWithCharacters);
 
         }
 

@@ -8,15 +8,14 @@ using TaleWorlds.SaveSystem;
 
 namespace PrestigiousBank
 {
-    [SaveableRootClass(99999996)]
     public class CouronneBank : Bank
     {
-        [SaveableProperty(2)]
+        [SaveableProperty(12)]
         public int ChivalryAccountSolde { get; set; }
 
 
         //Increased Companion Limit
-        [SaveableProperty(3)]
+        [SaveableProperty(13)]
         public int FriendshipQty { get; set; }
 
         public CouronneBank(Settlement ville) : base(ville)

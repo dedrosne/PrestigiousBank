@@ -8,16 +8,16 @@ using TaleWorlds.SaveSystem;
 
 namespace PrestigiousBank
 {
-    [SaveableRootClass(99999995)]
     public class YnEdrylKoiranBank : Bank
     {
-        [SaveableProperty(2)]
+        [SaveableProperty(11)]
         public int ForestHarmonyAccountSolde { get; set; }
 
-        [SaveableProperty(3)]
+        [SaveableProperty(12)]
         public int BlessingAmount { get; set; }
 
         public static int PricePerBlessing = 3000;
+
 
         public YnEdrylKoiranBank(Settlement ville) : base(ville)
         {
@@ -35,5 +35,17 @@ namespace PrestigiousBank
             return BlessingAmount * BlessingAmount;
         }
 
+        protected override void InitMercenariesUnits()
+        {
+            InitMercenariesUnitFromListString(new List<string> { 
+                "tor_we_treeman", 
+                "tor_we_dryad",
+                "tor_we_waywatcher_sentinel", 
+                "tor_we_wildwood_warden", 
+                "tor_we_eternal_warden",
+                "tor_we_ancient_treeman",
+                "tor_we_great_stag_knight" });
+            SortAndCleanMercenaryUnitList();
+        }
     }
 }

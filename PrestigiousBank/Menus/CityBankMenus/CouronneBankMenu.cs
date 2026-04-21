@@ -31,7 +31,7 @@ namespace PrestigiousBank
             campaignGameStarter.AddGameMenu(String.Format("{0}_bank_chivalry_account", _cityID),
                 String.Format("Somme offerte à l'orphelinat : {0}\nOrphelins recueillis : {1}", chivalryAccountSolde, chivalryInterests),
                 null,
-                TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
+                GameMenu.MenuOverlayType.SettlementWithCharacters);
 
         }
 
@@ -42,7 +42,7 @@ namespace PrestigiousBank
                 "Financer des ONG de charité",
                 a => {
                     a.optionLeaveType = GameMenuOption.LeaveType.Escape;
-                    if (Hero.MainHero.GetCultureSpecificCustomResource().Name != "Chivalry")
+                    if (Hero.MainHero.GetCultureSpecificCustomResource().Name.Value != "Chivalry")
                     {
                         a.Tooltip = new TextObject("Culture Bretonienne requise", null);
                         a.IsEnabled = false;

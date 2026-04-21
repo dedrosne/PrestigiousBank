@@ -53,12 +53,32 @@ namespace PrestigiousBank
             {"town_QU1","quenelles"},
             {"town_BE1","brionne"},
 
-            {"castle_BK2","brasskeep"}
+            //Chaos
+            {"castle_BK2","brasskeep"},
+
+            //Dwarf
+            {"town_KI1","karak_izor" },
+            {"town_KK1","karak_kadrin" },
+            {"town_ZI1","karak_ziflin" },
+            {"town_NO1","karak_norn" },
+            {"town_EZ1","karak_eksfilaz" },
+            {"town_KH1","karak_hirn" },
+            {"town_AN1","karak_angazhar" },
+            {"town_KG1","karak_gantuk" },
+
+            //Ork
+            {"town_MC1","massif_choppas" },
+            {"town_BX1","bad_axes" },
+            {"town_M1","skull_smasherz" },
+            {"town_RE1","red_eye" },
+            {"town_BS1","bloody_spearz" },
+            {"town_IT1","iron_tribe" },
+            {"town_DG1","deff_grindaz" },
 
             //Manque Aqyutaine et lesss spouilleux chaosssssssssssssssss
         };
 
-public override float GetTargetScoreForFaction(Settlement targetSettlement, Army.ArmyTypes missionType, MobileParty mobileParty, float ourStrength, int numberOfEnemyFactionSettlements = -1, float totalEnemyMobilePartyStrength = -1f)
+public override float GetTargetScoreForFaction(Settlement targetSettlement, Army.ArmyTypes missionType, MobileParty mobileParty, float ourStrength)
         {
             if (missionType == Army.ArmyTypes.Besieger && CapitalPerKingdom.ContainsKey(targetSettlement.StringId) && CapitalPerKingdom[targetSettlement.StringId] == targetSettlement.OwnerClan.Kingdom.StringId) {
                 if (targetSettlement.OwnerClan.Kingdom.StringId == "mousillon") return 0;

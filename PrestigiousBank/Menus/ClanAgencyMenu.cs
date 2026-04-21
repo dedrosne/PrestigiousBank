@@ -242,7 +242,7 @@ namespace PrestigiousBank
                         "\nCoût d'entretien actuel: " + currentAgency.SelectedLevel * ClanAgency.AgencyUpkeepPerLevel + "\n\n" +
                         "Nombre d'agences actuellement :" + ClanAgencies.GetClanAgenciesList().Count + "\n" +
                         "Nombre maximum d'agences : " + ClanAgencies.GetMaxAgencies(),
-                        null, TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithCharacters);
+                        null, GameMenu.MenuOverlayType.SettlementWithCharacters);
                 }
             }
         }
@@ -464,7 +464,7 @@ namespace PrestigiousBank
             PlayerEncounter.LeaveSettlement();
             PlayerEncounter.Finish(true);
             Campaign.Current.SaveHandler.SignalAutoSave();
-            MobileParty.MainParty.Position2D = agency.Town.Settlement.GatePosition;
+            MobileParty.MainParty.Position = agency.Town.Settlement.GatePosition;
         }
 
 

@@ -62,6 +62,7 @@ namespace PrestigiousBank
 
                     }
                 }
+                if (!_bankAltdorf.CanRecruitMercenariesInThisBank) _bankAltdorf.InitMercenariesVariables();
                 return _bankAltdorf;
 
             }
@@ -98,7 +99,7 @@ namespace PrestigiousBank
             if (Hero.MainHero.GetCultureSpecificCustomResource().StringId == "Prestige")
                 Hero.MainHero.AddCultureSpecificCustomResource(BankAltdorf.CalculatePrestigiousInterests());
             //Ajout de l'XP
-            Hero.MainHero.AddSkillXp( TORSkills.SpellCraft,BankAltdorf.GetDailySkillXP());
+            Hero.MainHero.AddSkillXp( TORSkills.Spellcraft,BankAltdorf.GetDailySkillXP());
         }
 
         private void HourlyTickEvent()
