@@ -158,7 +158,7 @@ GangStrenght : Cost 0.1gold/day / strenght
 
 
 Level 1 :
-Une fois débloqué, peut recruter dans les hideout dans la party ou envoyer dans la planque
+Une fois débloqué, peut recruter dans les hideout sur la carte dans la party ou envoyer dans la planque
 
 +Activité de Racket Level 1-5 : 10_000*level | Peut pas être supérieur au niveau du clan
     => Racketer les villageois qui entrent dans la ville=> Don de troupes "Bandits" pour fonctionner, et récupère une partie du butin dans un stash.
@@ -175,9 +175,39 @@ Porte dérobée : Permet d'entrer dans la ville même si en guerre
 Level 4 : Casino :
     Chaque jour gagne des golds entre -2000*level-5*GangStrenght et +2400*level+5*GangStrenght
 
-////////////////////////////Protection des capitales
-La capitale de chaque faction ne peut pas être assiégée
 
+/////////////////////////////////////////////
+Mercenaires
+//////////////////////////////////////////////
+Hire Mercenaries troops :
+    - Depuis la banque ?
+    A besoin que la ville fasse soit partie du royaume du clan, (mercenaire ou allié), soit à un royaume allié au royaume actuel
+    Prérequis par tiers d'unité :
+        Tiers 1 : Clan Tiers 1 + Banque Rang Bronze  
+        Tiers 2 : Clan Tiers 2 + Banque Rang Bronze  
+        Tiers 3 : Clan Tiers 2 + Banque Rang Bronze
+        Tiers 4 : Clan Tiers 3 + Banque Rang Argent
+        Tiers 5 : Clan Tiers 3 + Banque Rang Argent     
+        Tiers 6 : Clan Tiers 4 + Banque Rang Or         
+        Tiers 7 : Clan Tiers 4 + Banque Rang Mythril    
+        Tiers 8 : Clan Tiers 5 + Banque Rang Diamant    
+        Tiers 9 : Clan Tiers 5 + Banque Rang Malepierre
+    Cout du recrutement : Tier^2 * Hitpoints
+    Max 5 unités recrutables. Refill de 0.2/j => Améliorable :
+         Taux : 50_000*taux_actuel pour 0.1/j supplémentaire
+         Capmax : 5_000 * cap actuelle pour +1 max
+
+
+/////////////////////////////////////////////
+Divers
+//////////////////////////////////////////////
+
+Protection des capitales :
+    La capitale de chaque faction ne peut pas être assiégée
+    Ca a été fait pour pas qu'une faction roule sur le jeu, et que le joueur puisse afronter toutes les factions
+
+Pas de morts si la puissance estimée du joueur est plus de 3 fois supérieur à celle de l'adversaire
+    Cela a été fait pour pouvoir skip sereinement tous les afrontements contre les brigands
 
 ######################################################
 #In Progress
@@ -237,6 +267,7 @@ MarieEmbourg : Acheter des droits de péage (argent par caravane). + Meilleurs p
 
 Temple de son Dieu/religion
     Pouvoir lancer des prières
+    Pouvoir prier dans la ville
 
 Régénération (vampire ? 
 	(comme les trolls de TOR)
@@ -292,24 +323,7 @@ Ambuscade : Plus on reste longtemps sur la map immobile, plus le champ de détec
 Comment faire techniquement ?  Campaign.Current.Models.MapVisibilityModel.GetPartySpottingRange
 
 
-Hire Mercenaries troops :
-    - Depuis la banque ?
-    A besoin que la ville soit soit partie du royaume du clan, (mercenaire ou allié), soit à un royaume allié au royaume actuel
-    Du coup recrutement via menu.
-    Prérequis :
-        Tiers 1 : Clan Tiers 1 + Banque Rang Bronze  
-        Tiers 2 : Clan Tiers 2 + Banque Rang Bronze  
-        Tiers 3 : Clan Tiers 2 + Banque Rang Bronze
-        Tiers 4 : Clan Tiers 3 + Banque Rang Argent
-        Tiers 5 : Clan Tiers 3 + Banque Rang Argent     
-        Tiers 6 : Clan Tiers 4 + Banque Rang Or         
-        Tiers 7 : Clan Tiers 4 + Banque Rang Mythril    
-        Tiers 8 : Clan Tiers 5 + Banque Rang Diamant    
-        Tiers 9 : Clan Tiers 5 + Banque Rang Malepierre
-    Cout du recrutement : Tier^2 * Hitpoints
-    Max 5 unités recrutables. Refill de 0.2/j => Améliorable :
-         Taux : 50_000*taux_actuel pour 0.1/j supplémentaire
-         Capmax : 5_000 * cap actuelle pour +1 max
+
 
 ///////////////////////////////Companions
 /////Get companions :
