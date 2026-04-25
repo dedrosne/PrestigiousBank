@@ -89,7 +89,7 @@ namespace PrestigiousBank
         private void DailyTickClan()
         {
             //Ajout de l'XP
-            Hero.MainHero.AddSkillXp(DefaultSkills.Medicine, TorLithanelBank.GetDailySkillXP());
+            Hero.MainHero.AddSkillXp(DefaultSkills.Bow, TorLithanelBank.GetDailySkillXP());
 
             _bank.ApplyRegenMercenariesPerDay();
         }

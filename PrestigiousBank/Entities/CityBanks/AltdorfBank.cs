@@ -19,22 +19,26 @@ namespace PrestigiousBank
         [SaveableProperty(1)]
         public int PrestigiousAccountSolde { get; set; }
 
-        //1 Channeler = 1 Max de vent de magie en plus
+        //1 Chaneler = 0.01 Max de vent de magie en plus
         [SaveableProperty(2)]
-        public int ChannelerNumber { get; set; }
+        public int ChanelerNumber { get; set; }
 
         [SaveableProperty(3)]
         public bool IsTeleportUnblocked { get; set; }
 
-        public static int UpkeepPerChanneler = 10;
+        [SaveableProperty(4)]
+        public int ManastoneNumber { get; set; }
+
+        public static int UpkeepPerChanneler = 5;
         public static int PricePerChanneler = 4000;
+        public static int PricePerManaStone = 10_000;
         public static int PriceUnblockTeleport = 100_000;
         public static int PriceNewMagicLore = 500_000;
 
         public AltdorfBank(Settlement ville) : base(ville)
         {
             PrestigiousAccountSolde = 0;
-            ChannelerNumber = 0;
+            ChanelerNumber = 0;
             IsTeleportUnblocked = false;
         }
 
@@ -47,8 +51,7 @@ namespace PrestigiousBank
 
         public int CalculateChannelerCostPerDay()
         {
-            //Prix par 
-            return ChannelerNumber*UpkeepPerChanneler;
+            return ChanelerNumber*UpkeepPerChanneler;
         }
 
         public void LearnNewLore()

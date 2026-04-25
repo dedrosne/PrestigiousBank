@@ -18,6 +18,7 @@ using TaleWorlds.ScreenSystem;
 using TOR_Core.AbilitySystem.Spells;
 using TOR_Core.CampaignMechanics.CustomResources;
 using TOR_Core.Extensions;
+using TOR_Core.Utilities;
 
 namespace PrestigiousBank
 {
@@ -29,7 +30,7 @@ namespace PrestigiousBank
             base.CreateOrUpdateGameMenuDesc(campaignGameStarter);
             int prestigiousSolde = ((AltdorfBank) _bank).PrestigiousAccountSolde;
             int prestigiousInterests = ((AltdorfBank)_bank).CalculatePrestigiousInterests();
-            int hiredChanneler = ((AltdorfBank)_bank).ChannelerNumber;
+            int hiredChanneler = ((AltdorfBank)_bank).ChanelerNumber;
             int ChannelerCostPerDay = ((AltdorfBank)_bank).CalculateChannelerCostPerDay();
 
             //Prestigious Account Menu
@@ -55,7 +56,7 @@ namespace PrestigiousBank
                 a => { a.optionLeaveType = GameMenuOption.LeaveType.Bribe;
                     a.Tooltip = ((AltdorfBank)_bank).GetCustomerLevel() > 1 ? null : new TextObject("Niveau de client Argent requis", null);
                     a.IsEnabled = ((AltdorfBank)_bank).GetCustomerLevel() > 1;
-                    return true; },
+                    return Hero.MainHero.Culture.StringId == TORConstants.Cultures.EMPIRE; },
                 _ => GameMenu.SwitchToMenu(String.Format("{0}_bank_prestigious_account", _cityID)),
                 isLeave: false, index: 2);
             RegisterPrestigiousAccountMenuOptions(campaignGameStarter);
@@ -175,14 +176,30 @@ namespace PrestigiousBank
             int pricePerChanneler = AltdorfBank.PricePerChanneler;
             int upkeepChanneler = AltdorfBank.UpkeepPerChanneler;
 
+            //Buy Manastone
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_magic_services", _cityID), String.Format("{0}_bank_magic_services_manastone", _cityID),
+                "[" + AltdorfBank.PricePerManaStone + " {GOLD_ICON}] Acheter une pierre de Mana",
+                a => {
+                    a.optionLeaveType = GameMenuOption.LeaveType.ShowMercy;
+                    a.IsEnabled = Hero.MainHero.Gold >= AltdorfBank.PricePerManaStone;
+                    a.Tooltip = Hero.MainHero.Gold >= AltdorfBank.PricePerManaStone ? new TextObject("+1" + CustomResourceManager.GetResourceObject("WindsOfMagic").GetCustomResourceIconAsText()+" Max") : new TextObject("Pas assez d'argent", null);
+                    return true;
+                },
+                _ => BuyManastone(campaignGameStarter),
+                isLeave: false,
+                index: 1, isRepeatable: true);
+
+            //Empty space
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_magic_services", _cityID), "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
+
+
             //Hire Channeler
             campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_magic_services", _cityID), String.Format("{0}_bank_magic_services_hire", _cityID), 
-                "["+pricePerChanneler+ " {GOLD_ICON}] Embaucher un canalysateur :\n+1 Max"+ CustomResourceManager.GetResourceObject("WindsOfMagic").GetCustomResourceIconAsText()+
-                "\nCout : "+upkeepChanneler+" {GOLD_ICON}/jour",
+                "["+pricePerChanneler+ " {GOLD_ICON}] Embaucher un canalysateur :\n+0.01 Regen "+ CustomResourceManager.GetResourceObject("WindsOfMagic").GetCustomResourceIconAsText(),
                 a => {
                     a.optionLeaveType = GameMenuOption.LeaveType.ShowMercy;
                     a.IsEnabled = Hero.MainHero.Gold >= pricePerChanneler;
-                    a.Tooltip = Hero.MainHero.Gold >= pricePerChanneler ? null : new TextObject("Pas assez d'argent", null);
+                    a.Tooltip = Hero.MainHero.Gold >= pricePerChanneler ? new TextObject("Cout d'entretien : " + upkeepChanneler + " {GOLD_ICON}/jour") : new TextObject("Pas assez d'argent", null);
                     return true;
                 },
                 _ => HireChalleler(campaignGameStarter),
@@ -194,14 +211,16 @@ namespace PrestigiousBank
                 "Virer un canalysateur",
                 a => {
                     a.optionLeaveType = GameMenuOption.LeaveType.ShowMercy;
-                    a.IsEnabled = ((AltdorfBank)_bank).ChannelerNumber>0;
-                    a.Tooltip = ((AltdorfBank)_bank).ChannelerNumber > 0 ? null : new TextObject("Personne à virer", null);
+                    a.IsEnabled = ((AltdorfBank)_bank).ChanelerNumber>0;
+                    a.Tooltip = ((AltdorfBank)_bank).ChanelerNumber > 0 ? null : new TextObject("Personne à virer", null);
                     return true;
                 },
                 _ => FireChalleler(campaignGameStarter),
                 isLeave: false,
                 index: 2, isRepeatable: true);
 
+            //Empty space
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_magic_services", _cityID), "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
 
             //Leave
             campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_magic_services", _cityID), String.Format("{0}_bank_magic_services_back", _cityID), "Retour",
@@ -210,18 +229,27 @@ namespace PrestigiousBank
                     isLeave: true, index: 9, isRepeatable: false);
         }
 
-        private void HireChalleler(CampaignGameStarter CampaignGameStarter)
+        private void BuyManastone(CampaignGameStarter campaignGameStarter)
         {
-            ((AltdorfBank)_bank).ChannelerNumber += 1;
+            ((AltdorfBank)_bank).ManastoneNumber += 1;
+            Hero.MainHero.ChangeHeroGold(-AltdorfBank.PricePerManaStone);
+            PrestigiousBank.LogMessage("Pierre de Mana achetée.");
+            CreateOrUpdateGameMenuDesc(campaignGameStarter);
+            GameMenu.SwitchToMenu(String.Format("{0}_bank_magic_services", _cityID));
+        }
+
+        private void HireChalleler(CampaignGameStarter campaignGameStarter)
+        {
+            ((AltdorfBank)_bank).ChanelerNumber += 1;
             Hero.MainHero.ChangeHeroGold(-AltdorfBank.PricePerChanneler);
             PrestigiousBank.LogMessage("Canalysateur embauché.\nEntretien total par jour : "+ ((AltdorfBank)_bank).CalculateChannelerCostPerDay());
-            CreateOrUpdateGameMenuDesc(CampaignGameStarter);
+            CreateOrUpdateGameMenuDesc(campaignGameStarter);
             GameMenu.SwitchToMenu(String.Format("{0}_bank_magic_services", _cityID));
         }
 
         private void FireChalleler(CampaignGameStarter CampaignGameStarter)
         {
-            ((AltdorfBank)_bank).ChannelerNumber -= 1;
+            ((AltdorfBank)_bank).ChanelerNumber -= 1;
             PrestigiousBank.LogMessage("Canalysateur viré.\nEntretien total par jour : " + ((AltdorfBank)_bank).CalculateChannelerCostPerDay());
             CreateOrUpdateGameMenuDesc(CampaignGameStarter);
             GameMenu.SwitchToMenu(String.Format("{0}_bank_magic_services", _cityID));

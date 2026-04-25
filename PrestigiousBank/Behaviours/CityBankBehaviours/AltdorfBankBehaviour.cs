@@ -100,6 +100,8 @@ namespace PrestigiousBank
                 Hero.MainHero.AddCultureSpecificCustomResource(BankAltdorf.CalculatePrestigiousInterests());
             //Ajout de l'XP
             Hero.MainHero.AddSkillXp( TORSkills.Spellcraft,BankAltdorf.GetDailySkillXP());
+            //Ajout des Mercenaires
+            if (BankAltdorf.CanRecruitMercenariesInThisBank) BankAltdorf.ApplyRegenMercenariesPerDay();
         }
 
         private void HourlyTickEvent()

@@ -302,7 +302,7 @@
     <Compile Include="Entities\NulnFactory.cs" />
     <Compile Include="Entities\Saveable\BankSaveableTypeDefiner.cs" />
     <Compile Include="Harmony\MobilePartyPatch.cs" />
-    <Compile Include="Harmony\AltdorfBankPatch.cs" />
+    <Compile Include="Harmony\AltdorfBankMaxWindsPatch.cs" />
     <Compile Include="Menus\CityBankMenus\CouronneBankMenu.cs" />
     <Compile Include="Menus\CityBankMenus\AverheimBankMenu.cs" />
     <Compile Include="Menus\CityBankMenus\ParravonBankMenu.cs" />

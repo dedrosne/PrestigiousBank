@@ -282,9 +282,11 @@ namespace PrestigiousBank
         #region Mercenaries
         private void RegisterMercenariesMenuOptions(CampaignGameStarter campaignGameStarter)
         {
+            GameTexts.SetVariable("MERC_REGEN_PRICE", 50_000 * _bank.RegenPerDayMercenaries);
+            GameTexts.SetVariable("MERC_MAX_PRICE", 5000 * _bank.MaxMercenaries);
             campaignGameStarter.AddGameMenuOption(String.Format("{0}_mercenaries", _cityID),
                 String.Format("{0}_mercenaries_rate", _cityID),
-                "[" + 50_000*_bank.RegenPerDayMercenaries + "{GOLD_ICON}] Améliorer le taux de recrutement",
+                "[{MERC_MAX_PRICE}{GOLD_ICON}] Améliorer le taux de recrutement",
                 a =>
                 {
                     a.optionLeaveType = GameMenuOption.LeaveType.OrderTroopsToAttack;
@@ -298,7 +300,7 @@ namespace PrestigiousBank
                     return true;
                 },
                 _ => {
-                    Hero.MainHero.ChangeHeroGold((int)(50_000 * _bank.RegenPerDayMercenaries));
+                    Hero.MainHero.ChangeHeroGold(-(int)(50_000 * _bank.RegenPerDayMercenaries));
                     _bank.RegenPerDayMercenaries += 0.1f;
                     SoundEvent.PlaySound2D(SoundEvent.GetEventIdFromString("event:/ui/notification/coins_negative"));
                     GameMenu.SwitchToMenu(String.Format("{0}_mercenaries", _cityID));
@@ -308,7 +310,7 @@ namespace PrestigiousBank
 
             campaignGameStarter.AddGameMenuOption(String.Format("{0}_mercenaries", _cityID),
                 String.Format("{0}_mercenaries_max", _cityID),
-                "[" + 5_000 * _bank.MaxMercenaries + "{GOLD_ICON}] Améliorer la capacité Maximum des baraquements",
+                "[{MERC_MAX_PRICE}{GOLD_ICON}] Améliorer la capacité Maximum des baraquements",
                 a =>
                 {
                     a.optionLeaveType = GameMenuOption.LeaveType.OrderTroopsToAttack;
@@ -322,7 +324,7 @@ namespace PrestigiousBank
                     return true;
                 },
                 _ => {
-                    Hero.MainHero.ChangeHeroGold(5_000 * _bank.MaxMercenaries);
+                    Hero.MainHero.ChangeHeroGold(-5_000 * _bank.MaxMercenaries);
                     _bank.MaxMercenaries ++;
                     SoundEvent.PlaySound2D(SoundEvent.GetEventIdFromString("event:/ui/notification/coins_negative"));
                     GameMenu.SwitchToMenu(String.Format("{0}_mercenaries", _cityID));

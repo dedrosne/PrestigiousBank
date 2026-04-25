@@ -3,7 +3,8 @@ Done :
 #####################################
 Banque :
 - Dépot/Retrait 
-    - Calcul du taux (pourcentage/jour) = Prosperity(compris entre 0 et 10_000) / 50_000 => Prosperité à 10_000 = 0.2%/jour
+    - Calcul du taux (pourcentage/jour) = Prosperity(compris entre 0 et 10_000) / 50_000
+        Exemple : Prosperité à 10_000 = 0.2%/jour
 
 - Niveau :
     - Bronze : argent déposé entre 0 et 49_999
@@ -24,7 +25,8 @@ Avantages :
 Altdorf : 
     - Argent : Corrompre les scribes pour mettre en valeur ses faits d'arme => 1 prestige journaliers/10000 gold offert
     - Or : XP dans le Skill Magic
-    - Mythril : Augmenter vents de magie : Engager des canalysateur. 1 canalysateur pour 5000g, puis 10g/jour, pour 1 mana max
+    - Mythril : Augmenter vents de magie : Engager des canalysateur. 1 canalysateur pour 4000g, puis 5/jour, pour 0.01 regen de mana
+            Acheter une pierre de mana : 10_000 pour 1 mana max
     - Diamant : Débloquer la téléportation entre agences
             Prix de déblocage : 100_000, puis 20_000 pour construire le téléporteur dans l'agence (niveau d'agence requis : 4), puis 20*taille d'armée pour se téléporter
     - Malepierre : Acquerir un nouveau lore de magie. Cout : 500_000/lore
@@ -61,7 +63,8 @@ Parravon :
     - Argent : Augmenter le PartySpeed de 0.01. Prix : 2000 + 200*NbBought : 
     - Or : XP dans le skill Leadership
 
-
+Tor Litharel :
+    - Or : XP dans le skill Bow
 
 /////////////////////////////Usine de Nuln
 
@@ -309,7 +312,10 @@ Bretonie : Villages/Agriculture => Une foi le village détenu, déposer des pris
 
 
 Chez les nains : Endurance de forge qui se régénère. 
-+ d'Endurance max
++ d'Endurance max + Débloquer des pièces plus rapidement ou automatiquement
++ Sermandors pour les nains
+
+Tor Litharel : Council Favor : 10_000 pour 1
 
 
 

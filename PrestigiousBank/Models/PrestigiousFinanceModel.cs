@@ -87,7 +87,7 @@ namespace PrestigiousBank
                 int InterestsAltdorfBank = AltdorfBankCampaignBehavior.BankAltdorf.CalculateInterests();
                 if (InterestsAltdorfBank != 0)
                     result.Add(InterestsAltdorfBank, new TextObject("Banque d'Altdorf"));
-                if (AltdorfBankCampaignBehavior.BankAltdorf.ChannelerNumber != 0)
+                if (AltdorfBankCampaignBehavior.BankAltdorf.ChanelerNumber != 0)
                 {
                     result.Add(-AltdorfBankCampaignBehavior.BankAltdorf.CalculateChannelerCostPerDay(), new TextObject("Canalysateurs d'Altdorf"));
                 }

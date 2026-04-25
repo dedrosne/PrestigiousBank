@@ -100,7 +100,7 @@ namespace PrestigiousBank
 
         public void ApplyDiamondLevelGoldTownIncrease()
         {
-            if (GetCustomerLevel() == 5) {
+            if (GetCustomerLevel() >= 5) {
                 int newGoldMaximum = Convert.ToInt32(Ville.Town.Prosperity * 10f) + (Solde - 500_000)/10;
                 int currentgold = Ville.Town.Gold;
                 if (currentgold < newGoldMaximum) Ville.Town.ChangeGold(1000+(newGoldMaximum-currentgold)/20);
@@ -224,6 +224,8 @@ namespace PrestigiousBank
         public void InitMercenariesVariables()
         {
             CanRecruitMercenariesInThisBank = true;
+            RegenPerDayMercenaries = initRegenPerDayMercenaries;
+            MaxMercenaries = initMaxMercenaries;
             InitMercenariesUnits();
         }
 
