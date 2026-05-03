@@ -217,7 +217,9 @@ Pas de morts si la puissance estimée du joueur est plus de 3 fois supérieur à
 #########################################################
 
    
-
+   Karak Izor : Endurance de forge qui se régénère. 
++ d'Endurance max + Débloquer des pièces plus rapidement ou automatiquement
++ Sermandors pour les nains
 
 
 ######################################################
@@ -311,9 +313,7 @@ Capturé = On perd tout son argent
 Bretonie : Villages/Agriculture => Une foi le village détenu, déposer des prisonniers pour les recruter comme serfs, et générer du revenu.
 
 
-Chez les nains : Endurance de forge qui se régénère. 
-+ d'Endurance max + Débloquer des pièces plus rapidement ou automatiquement
-+ Sermandors pour les nains
+
 
 Tor Litharel : Council Favor : 10_000 pour 1
 
@@ -424,26 +424,3 @@ using TaleWorlds.CampaignSystem.Actions;
  MobileParty leftParty = new MobileParty();
 leftParty.IgnoreByOtherPartiesTill(CampaignTime time)
 
-/////////////////////////////////////////////  Stamina recovery
-            CampaignEvents.HourlyTickPartyEvent.AddNonSerializedListener(this, HourlyPartyEvent);
-        }
-
-        private void HourlyPartyEvent(MobileParty party)
-        {
-            if (!party.IsMainParty) return;
-
-            if (party.CurrentSettlement != null) return;
-            if (Hero.MainHero.HasCareerChoice("ForgefireBurningPassive3"))
-            {
-                var campaignBehavior = Campaign.Current.GetCampaignBehavior<ICraftingCampaignBehavior>();
-
-                foreach (var hero in party.GetMemberHeroes())
-                {
-                    var stamina = campaignBehavior.GetHeroCraftingStamina(hero);
-                    var max = campaignBehavior.GetMaxHeroCraftingStamina(hero);
-                    if (stamina >= max)
-                        return;
-                    var value = Math.Min(max, stamina + 4);
-                    campaignBehavior.SetHeroCraftingStamina(hero, value);
-                }
-            }

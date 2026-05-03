@@ -22,6 +22,7 @@ namespace PrestigiousBank
             this.AddClassDefinition(typeof(ParravonBank), 7);
             this.AddClassDefinition(typeof(TorLithanelBank), 8);
             this.AddClassDefinition(typeof(YnEdrylKoiranBank), 9);
+            this.AddClassDefinition(typeof(KarakIzorBank), 10);
 
 
 

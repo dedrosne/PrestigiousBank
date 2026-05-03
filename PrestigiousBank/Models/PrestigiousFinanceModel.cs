@@ -171,6 +171,16 @@ namespace PrestigiousBank
                     result.Add(InterestsTorLithanel, new TextObject("Banque de Tor Lithanel"));
             }
 
+            //Karak Izor
+            KarakIzorBankCampaignBehavior KarakIzorBankCampaignBehavior = Campaign.Current?.GetCampaignBehavior<KarakIzorBankCampaignBehavior>();
+            if (KarakIzorBankCampaignBehavior != null)
+            {
+
+                int InterestsKarakIzor = KarakIzorBankCampaignBehavior.BankKarakIzor.CalculateInterests();
+                if (InterestsKarakIzor != 0)
+                    result.Add(InterestsKarakIzor, new TextObject("Banque de Karak Izor"));
+            }
+
 
             //Nuln Factory
             NulnFactoryCampaignBehavior NulnFactoryCampaignBehavior = Campaign.Current?.GetCampaignBehavior<NulnFactoryCampaignBehavior>();

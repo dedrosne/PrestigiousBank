@@ -273,6 +273,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Behaviours\CityBankBehaviours\KarakIzorBankBehaviour.cs" />
     <Compile Include="Behaviours\CityBankBehaviours\AverheimBankBehaviour.cs" />
     <Compile Include="Behaviours\CityBankBehaviours\ParravonBankBehaviour.cs" />
     <Compile Include="Behaviours\CityBankBehaviours\MiddenheimBankBehaviour.cs" />
@@ -284,6 +285,7 @@
     <Compile Include="Behaviours\CityBankBehaviours\CouronneBankBehaviour.cs" />
     <Compile Include="Behaviours\CityBankBehaviours\DrakenhofBankBehaviour.cs" />
     <Compile Include="Behaviours\CityBankBehaviours\AltdorfBankBehaviour.cs" />
+    <Compile Include="Entities\CityBanks\KarakIzorBank.cs" />
     <Compile Include="Entities\CityBanks\CouronneBank.cs" />
     <Compile Include="Entities\CityBanks\AverheimBank.cs" />
     <Compile Include="Entities\CityBanks\MiddenheimBank.cs" />
@@ -301,8 +303,9 @@
     <Compile Include="Entities\CityBanks\AltdorfBank.cs" />
     <Compile Include="Entities\NulnFactory.cs" />
     <Compile Include="Entities\Saveable\BankSaveableTypeDefiner.cs" />
-    <Compile Include="Harmony\MobilePartyPatch.cs" />
+    <Compile Include="Harmony\MaxStaminaPatch.cs" />
     <Compile Include="Harmony\AltdorfBankMaxWindsPatch.cs" />
+    <Compile Include="Menus\CityBankMenus\KarakIzorBankMenu.cs" />
     <Compile Include="Menus\CityBankMenus\CouronneBankMenu.cs" />
     <Compile Include="Menus\CityBankMenus\AverheimBankMenu.cs" />
     <Compile Include="Menus\CityBankMenus\ParravonBankMenu.cs" />
@@ -318,6 +321,7 @@
     <Compile Include="Models\HideoutModel.cs" />
     <Compile Include="Models\PrestigiousPartyHealingModel.cs" />
     <Compile Include="Models\PrestigiousCapitalProtectionModel.cs" />
+    <Compile Include="Models\PrestigiousSmithingModel.cs" />
     <Compile Include="Models\PrestigiousPartySpeedModel.cs" />
     <Compile Include="Models\PrestigiousPartySizeModel.cs" />
     <Compile Include="Models\PrestigiousCharacterStatsModel.cs" />

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Actions;
+using TaleWorlds.CampaignSystem.CampaignBehaviors;
 using TaleWorlds.CampaignSystem.CharacterDevelopment;
 using TaleWorlds.CampaignSystem.Extensions;
 using TaleWorlds.CampaignSystem.GameMenus;
@@ -25,23 +26,23 @@ using TOR_Core.Extensions;
 
 namespace PrestigiousBank
 {
-    public class AltdorfBankCampaignBehavior : CampaignBehaviorBase
+    public class KarakIzorBankCampaignBehavior : CampaignBehaviorBase
     {
-        public static string _altdorfTownID = "town_comp_RL1";
-        public static AltdorfBank _bankAltdorf = null;
-        //public static string BankMenuLinkText = "<a style=\"Link.Settlement\" href=\"event:Concept-str_game_objects_simple_bank\"><b>" + PrestigiousBank.Config.BankName + "</b></a>";
-        public static AltdorfBank BankAltdorf
+        public static string _KarakIzorTownID = "town_comp_KI1";
+        public static KarakIzorBank _bankKarakIzor = null;
+
+        public static KarakIzorBank BankKarakIzor
         {
             get
             {
-                if (_bankAltdorf == null)
+                if (_bankKarakIzor == null)
                 {
                     if (Town.AllTowns != null) {
                         foreach (var town in Town.AllTowns)
                         {
-                            if (town.StringId == _altdorfTownID)
+                            if (town.StringId == _KarakIzorTownID)
                             {
-                                _bankAltdorf = new AltdorfBank(town.Settlement);
+                                _bankKarakIzor = new KarakIzorBank(town.Settlement);
                                 break;
                             }
                                 
@@ -49,35 +50,30 @@ namespace PrestigiousBank
 
                     }
                 }
-                if (_bankAltdorf != null && _bankAltdorf.Ville == null)
+                if (_bankKarakIzor != null && _bankKarakIzor.Ville == null)
                 {
                     foreach (var town in Town.AllTowns)
                     {
-                        if (town.StringId == _altdorfTownID)
+                        if (town.StringId == _KarakIzorTownID)
                         {
-                            _bankAltdorf.Ville = town.Settlement;
+                            _bankKarakIzor.Ville = town.Settlement;
                             break;
                         }
 
                     }
                 }
-                if (!_bankAltdorf.CanRecruitMercenariesInThisBank) _bankAltdorf.InitMercenariesVariables();
-                return _bankAltdorf;
+                if (!_bankKarakIzor.CanRecruitMercenariesInThisBank) _bankKarakIzor.InitMercenariesVariables();
+                return _bankKarakIzor;
 
             }
             set
             {
-                _bankAltdorf = value;
+                _bankKarakIzor = value;
             }
         }
 
-        public AltdorfBankCampaignBehavior() : base()
+        public KarakIzorBankCampaignBehavior() : base()
         {
-            //MBTextManager.SetTextVariable("Birke_Bank_Encyclopedia_Main", PrestigiousBank.Config.BankName);
-            //bankAltdorf = bankAltdorf;
-
-            //_bankTrait = Game.Current.ObjectManager.RegisterPresumedObject<TraitObject>(new TraitObject("bank"));
-            //_bankTrait.Initialize(new TextObject(GameTexts.FindText("str_trait_bankName").ToString()), new TextObject(GameTexts.FindText("str_trait_bankDescription").ToString()), false, 0, 4);
         }
 
         public override void RegisterEvents()
@@ -89,23 +85,38 @@ namespace PrestigiousBank
 
         private void OnSessionLaunched(CampaignGameStarter campaignGameStarter)
         {
-            new AltdorfBankMenu().RegisterBankMenu(campaignGameStarter, BankAltdorf);
+            new KarakIzorBankMenu().RegisterBankMenu(campaignGameStarter, BankKarakIzor);
         }
 
         private void DailyTickClan()
         {
-            //Ajout du prestige
-            if (Hero.MainHero.GetCultureSpecificCustomResource().StringId == "Prestige")
-                Hero.MainHero.AddCultureSpecificCustomResource(BankAltdorf.CalculatePrestigiousInterests());
+            //Add of Oathgold
+            if (Hero.MainHero.GetCultureSpecificCustomResource().StringId == "OathGold")
+                Hero.MainHero.AddCultureSpecificCustomResource(BankKarakIzor.CalculateOathGoldGain());
             //Ajout de l'XP
-            Hero.MainHero.AddSkillXp( TORSkills.Spellcraft,BankAltdorf.GetDailySkillXP());
+            Hero.MainHero.AddSkillXp(DefaultSkills.Crafting, BankKarakIzor.GetDailySkillXP());
             //Ajout des Mercenaires
-            if (BankAltdorf.CanRecruitMercenariesInThisBank) BankAltdorf.ApplyRegenMercenariesPerDay();
+            if (BankKarakIzor.CanRecruitMercenariesInThisBank) BankKarakIzor.ApplyRegenMercenariesPerDay();
         }
 
         private void HourlyTickEvent()
         {
-            BankAltdorf.ApplyDiamondLevelGoldTownIncrease();
+            BankKarakIzor.ApplyDiamondLevelGoldTownIncrease();
+
+            //Stamina Regen
+            var mainParty = MobileParty.MainParty;
+            var campaignBehavior = Campaign.Current.GetCampaignBehavior<ICraftingCampaignBehavior>();
+
+            foreach (var hero in mainParty.GetMemberHeroes())
+            {
+                var stamina = campaignBehavior.GetHeroCraftingStamina(hero);
+                var max = campaignBehavior.GetMaxHeroCraftingStamina(hero);
+                if (stamina >= max)
+                    return;
+                var value = Math.Min(max, stamina + MathF.Floor(BankKarakIzor.RegenStaminaBought*KarakIzorBank.RegenStaminaPerHourPerPurchaseBought));
+                campaignBehavior.SetHeroCraftingStamina(hero, value);
+                
+            }
         }
 
         public override void SyncData(IDataStore dataStore)
@@ -114,11 +125,11 @@ namespace PrestigiousBank
             {
                 if (dataStore.IsLoading)
                 {
-                    dataStore.SyncData<AltdorfBank>("AltdorfBank", ref _bankAltdorf);
+                    dataStore.SyncData<KarakIzorBank>("KarakIzorBank", ref _bankKarakIzor);
                 }
                 else
                 {
-                    dataStore.SyncData<AltdorfBank>("AltdorfBank", ref _bankAltdorf);
+                    dataStore.SyncData<KarakIzorBank>("KarakIzorBank", ref _bankKarakIzor);
                 }
             }
             catch
