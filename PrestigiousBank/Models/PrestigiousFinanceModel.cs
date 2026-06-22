@@ -1,11 +1,12 @@
-﻿using System;
-using PrestigiousBank;
+﻿using PrestigiousBank;
+using System;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.GameComponents;
 using TaleWorlds.Core;
-using TOR_Core.Models;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
+using TOR_Core.Models;
+using static TaleWorlds.CampaignSystem.CampaignBehaviors.LordConversationsCampaignBehavior;
 
 
 namespace PrestigiousBank
@@ -27,16 +28,13 @@ namespace PrestigiousBank
 
             if (clan.StringId == "player_faction")
             {
-                try
-                {
-                    AddBankInterestToExplainedNumber(clan, ref result, includeDescriptions, includeDetails);
-                }
-                catch (Exception ex)
-                {
-#if DEBUG
-                    PrestigiousBank.LogMessage($"[BanksOfCalradia][FinanceModel] Error calculating bank income: {ex.Message}");
-#endif
-                }
+                AddBankInterestToExplainedNumber(clan, ref result, includeDescriptions, includeDetails);
+            }
+            //Last Stand : Infinite number of gold
+            else if (Campaign.Current?.GetCampaignBehavior<LastStandCampaignBehavior>() != null
+                && LastStandCampaignBehavior.LastStands.LastStandPerCulture[clan.Culture.StringId].isConsumed)
+            {
+                result.Add(100_000, new TextObject("Dernier rempart de " + clan.Culture.StringId));
             }
 
             return result;

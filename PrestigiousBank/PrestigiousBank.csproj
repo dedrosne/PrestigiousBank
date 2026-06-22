@@ -273,6 +273,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Behaviours\CityBankBehaviours\LastStandBehaviour.cs" />
     <Compile Include="Behaviours\CityBankBehaviours\KarakIzorBankBehaviour.cs" />
     <Compile Include="Behaviours\CityBankBehaviours\AverheimBankBehaviour.cs" />
     <Compile Include="Behaviours\CityBankBehaviours\ParravonBankBehaviour.cs" />
@@ -301,6 +302,7 @@
     <Compile Include="Entities\InsuredSettlement.cs" />
     <Compile Include="Entities\InsuredCaravan.cs" />
     <Compile Include="Entities\CityBanks\AltdorfBank.cs" />
+    <Compile Include="Entities\LastStands.cs" />
     <Compile Include="Entities\NulnFactory.cs" />
     <Compile Include="Entities\Saveable\BankSaveableTypeDefiner.cs" />
     <Compile Include="Harmony\MaxStaminaPatch.cs" />
