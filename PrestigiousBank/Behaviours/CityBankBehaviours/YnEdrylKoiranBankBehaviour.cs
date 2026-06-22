@@ -94,7 +94,8 @@ namespace PrestigiousBank
             //Ajout de l'XP
             Hero.MainHero.AddSkillXp(DefaultSkills.Medicine, YnEdrylKoiranBank.GetDailySkillXP());
 
-            _bank.ApplyRegenMercenariesPerDay();
+            //Ajout des Mercenaires
+            if (YnEdrylKoiranBank.CanRecruitMercenariesInThisBank) YnEdrylKoiranBank.ApplyRegenMercenariesPerDay();
         }
 
         private void HourlyTickEvent()

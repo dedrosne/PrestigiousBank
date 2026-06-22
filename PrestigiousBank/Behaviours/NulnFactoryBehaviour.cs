@@ -1,17 +1,21 @@
-﻿using PrestigiousBank;
+﻿using Newtonsoft.Json;
+using PrestigiousBank;
+using PrestigiousBank.Entities;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
-using Newtonsoft.Json;
+using System.Runtime.InteropServices;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Actions;
 using TaleWorlds.CampaignSystem.CharacterDevelopment;
+using TaleWorlds.CampaignSystem.GameComponents;
 using TaleWorlds.CampaignSystem.GameMenus;
 using TaleWorlds.CampaignSystem.MapEvents;
 using TaleWorlds.CampaignSystem.MapNotificationTypes;
 using TaleWorlds.CampaignSystem.Party;
-using TaleWorlds.CampaignSystem.Settlements.Workshops;
 using TaleWorlds.CampaignSystem.Settlements;
+using TaleWorlds.CampaignSystem.Settlements.Workshops;
 using TaleWorlds.CampaignSystem.ViewModelCollection.Encyclopedia.Items;
 using TaleWorlds.Core;
 using TaleWorlds.Core.ViewModelCollection.Information;
@@ -19,13 +23,10 @@ using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.Library;
 using TaleWorlds.LinQuick;
 using TaleWorlds.Localization;
+using TaleWorlds.ObjectSystem;
 using TaleWorlds.ScreenSystem;
-using TOR_Core.Extensions;
 using TOR_Core.CharacterDevelopment;
-using PrestigiousBank.Entities;
-using System.Runtime.InteropServices;
-using System.Diagnostics.Eventing.Reader;
-using TaleWorlds.CampaignSystem.GameComponents;
+using TOR_Core.Extensions;
 
 namespace PrestigiousBank
 {
@@ -139,6 +140,30 @@ namespace PrestigiousBank
                 NulnFactory.PreviousDayBenefits = NulnFactory.Benefits;
                 NulnFactory.Benefits = 0;
             }
+
+            //Mortar
+            if (NulnFactory.NbHoursRemainingToBuildMortar > 0)
+            {
+                NulnFactory.NbHoursRemainingToBuildMortar -= 1;
+                if (NulnFactory.NbHoursRemainingToBuildMortar == 0)
+                {
+                    var mortar = MBObjectManager.Instance.GetObject<ItemObject>("tor_empire_artillery_mortar_001");
+                    NulnFactory.GetItemStash().Add(new ItemRosterElement(mortar));
+                    PrestigiousBank.LogMessage("Le mortier est terminé à Nuln");
+                }
+            }
+            //Canon
+            if (NulnFactory.NbHoursRemainingToBuildCanon > 0)
+            {
+                NulnFactory.NbHoursRemainingToBuildCanon -= 1;
+                if (NulnFactory.NbHoursRemainingToBuildCanon == 0)
+                {
+                    var cannons = MBObjectManager.Instance.GetObject<ItemObject>("tor_empire_artillery_cannon_001");
+                    NulnFactory.GetItemStash().Add(new ItemRosterElement(cannons));
+                    PrestigiousBank.LogMessage("Le canon est terminé à Nuln");
+                }
+            }
+            
         }
 
         public void SettlementEntered(MobileParty mobileParty, Settlement settlement, Hero hero)

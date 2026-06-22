@@ -91,7 +91,8 @@ namespace PrestigiousBank
             //Ajout de l'XP
             Hero.MainHero.AddSkillXp(DefaultSkills.Bow, TorLithanelBank.GetDailySkillXP());
 
-            _bank.ApplyRegenMercenariesPerDay();
+            //Ajout des Mercenaires
+            if (TorLithanelBank.CanRecruitMercenariesInThisBank) TorLithanelBank.ApplyRegenMercenariesPerDay();
         }
 
         private void HourlyTickEvent()

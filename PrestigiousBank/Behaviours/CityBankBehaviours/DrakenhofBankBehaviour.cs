@@ -93,6 +93,9 @@ namespace PrestigiousBank
                 Hero.MainHero.AddCultureSpecificCustomResource(BankDrakenhof.CalculateDarkEnergyInterests());
             //Ajout de l'XP
             Hero.MainHero.AddSkillXp( DefaultSkills.Charm, BankDrakenhof.GetDailySkillXP());
+
+            //Ajout des Mercenaires
+            if (BankDrakenhof.CanRecruitMercenariesInThisBank) BankDrakenhof.ApplyRegenMercenariesPerDay();
         }
 
         private void HourlyTickEvent()

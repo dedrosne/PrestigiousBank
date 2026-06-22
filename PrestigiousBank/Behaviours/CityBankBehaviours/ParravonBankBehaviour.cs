@@ -90,6 +90,9 @@ namespace PrestigiousBank
         {
             //Ajout de l'XP
             Hero.MainHero.AddSkillXp(DefaultSkills.Leadership, ParravonBank.GetDailySkillXP());
+
+            //Ajout des Mercenaires
+            if (ParravonBank.CanRecruitMercenariesInThisBank) ParravonBank.ApplyRegenMercenariesPerDay();
         }
 
         private void HourlyTickEvent()

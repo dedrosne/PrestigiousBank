@@ -125,6 +125,9 @@ Production en premier de la ressource la moins présente dans le stash
 
 XP en engineering : 100*FactoryLevel+20*WoodLevel+20*CharcoalLevel+20*IronLevel+20*ClayLevel+20*SilverLevel+20*IronFurnaceLevel
 
+Usine niveau 3 : Possibilité de construire un mortier pour 100_000 gold+100 lingots. Prend 30 jours à se faire, et est stocké une fois fini dans le stockage de Nuln
+Usine niveau 4 : Possibilité de construire un canon pour 200_000 gold+200 lingots. Prend 50 jours à se faire, et est stocké une fois fini dans le stockage de Nuln
+
 ////////////////////////Agence de Clan
 
 Agence : 

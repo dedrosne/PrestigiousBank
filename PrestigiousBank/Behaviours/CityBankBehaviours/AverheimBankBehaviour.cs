@@ -90,6 +90,8 @@ namespace PrestigiousBank
         {
             //Ajout de l'XP
             Hero.MainHero.AddSkillXp(DefaultSkills.Athletics, AverheimBank.GetDailySkillXP());
+            //Ajout des Mercenaires
+            if (AverheimBank.CanRecruitMercenariesInThisBank) AverheimBank.ApplyRegenMercenariesPerDay();
         }
 
         private void HourlyTickEvent()

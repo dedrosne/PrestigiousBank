@@ -93,9 +93,7 @@ namespace PrestigiousBank
                 isLeave: false, index: 3);
             RegisterIshaBlessingMenuOptions(campaignGameStarter);
 
-            
-            
-            RegisterIshaBlessingMenuOptions(campaignGameStarter);
+          
 
 
             

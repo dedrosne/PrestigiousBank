@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using TaleWorlds.CampaignSystem;
@@ -87,6 +88,12 @@ namespace PrestigiousBank.Entities
 
         //[SaveableProperty(21)]
         public PossibleProduction ChosenProduction { get; set; }
+
+        [SaveableProperty(22)]
+        public int NbHoursRemainingToBuildMortar { get; set; }
+
+        [SaveableProperty(23)]
+        public int NbHoursRemainingToBuildCanon {get; set;}
 
         public Settlement _ville;
 
@@ -195,7 +202,13 @@ namespace PrestigiousBank.Entities
 
         public enum PossibleProduction { MachiningPart, Weapon, ConstructionMaterials }
 
-        
+        public static int priceMortar_gold = 100_000;
+        public static int priceMortar_ironIngots = 100;
+        public static int nbDaysToBuildMortar = 30;
+
+        public static int priceCanon_gold = 200_000;
+        public static int priceCanon_ironIngots = 200;
+        public static int nbDaysToBuildCanon = 50;
 
         public NulnFactory(Settlement ville) 
         {

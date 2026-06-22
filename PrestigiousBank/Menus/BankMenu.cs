@@ -46,7 +46,9 @@ namespace PrestigiousBank
                                                       if (Settlement.CurrentSettlement.Town.StringId == _cityID) return true;
                                                       else return false;
                                                   },
-                                                  _ => GameMenu.SwitchToMenu(String.Format("{0}_bank_menu", _cityID)),
+                                                  _ => { GameMenu.SwitchToMenu(String.Format("{0}_bank_menu", _cityID));
+                                                      CreateOrUpdateGameMenuDesc(campaignGameStarter);
+                                                  },
                                                   isLeave: false,
                                                   _optionBankIndex);
 
@@ -118,6 +120,8 @@ namespace PrestigiousBank
                 GameMenu.MenuOverlayType.SettlementWithCharacters);
 
             //Mercenary Menu
+            GameTexts.SetVariable("MERC_REGEN_PRICE", 50_000 * _bank.RegenPerDayMercenaries);
+            GameTexts.SetVariable("MERC_MAX_PRICE", 5000 * _bank.MaxMercenaries);
             campaignGameStarter.AddGameMenu(String.Format("{0}_mercenaries", _cityID),
                 "Recruter des Mercenaires\nTaux de recrutement : "+_bank.RegenPerDayMercenaries+"/jour",
                 null,
@@ -282,11 +286,9 @@ namespace PrestigiousBank
         #region Mercenaries
         private void RegisterMercenariesMenuOptions(CampaignGameStarter campaignGameStarter)
         {
-            GameTexts.SetVariable("MERC_REGEN_PRICE", 50_000 * _bank.RegenPerDayMercenaries);
-            GameTexts.SetVariable("MERC_MAX_PRICE", 5000 * _bank.MaxMercenaries);
             campaignGameStarter.AddGameMenuOption(String.Format("{0}_mercenaries", _cityID),
                 String.Format("{0}_mercenaries_rate", _cityID),
-                "[{MERC_MAX_PRICE}{GOLD_ICON}] Améliorer le taux de recrutement",
+                "[{MERC_REGEN_PRICE}{GOLD_ICON}] Améliorer le taux de recrutement",
                 a =>
                 {
                     a.optionLeaveType = GameMenuOption.LeaveType.OrderTroopsToAttack;
@@ -303,6 +305,7 @@ namespace PrestigiousBank
                     Hero.MainHero.ChangeHeroGold(-(int)(50_000 * _bank.RegenPerDayMercenaries));
                     _bank.RegenPerDayMercenaries += 0.1f;
                     SoundEvent.PlaySound2D(SoundEvent.GetEventIdFromString("event:/ui/notification/coins_negative"));
+                    CreateOrUpdateGameMenuDesc(campaignGameStarter);
                     GameMenu.SwitchToMenu(String.Format("{0}_mercenaries", _cityID));
                 },
                 isLeave: false,
@@ -327,6 +330,7 @@ namespace PrestigiousBank
                     Hero.MainHero.ChangeHeroGold(-5_000 * _bank.MaxMercenaries);
                     _bank.MaxMercenaries ++;
                     SoundEvent.PlaySound2D(SoundEvent.GetEventIdFromString("event:/ui/notification/coins_negative"));
+                    CreateOrUpdateGameMenuDesc(campaignGameStarter);
                     GameMenu.SwitchToMenu(String.Format("{0}_mercenaries", _cityID));
                 },
                 isLeave: false,
@@ -386,6 +390,11 @@ namespace PrestigiousBank
                 a => { a.optionLeaveType = GameMenuOption.LeaveType.Leave; return true; },
                 _ => GameMenu.SwitchToMenu(String.Format("{0}_bank_menu", _cityID)),
                 isLeave: true, index: 999);
+        }
+
+        public void UpdateMercGateTexts()
+        {
+
         }
         #endregion
     }

@@ -98,6 +98,9 @@ namespace PrestigiousBank
                 Hero.MainHero.AddCultureSpecificCustomResource(BankCouronne.CalculateChivalryInterests());
             //Ajout de l'XP
             Hero.MainHero.AddSkillXp( DefaultSkills.Riding, BankCouronne.GetDailySkillXP());
+
+            //Ajout des Mercenaires
+            if (BankCouronne.CanRecruitMercenariesInThisBank) BankCouronne.ApplyRegenMercenariesPerDay();
         }
 
         private void HourlyTickEvent()
