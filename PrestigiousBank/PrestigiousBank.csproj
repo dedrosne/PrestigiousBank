@@ -302,6 +302,7 @@
     <Compile Include="Entities\InsuredSettlement.cs" />
     <Compile Include="Entities\InsuredCaravan.cs" />
     <Compile Include="Entities\CityBanks\AltdorfBank.cs" />
+    <Compile Include="Entities\LastStandPartyComponent.cs" />
     <Compile Include="Entities\LastStands.cs" />
     <Compile Include="Entities\NulnFactory.cs" />
     <Compile Include="Entities\Saveable\BankSaveableTypeDefiner.cs" />

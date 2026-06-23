@@ -1,4 +1,5 @@
 ﻿using PrestigiousBank.Entities;
+using System;
 using System.Collections.Generic;
 using TaleWorlds.SaveSystem;
 using TOR_Core.Utilities;
@@ -38,7 +39,7 @@ namespace PrestigiousBank
         {
             ConstructContainerDefinition(typeof(List<ClanAgency>));
             ConstructContainerDefinition(typeof(List<Bank.UniteeRecrutable>));
-            ConstructContainerDefinition(typeof(List<Dictionary<TORConstants.Cultures, (bool isConsumed, int Strength)>>));
+            ConstructContainerDefinition(typeof(List<LastStandPerCulture>));
         }
     }
 }

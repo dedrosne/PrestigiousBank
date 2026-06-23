@@ -74,14 +74,15 @@ namespace PrestigiousBank
 
             //LastStand desactivation check
             //If it is the second city captured by a faction in lastStand, then disable lastStand for this culture, as it is not the last city of this culture
-            if (LastStands.LastStandPerCulture[settlement.Culture.ToString()].isConsumed)
+            if (LastStands.GetLastStandForCulture(settlement.Culture.ToString())?.IsConsumed == true)
             {
                 //If it is its second city
                 foreach (Town town in Town.AllTowns)
                 {
                     if (settlement.Culture.ToString() == town.Culture.ToString() && settlement.Town.StringId != town.StringId)
                     {
-                        LastStands.LastStandPerCulture[settlement.Culture.ToString()] = (false, 0);
+                        LastStands.GetLastStandForCulture(settlement.Culture.ToString()).IsConsumed = false;
+                        LastStands.GetLastStandForCulture(settlement.Culture.ToString()).Strength = 0;  
                     }
                 }
             }
@@ -99,7 +100,12 @@ namespace PrestigiousBank
             //If you get there, it means that the culture of the old owner has no more town, and thus the last stand is triggered for this culture
             if (oldCulture != null)
             {
-                LastStands.LastStandPerCulture[oldCulture] = (true, 0);
+                var lastStand = LastStands.GetLastStandForCulture(oldCulture);
+                if (lastStand != null)
+                {
+                    lastStand.IsConsumed = true;
+                    lastStand.Strength = 0;
+                }
                 TriggerLastStand(oldCulture, settlement, newOwner.Clan.Kingdom, oldOwner);
             }
         }

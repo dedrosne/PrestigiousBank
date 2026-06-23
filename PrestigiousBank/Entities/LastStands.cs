@@ -18,18 +18,40 @@ using TOR_Core.Utilities;
 
 namespace PrestigiousBank.Entities
 {
+    public class LastStandPerCulture
+    {
+        [SaveableProperty(1)]
+        public string Culture { get; set; }
+
+        [SaveableProperty(2)]
+        public bool IsConsumed { get; set; }
+        [SaveableProperty(3)]
+        public int Strength { get; set; }
+        public LastStandPerCulture(string culture)
+        {
+            Culture = culture;  
+            IsConsumed = false;
+            Strength = 0;
+        }
+    }
+
     public class LastStands
     {
         [SaveableProperty(1)]
-        public Dictionary<string, (bool isConsumed, int Strength)> LastStandPerCulture { get; set; }
+        public List<LastStandPerCulture> LastStandPerCulture { get; set; }
 
         public LastStands()
         {
-            LastStandPerCulture = new Dictionary<string, (bool isConsumed, int Strength)>();
+            LastStandPerCulture = new List<LastStandPerCulture>();
             foreach (TORConstants.Cultures culture in Enum.GetValues(typeof(TORConstants.Cultures)))
             {
-                LastStandPerCulture[culture.ToString()] = (false, 0);
+                LastStandPerCulture.Add(new Entities.LastStandPerCulture(culture.ToString()));
             }
+        }
+
+        public LastStandPerCulture GetLastStandForCulture(string culture)
+        {
+            return LastStandPerCulture.FirstOrDefault(ls => ls.Culture == culture);
         }
 
     }
