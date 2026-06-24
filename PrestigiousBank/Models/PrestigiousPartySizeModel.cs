@@ -1,4 +1,5 @@
 ﻿using PrestigiousBank;
+using PrestigiousBank.Entities;
 using System;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.GameComponents;
@@ -32,7 +33,7 @@ namespace PrestigiousBank
 
             //Last Stand : Infinite number of troops
             else if (Campaign.Current?.GetCampaignBehavior<LastStandCampaignBehavior>() != null 
-                && LastStandCampaignBehavior.LastStands.LastStandPerCulture[party.Culture.StringId].isConsumed) 
+                && LastStandCampaignBehavior.LastStands.GetLastStandForCulture(party.Culture.StringId).IsConsumed) 
             {
                 number.Add(9999, new TextObject("Dernier rempart de " + party.Culture.StringId));
             }

@@ -10,6 +10,8 @@ namespace PrestigiousBank
 {
     public class TorLithanelBank : Bank
     {
+        [SaveableProperty(1)]
+        public int DiplomatAccountSolde { get; set; }
 
         public TorLithanelBank(Settlement ville) : base(ville)
         {
@@ -26,6 +28,11 @@ namespace PrestigiousBank
 
             //Eonir Tor Lithanel Guar, Enonir Cityborn Militia, White lion of chrace, see elf sentinel
             SortAndCleanMercenaryUnitList();
+        }
+
+        public int CalculateResourceInterests()
+        {
+            return (int)(DiplomatAccountSolde * (1f / 10000f));
         }
     }
 }

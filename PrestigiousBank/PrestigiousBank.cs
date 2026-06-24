@@ -24,6 +24,7 @@ namespace PrestigiousBank
         public static Configuration Config { get; set; }
         private static string _configPath = System.IO.Path.GetFullPath(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"..\..\configuration"));
         private static string _version = "v1.3.9.0";
+        public static bool isCapitalProtectionActive = false;
 
         public PrestigiousBank()
         {
@@ -59,6 +60,7 @@ namespace PrestigiousBank
                 campaignGameStarter.AddBehavior(new TorLithanelBankCampaignBehavior());
                 campaignGameStarter.AddBehavior(new KarakIzorBankCampaignBehavior());
                 campaignGameStarter.AddBehavior(new ClanAgenciesBehaviour());
+                campaignGameStarter.AddBehavior(new LastStandCampaignBehavior());
                 //campaignGameStarter.AddBehavior(new ClanHideoutCampaignBehavior());
 
                 // ============================================================

@@ -25,7 +25,8 @@ namespace PrestigiousBank
             this.AddClassDefinition(typeof(TorLithanelBank), 8);
             this.AddClassDefinition(typeof(YnEdrylKoiranBank), 9);
             this.AddClassDefinition(typeof(KarakIzorBank), 10);
-
+            this.AddClassDefinition(typeof(LastStandPerCulture), 11);
+            this.AddClassDefinition(typeof(LastStands), 12);
 
 
             //Others

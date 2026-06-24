@@ -80,8 +80,7 @@ namespace PrestigiousBank
 
 public override float GetTargetScoreForFaction(Settlement targetSettlement, Army.ArmyTypes missionType, MobileParty mobileParty, float ourStrength)
         {
-            if (missionType == Army.ArmyTypes.Besieger && CapitalPerKingdom.ContainsKey(targetSettlement.StringId) && CapitalPerKingdom[targetSettlement.StringId] == targetSettlement.OwnerClan.Kingdom.StringId) {
-                if (targetSettlement.OwnerClan.Kingdom.StringId == "mousillon") return 0;
+            if (PrestigiousBank.isCapitalProtectionActive && missionType == Army.ArmyTypes.Besieger && CapitalPerKingdom.ContainsKey(targetSettlement.StringId) && CapitalPerKingdom[targetSettlement.StringId] == targetSettlement.OwnerClan.Kingdom.StringId) {
                 return 0f; }
             return base.GetTargetScoreForFaction(targetSettlement, missionType, mobileParty, ourStrength);
         }

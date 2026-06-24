@@ -71,7 +71,7 @@ namespace PrestigiousBank
                 detail != ChangeOwnerOfSettlementAction.ChangeOwnerOfSettlementDetail.BySiege) return;
 
             var oldCulture = oldOwner?.Culture.ToString();
-
+            PrestigiousBank.LogMessage("settlement owner changed, oldCulture: " + oldCulture + ", newOwner: " + newOwner?.Name.ToString() + ", settlement: " + settlement?.Name.ToString());
             //LastStand desactivation check
             //If it is the second city captured by a faction in lastStand, then disable lastStand for this culture, as it is not the last city of this culture
             if (LastStands.GetLastStandForCulture(settlement.Culture.ToString())?.IsConsumed == true)
@@ -91,12 +91,12 @@ namespace PrestigiousBank
             //Check if the culture of the old owner has still a city, if it is the case, then we can return without triggering last stand, as it is not the last city of this culture
             foreach (Town town in Town.AllTowns)
             {
-                if (oldCulture == town.Culture.ToString())
+                if (town.OwnerClan != Clan.PlayerClan && oldCulture == town.Culture.ToString())
                 {
                     return;
                 }
             }
-
+            PrestigiousBank.LogMessage("LastStand triggered for culture: " + oldCulture + ", settlement: " + settlement?.Name.ToString() + ", newOwner: " + newOwner?.Name.ToString());
             //If you get there, it means that the culture of the old owner has no more town, and thus the last stand is triggered for this culture
             if (oldCulture != null)
             {
@@ -112,6 +112,7 @@ namespace PrestigiousBank
 
         private void TriggerLastStand(string culture, Settlement settlement, Kingdom kingdomToDeclareWar, Hero oldOwner)
         {
+            PrestigiousBank.LogMessage("TriggerLastStand function");
             //Goal : Give to this culture few armies to it has a last chance to fight back.
             var clan = Clan.All.FirstOrDefault(c => c.StringId == oldOwner.Clan.StringId);
 

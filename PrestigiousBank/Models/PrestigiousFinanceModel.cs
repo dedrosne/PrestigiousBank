@@ -32,7 +32,7 @@ namespace PrestigiousBank
             }
             //Last Stand : Infinite number of gold
             else if (Campaign.Current?.GetCampaignBehavior<LastStandCampaignBehavior>() != null
-                && LastStandCampaignBehavior.LastStands.LastStandPerCulture[clan.Culture.StringId].isConsumed)
+                && LastStandCampaignBehavior.LastStands.GetLastStandForCulture(clan.Culture.StringId).IsConsumed)
             {
                 result.Add(100_000, new TextObject("Dernier rempart de " + clan.Culture.StringId));
             }

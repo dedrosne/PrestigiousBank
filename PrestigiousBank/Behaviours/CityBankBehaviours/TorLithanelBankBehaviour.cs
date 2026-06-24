@@ -21,6 +21,8 @@ using TaleWorlds.Localization;
 using TaleWorlds.ScreenSystem;
 using TOR_Core.Extensions;
 using TOR_Core.CharacterDevelopment;
+using TOR_Core.Utilities;
+using TOR_Core.CampaignMechanics.CustomResources;
 
 namespace PrestigiousBank
 {
@@ -88,6 +90,10 @@ namespace PrestigiousBank
 
         private void DailyTickClan()
         {
+            //Ajout du prestige
+            if (Hero.MainHero.GetCultureSpecificCustomResource().StringId == "CouncilFavor")
+                
+                Hero.MainHero.AddCultureSpecificCustomResource(TorLithanelBank.CalculateResourceInterests());
             //Ajout de l'XP
             Hero.MainHero.AddSkillXp(DefaultSkills.Bow, TorLithanelBank.GetDailySkillXP());
 

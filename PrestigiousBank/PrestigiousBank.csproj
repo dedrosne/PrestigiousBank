@@ -273,7 +273,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Behaviours\CityBankBehaviours\LastStandBehaviour.cs" />
+    <Compile Include="Behaviours\LastStandBehaviour.cs" />
     <Compile Include="Behaviours\CityBankBehaviours\KarakIzorBankBehaviour.cs" />
     <Compile Include="Behaviours\CityBankBehaviours\AverheimBankBehaviour.cs" />
     <Compile Include="Behaviours\CityBankBehaviours\ParravonBankBehaviour.cs" />

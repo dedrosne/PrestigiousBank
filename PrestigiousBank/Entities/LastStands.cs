@@ -43,10 +43,20 @@ namespace PrestigiousBank.Entities
         public LastStands()
         {
             LastStandPerCulture = new List<LastStandPerCulture>();
-            foreach (TORConstants.Cultures culture in Enum.GetValues(typeof(TORConstants.Cultures)))
+            foreach (string culture in TORConstants.Cultures.All)
             {
-                LastStandPerCulture.Add(new Entities.LastStandPerCulture(culture.ToString()));
+                LastStandPerCulture.Add(new LastStandPerCulture(culture));
             }
+
+            LastStandPerCulture.Add(new LastStandPerCulture(TORConstants.Cultures.CHAOS));
+            LastStandPerCulture.Add(new LastStandPerCulture(TORConstants.Cultures.CHAOS_CULTIST));
+            LastStandPerCulture.Add(new LastStandPerCulture(TORConstants.Cultures.DRUCHII));
+            LastStandPerCulture.Add(new LastStandPerCulture(TORConstants.Cultures.BEASTMEN));
+            LastStandPerCulture.Add(new LastStandPerCulture(TORConstants.Cultures.GREENSKIN_BANDIT));
+            LastStandPerCulture.Add(new LastStandPerCulture(TORConstants.Cultures.GOBLIN_BANDIT));
+            LastStandPerCulture.Add(new LastStandPerCulture(TORConstants.Cultures.EMPIRE_DESERTERS));
+            LastStandPerCulture.Add(new LastStandPerCulture(TORConstants.Cultures.HERRIMAULT));
+            LastStandPerCulture.Add(new LastStandPerCulture("sea_raiders"));
         }
 
         public LastStandPerCulture GetLastStandForCulture(string culture)
