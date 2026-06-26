@@ -124,7 +124,7 @@ namespace PrestigiousBank
                                             if (currentAgency.LevelAgency <4) args.Tooltip = new TextObject("Agence niveau 4 requis");
                                             else if (Hero.MainHero.Gold < ClanAgency.PriceToBuildTeleporter) args.Tooltip = new TextObject("Pas assez d'or");
                                             args.IsEnabled = currentAgency.LevelAgency >= 4 && Hero.MainHero.Gold >= ClanAgency.PriceToBuildTeleporter;
-                                            return AltdorfBankCampaignBehavior.BankAltdorf.IsTeleportUnblocked && !currentAgency.IsTeleportUnlocked;
+                                            return AltdorfBankCampaignBehavior.BankInstance.IsTeleportUnblocked && !currentAgency.IsTeleportUnlocked;
                                         },
                                         _ => { 
                                             ClanAgencies.GetAgencyByTownStringId(Settlement.CurrentSettlement.Town.StringId).IsTeleportUnlocked = true;

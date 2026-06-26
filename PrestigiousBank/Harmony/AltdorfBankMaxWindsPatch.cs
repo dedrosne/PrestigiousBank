@@ -15,9 +15,9 @@ namespace PrestigiousBank
     {
         static void Postfix(ref float __result)
         {
-            if (AltdorfBankCampaignBehavior.BankAltdorf != null && AltdorfBankCampaignBehavior.BankAltdorf.ManastoneNumber != 0)
+            if (AltdorfBankCampaignBehavior.BankInstance != null && AltdorfBankCampaignBehavior.BankInstance.ManastoneNumber != 0)
             {
-                __result += AltdorfBankCampaignBehavior.BankAltdorf.ManastoneNumber;
+                __result += AltdorfBankCampaignBehavior.BankInstance.ManastoneNumber;
             }
 
             
@@ -30,9 +30,9 @@ namespace PrestigiousBank
     {
         static void Postfix(ref float __result)
         {
-            if (AltdorfBankCampaignBehavior.BankAltdorf != null && AltdorfBankCampaignBehavior.BankAltdorf.ChanelerNumber != 0)
+            if (AltdorfBankCampaignBehavior.BankInstance != null && AltdorfBankCampaignBehavior.BankInstance.ChanelerNumber != 0)
             {
-                __result += AltdorfBankCampaignBehavior.BankAltdorf.ChanelerNumber * 0.01f;
+                __result += AltdorfBankCampaignBehavior.BankInstance.ChanelerNumber * 0.01f;
             }
 
 

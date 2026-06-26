@@ -34,7 +34,28 @@ namespace PrestigiousBank
         {
             base.OnSubModuleLoad();
             Harmony harmony = new Harmony("PrestigiousBank");
+            // Fetch the inaccessible type using its namespace and name
+            Type protectedType = AccessTools.TypeByName("TOR_Core.Models.TORClanTierModel");
+            if (protectedType == null)
+            {
+                LogMessage("Could not patch protected class TORClanTierModel");
+                return;
+            }
+            else
+            {
+                // Step 2: Find the method inside that type
+                // AccessTools.Method automatically scans all public, private, static, and instance levels
+                MethodInfo originalMethod = AccessTools.Method(protectedType, "GetCompanionLimit");
+
+                // Step 3: Get your own patch method
+                MethodInfo postFixMethod = AccessTools.Method(typeof(MaxCompanionPatch), nameof(MaxCompanionPatch.Postfix));
+
+                // Step 4: Manually apply the patch
+                harmony.Patch(originalMethod, postfix: new HarmonyMethod(postFixMethod));
+
+            }
             harmony.PatchAll();
+
         }
         protected override void OnGameStart(Game game, IGameStarter starter)
         {

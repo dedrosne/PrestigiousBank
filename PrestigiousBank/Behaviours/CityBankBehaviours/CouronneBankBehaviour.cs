@@ -29,7 +29,7 @@ namespace PrestigiousBank
         public static CouronneBank _bankCouronne = null;
         //public static string BankMenuLinkText = "<a style=\"Link.Settlement\" href=\"event:Concept-str_game_objects_simple_bank\"><b>" + PrestigiousBank.Config.BankName + "</b></a>";
 
-        public static CouronneBank BankCouronne
+        public static CouronneBank BankInstance
         {
             get
             {
@@ -88,24 +88,24 @@ namespace PrestigiousBank
 
         private void OnSessionLaunched(CampaignGameStarter campaignGameStarter)
         {
-            new CouronneBankMenu().RegisterBankMenu(campaignGameStarter, BankCouronne);
+            new CouronneBankMenu().RegisterBankMenu(campaignGameStarter, BankInstance);
         }
 
         private void DailyTickClan()
         {
             //Ajout de l'énergie noire
             if (Hero.MainHero.GetCultureSpecificCustomResource().StringId == "Chivalry")
-                Hero.MainHero.AddCultureSpecificCustomResource(BankCouronne.CalculateChivalryInterests());
+                Hero.MainHero.AddCultureSpecificCustomResource(BankInstance.CalculateChivalryInterests());
             //Ajout de l'XP
-            Hero.MainHero.AddSkillXp( DefaultSkills.Riding, BankCouronne.GetDailySkillXP());
+            Hero.MainHero.AddSkillXp( DefaultSkills.Riding, BankInstance.GetDailySkillXP());
 
             //Ajout des Mercenaires
-            if (BankCouronne.CanRecruitMercenariesInThisBank) BankCouronne.ApplyRegenMercenariesPerDay();
+            if (BankInstance.CanRecruitMercenariesInThisBank) BankInstance.ApplyRegenMercenariesPerDay();
         }
 
         private void HourlyTickEvent()
         {
-            BankCouronne.ApplyDiamondLevelGoldTownIncrease();
+            BankInstance.ApplyDiamondLevelGoldTownIncrease();
         }
 
         public override void SyncData(IDataStore dataStore)

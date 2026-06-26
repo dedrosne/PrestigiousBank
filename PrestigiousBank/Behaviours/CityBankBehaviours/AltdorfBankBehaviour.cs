@@ -30,7 +30,7 @@ namespace PrestigiousBank
         public static string _altdorfTownID = "town_comp_RL1";
         public static AltdorfBank _bankAltdorf = null;
         //public static string BankMenuLinkText = "<a style=\"Link.Settlement\" href=\"event:Concept-str_game_objects_simple_bank\"><b>" + PrestigiousBank.Config.BankName + "</b></a>";
-        public static AltdorfBank BankAltdorf
+        public static AltdorfBank BankInstance
         {
             get
             {
@@ -89,23 +89,32 @@ namespace PrestigiousBank
 
         private void OnSessionLaunched(CampaignGameStarter campaignGameStarter)
         {
-            new AltdorfBankMenu().RegisterBankMenu(campaignGameStarter, BankAltdorf);
+            new AltdorfBankMenu().RegisterBankMenu(campaignGameStarter, BankInstance);
         }
 
         private void DailyTickClan()
         {
             //Ajout du prestige
             if (Hero.MainHero.GetCultureSpecificCustomResource().StringId == "Prestige")
-                Hero.MainHero.AddCultureSpecificCustomResource(BankAltdorf.CalculatePrestigiousInterests());
+                Hero.MainHero.AddCultureSpecificCustomResource(BankInstance.CalculatePrestigiousInterests());
             //Ajout de l'XP
-            Hero.MainHero.AddSkillXp( TORSkills.Spellcraft,BankAltdorf.GetDailySkillXP());
+            Hero.MainHero.AddSkillXp( TORSkills.Spellcraft,BankInstance.GetDailySkillXP());
             //Ajout des Mercenaires
-            if (BankAltdorf.CanRecruitMercenariesInThisBank) BankAltdorf.ApplyRegenMercenariesPerDay();
+            if (BankInstance.CanRecruitMercenariesInThisBank) BankInstance.ApplyRegenMercenariesPerDay();
         }
 
         private void HourlyTickEvent()
         {
-            BankAltdorf.ApplyDiamondLevelGoldTownIncrease();
+            var time = Campaign.CurrentTime;
+            if ((int)time % 24 == 14)
+            {
+                if (BankInstance.LoanAmount > 0)
+                {
+                    BankInstance.ApplyLoanRefound();
+                }
+            }
+
+            BankInstance.ApplyDiamondLevelGoldTownIncrease();
         }
 
         public override void SyncData(IDataStore dataStore)

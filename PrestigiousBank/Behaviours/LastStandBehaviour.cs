@@ -116,7 +116,7 @@ namespace PrestigiousBank
             //Goal : Give to this culture few armies to it has a last chance to fight back.
             var clan = Clan.All.FirstOrDefault(c => c.StringId == oldOwner.Clan.StringId);
 
-            foreach (WarPartyComponent comp in clan.WarPartyComponents)
+/*            foreach (WarPartyComponent comp in clan.WarPartyComponents)
             {
                 var mobileParty = comp.MobileParty;
                 var relocationPosition = NavigationHelper.FindReachablePointAroundPosition(
@@ -126,10 +126,10 @@ namespace PrestigiousBank
                     1f);
 
                 mobileParty.Position = relocationPosition;
-                comp.Party.SetVisualAsDirty();
+                comp.Party.SetVisualAsDirty();*/
 
-                MobileParty.CreateParty(culture.ToString() + "_lastStand", comp);
-            }
+                //MobileParty.CreateParty(culture.ToString() + "_lastStand", comp);
+            //}
             
             
         }

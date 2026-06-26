@@ -151,10 +151,10 @@ namespace PrestigiousBank
         {
             if (Hero.MainHero.Gold < amount) { return; }
 
-            YnEdrylKoiranBankCampaignBehavior.YnEdrylKoiranBank.ForestHarmonyAccountSolde += amount;
+            YnEdrylKoiranBankCampaignBehavior.BankInstance.ForestHarmonyAccountSolde += amount;
             Hero.MainHero.ChangeHeroGold(-amount);
             PrestigiousBank.LogMessage(String.Format("Cadeau de {0} accepté.\nHarmonie de la forêt : {1}", amount, 
-                YnEdrylKoiranBankCampaignBehavior.YnEdrylKoiranBank.CalculateForestHarmonyInterests()), 0xFFBBAA00);
+                YnEdrylKoiranBankCampaignBehavior.BankInstance.CalculateForestHarmonyInterests()), 0xFFBBAA00);
             GameMenu.SwitchToMenu(String.Format("{0}_bank_forestHarmony_account", _cityID));
             CreateOrUpdateGameMenuDesc(campaignGameStarter);
             SoundEvent.PlaySound2D(SoundEvent.GetEventIdFromString("event:/ui/notification/coins_negative"));

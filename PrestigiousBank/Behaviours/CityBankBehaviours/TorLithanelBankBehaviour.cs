@@ -31,7 +31,7 @@ namespace PrestigiousBank
         public static string townID = "town_comp_LL1";
         public static TorLithanelBank _bank = null;
 
-        public static TorLithanelBank TorLithanelBank
+        public static TorLithanelBank BankInstance
         {
             get
             {
@@ -85,7 +85,7 @@ namespace PrestigiousBank
 
         private void OnSessionLaunched(CampaignGameStarter campaignGameStarter)
         {
-            new TorLithanelBankMenu().RegisterBankMenu(campaignGameStarter, TorLithanelBank);
+            new TorLithanelBankMenu().RegisterBankMenu(campaignGameStarter, BankInstance);
         }
 
         private void DailyTickClan()
@@ -93,17 +93,17 @@ namespace PrestigiousBank
             //Ajout du prestige
             if (Hero.MainHero.GetCultureSpecificCustomResource().StringId == "CouncilFavor")
                 
-                Hero.MainHero.AddCultureSpecificCustomResource(TorLithanelBank.CalculateResourceInterests());
+                Hero.MainHero.AddCultureSpecificCustomResource(BankInstance.CalculateResourceInterests());
             //Ajout de l'XP
-            Hero.MainHero.AddSkillXp(DefaultSkills.Bow, TorLithanelBank.GetDailySkillXP());
+            Hero.MainHero.AddSkillXp(DefaultSkills.Bow, BankInstance.GetDailySkillXP());
 
             //Ajout des Mercenaires
-            if (TorLithanelBank.CanRecruitMercenariesInThisBank) TorLithanelBank.ApplyRegenMercenariesPerDay();
+            if (BankInstance.CanRecruitMercenariesInThisBank) BankInstance.ApplyRegenMercenariesPerDay();
         }
 
         private void HourlyTickEvent()
         {
-            TorLithanelBank.ApplyDiamondLevelGoldTownIncrease();
+            BankInstance.ApplyDiamondLevelGoldTownIncrease();
         }
 
 

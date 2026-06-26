@@ -31,7 +31,7 @@ namespace PrestigiousBank
         public static string _KarakIzorTownID = "town_comp_KI1";
         public static KarakIzorBank _bankKarakIzor = null;
 
-        public static KarakIzorBank BankKarakIzor
+        public static KarakIzorBank BankInstance
         {
             get
             {
@@ -85,23 +85,23 @@ namespace PrestigiousBank
 
         private void OnSessionLaunched(CampaignGameStarter campaignGameStarter)
         {
-            new KarakIzorBankMenu().RegisterBankMenu(campaignGameStarter, BankKarakIzor);
+            new KarakIzorBankMenu().RegisterBankMenu(campaignGameStarter, BankInstance);
         }
 
         private void DailyTickClan()
         {
             //Add of Oathgold
             if (Hero.MainHero.GetCultureSpecificCustomResource().StringId == "OathGold")
-                Hero.MainHero.AddCultureSpecificCustomResource(BankKarakIzor.CalculateOathGoldGain());
+                Hero.MainHero.AddCultureSpecificCustomResource(BankInstance.CalculateOathGoldGain());
             //Ajout de l'XP
-            Hero.MainHero.AddSkillXp(DefaultSkills.Crafting, BankKarakIzor.GetDailySkillXP());
+            Hero.MainHero.AddSkillXp(DefaultSkills.Crafting, BankInstance.GetDailySkillXP());
             //Ajout des Mercenaires
-            if (BankKarakIzor.CanRecruitMercenariesInThisBank) BankKarakIzor.ApplyRegenMercenariesPerDay();
+            if (BankInstance.CanRecruitMercenariesInThisBank) BankInstance.ApplyRegenMercenariesPerDay();
         }
 
         private void HourlyTickEvent()
         {
-            BankKarakIzor.ApplyDiamondLevelGoldTownIncrease();
+            BankInstance.ApplyDiamondLevelGoldTownIncrease();
 
             //Stamina Regen
             var mainParty = MobileParty.MainParty;
@@ -113,7 +113,7 @@ namespace PrestigiousBank
                 var max = campaignBehavior.GetMaxHeroCraftingStamina(hero);
                 if (stamina >= max)
                     return;
-                var value = Math.Min(max, stamina + MathF.Floor(BankKarakIzor.RegenStaminaBought*KarakIzorBank.RegenStaminaPerHourPerPurchaseBought));
+                var value = Math.Min(max, stamina + MathF.Floor(BankInstance.RegenStaminaBought*KarakIzorBank.RegenStaminaPerHourPerPurchaseBought));
                 campaignBehavior.SetHeroCraftingStamina(hero, value);
                 
             }

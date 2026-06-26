@@ -29,7 +29,7 @@ namespace PrestigiousBank
         public static string townID = "town_comp_AV1";
         public static AverheimBank _bank= null;
 
-        public static AverheimBank AverheimBank
+        public static AverheimBank BankInstance
         {
             get
             {
@@ -83,20 +83,20 @@ namespace PrestigiousBank
 
         private void OnSessionLaunched(CampaignGameStarter campaignGameStarter)
         {
-            new AverheimBankMenu().RegisterBankMenu(campaignGameStarter, AverheimBank);
+            new AverheimBankMenu().RegisterBankMenu(campaignGameStarter, BankInstance);
         }
 
         private void DailyTickClan()
         {
             //Ajout de l'XP
-            Hero.MainHero.AddSkillXp(DefaultSkills.Athletics, AverheimBank.GetDailySkillXP());
+            Hero.MainHero.AddSkillXp(DefaultSkills.Athletics, BankInstance.GetDailySkillXP());
             //Ajout des Mercenaires
-            if (AverheimBank.CanRecruitMercenariesInThisBank) AverheimBank.ApplyRegenMercenariesPerDay();
+            if (BankInstance.CanRecruitMercenariesInThisBank) BankInstance.ApplyRegenMercenariesPerDay();
         }
 
         private void HourlyTickEvent()
         {
-            AverheimBank.ApplyDiamondLevelGoldTownIncrease();
+            BankInstance.ApplyDiamondLevelGoldTownIncrease();
         }
 
 

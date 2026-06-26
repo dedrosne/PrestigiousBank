@@ -15,7 +15,7 @@ namespace PrestigiousBank
         public int BlessingAmount { get; set; }
 
         public static int InitialPricePerHP = 2000;
-        public static int PriceIncreasePerHP = 500;
+        public static int PriceIncreasePerHP = 100;
 
 
         public AverheimBank(Settlement ville) : base(ville)

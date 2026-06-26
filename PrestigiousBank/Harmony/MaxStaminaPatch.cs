@@ -20,9 +20,9 @@ namespace PrestigiousBank
         static void Postfix(ref int __result)
         {
             KarakIzorBankCampaignBehavior KarakIzorBankCampaignBehavior = Campaign.Current?.GetCampaignBehavior<KarakIzorBankCampaignBehavior>();
-            if (KarakIzorBankCampaignBehavior != null && KarakIzorBankCampaignBehavior.BankKarakIzor != null && KarakIzorBankCampaignBehavior.BankKarakIzor.MaximumStaminaBought != 0)
+            if (KarakIzorBankCampaignBehavior != null && KarakIzorBankCampaignBehavior.BankInstance != null && KarakIzorBankCampaignBehavior.BankInstance.MaximumStaminaBought != 0)
             {
-                __result += KarakIzorBankCampaignBehavior.BankKarakIzor.MaximumStaminaBought * KarakIzorBank.MaximumStaminaGainPerPurchaseBought;
+                __result += KarakIzorBankCampaignBehavior.BankInstance.MaximumStaminaBought * KarakIzorBank.MaximumStaminaGainPerPurchaseBought;
             }
 
 

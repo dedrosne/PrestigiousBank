@@ -82,12 +82,17 @@ namespace PrestigiousBank
             AltdorfBankCampaignBehavior AltdorfBankBehavior = Campaign.Current?.GetCampaignBehavior<AltdorfBankCampaignBehavior>();
             if (AltdorfBankBehavior != null)
             {
-                int InterestsAltdorfBank = AltdorfBankCampaignBehavior.BankAltdorf.CalculateInterests();
+                int InterestsAltdorfBank = AltdorfBankCampaignBehavior.BankInstance.CalculateInterests();
+                
+                if (AltdorfBankCampaignBehavior.BankInstance.LoanAmount != 0) 
+                    result.Add(-AltdorfBankCampaignBehavior.BankInstance.CalculateLoanRefound(), new TextObject("Remboursement de prêt d'Altdorf"));
+
                 if (InterestsAltdorfBank != 0)
                     result.Add(InterestsAltdorfBank, new TextObject("Banque d'Altdorf"));
-                if (AltdorfBankCampaignBehavior.BankAltdorf.ChanelerNumber != 0)
+
+                if (AltdorfBankCampaignBehavior.BankInstance.ChanelerNumber != 0)
                 {
-                    result.Add(-AltdorfBankCampaignBehavior.BankAltdorf.CalculateChannelerCostPerDay(), new TextObject("Canalysateurs d'Altdorf"));
+                    result.Add(-AltdorfBankCampaignBehavior.BankInstance.CalculateChannelerCostPerDay(), new TextObject("Canalysateurs d'Altdorf"));
                 }
             }
 
@@ -97,9 +102,12 @@ namespace PrestigiousBank
             if (DrakenhofBankBehavior != null)
             {
 
-                int InterestsDrakenhoffBank = DrakenhofBankCampaignBehavior.BankDrakenhof.CalculateInterests();
+                int InterestsDrakenhoffBank = DrakenhofBankCampaignBehavior.BankInstance.CalculateInterests();
                 if (InterestsDrakenhoffBank != 0)
                     result.Add(InterestsDrakenhoffBank, new TextObject("Banque de Drakenhof"));
+
+                if (DrakenhofBankCampaignBehavior.BankInstance.LoanAmount != 0)
+                    result.Add(-DrakenhofBankCampaignBehavior.BankInstance.CalculateLoanRefound(), new TextObject("Remboursement de prêt de Drakenhof"));
             }
 
             //YnEdrylKoiran
@@ -107,12 +115,15 @@ namespace PrestigiousBank
 
             if (ynEdrylKoiranBankCampaignBehavior != null)
             {
-                int InterestsYnEdrylKoiran = YnEdrylKoiranBankCampaignBehavior.YnEdrylKoiranBank.CalculateInterests();
+                int InterestsYnEdrylKoiran = YnEdrylKoiranBankCampaignBehavior.BankInstance.CalculateInterests();
                 if (InterestsYnEdrylKoiran != 0)
                     result.Add(InterestsYnEdrylKoiran, new TextObject("Banque d'Yn Edryl Koiran"));
 
-                int IshaBlessingUpkeep = YnEdrylKoiranBankCampaignBehavior.YnEdrylKoiranBank.CalculateBlessingUpkeep();
+                int IshaBlessingUpkeep = YnEdrylKoiranBankCampaignBehavior.BankInstance.CalculateBlessingUpkeep();
                 if (IshaBlessingUpkeep != 0) result.Add(-IshaBlessingUpkeep, new TextObject("Bénédiction d'Isha"));
+
+                if (YnEdrylKoiranBankCampaignBehavior.BankInstance.LoanAmount != 0)
+                    result.Add(-YnEdrylKoiranBankCampaignBehavior.BankInstance.CalculateLoanRefound(), new TextObject("Remboursement de prêt d'Yn Edryl Koiran"));
             }
 
 
@@ -121,9 +132,12 @@ namespace PrestigiousBank
 
             if (CouronneBankCampaignBehavior != null)
             {
-                int InterestsCouronne = CouronneBankCampaignBehavior.BankCouronne.CalculateInterests();
+                int InterestsCouronne = CouronneBankCampaignBehavior.BankInstance.CalculateInterests();
                 if (InterestsCouronne != 0)
                     result.Add(InterestsCouronne, new TextObject("Banque de Couronne"));
+
+                if (CouronneBankCampaignBehavior.BankInstance.LoanAmount != 0)
+                    result.Add(-CouronneBankCampaignBehavior.BankInstance.CalculateLoanRefound(), new TextObject("Remboursement de prêt de Couronne"));
             }
 
             //Averheim
@@ -131,21 +145,27 @@ namespace PrestigiousBank
 
             if (AverheimBankCampaignBehavior != null)
             {
-                int InterestsAverheim = AverheimBankCampaignBehavior.AverheimBank.CalculateInterests();
+                int InterestsAverheim = AverheimBankCampaignBehavior.BankInstance.CalculateInterests();
                 if (InterestsAverheim != 0)
                     result.Add(InterestsAverheim, new TextObject("Banque d'Averheim"));
+
+                if (AverheimBankCampaignBehavior.BankInstance.LoanAmount != 0)
+                    result.Add(-AverheimBankCampaignBehavior.BankInstance.CalculateLoanRefound(), new TextObject("Remboursement de prêt d'Averheim"));
             }
 
             //Middenheim
             MiddenheimBankCampaignBehavior MiddenheimBankCampaignBehavior = Campaign.Current?.GetCampaignBehavior<MiddenheimBankCampaignBehavior>();
             if (MiddenheimBankCampaignBehavior != null)
             {
-                int InterestsMiddenheim = MiddenheimBankCampaignBehavior.MiddenheimBank.CalculateInterests();
+                int InterestsMiddenheim = MiddenheimBankCampaignBehavior.BankInstance.CalculateInterests();
                 if (InterestsMiddenheim != 0)
                     result.Add(InterestsMiddenheim, new TextObject("Banque de Middenheim"));
 
-                int PartyHelperUpkeep = MiddenheimBankCampaignBehavior.MiddenheimBank.CalculatePartyHelperUpkeep();
+                int PartyHelperUpkeep = MiddenheimBankCampaignBehavior.BankInstance.CalculatePartyHelperUpkeep();
                 if (PartyHelperUpkeep != 0) result.Add(-PartyHelperUpkeep, new TextObject("Aides de camp de Middenheim"));
+
+                if (MiddenheimBankCampaignBehavior.BankInstance.LoanAmount != 0)
+                    result.Add(-MiddenheimBankCampaignBehavior.BankInstance.CalculateLoanRefound(), new TextObject("Remboursement de prêt de Middenheim"));
             }
 
 
@@ -153,9 +173,12 @@ namespace PrestigiousBank
             ParravonBankCampaignBehavior ParravonBankCampaignBehavior = Campaign.Current?.GetCampaignBehavior<ParravonBankCampaignBehavior>();
             if (ParravonBankCampaignBehavior != null)
             {
-                int InterestsParravon = ParravonBankCampaignBehavior.ParravonBank.CalculateInterests();
+                int InterestsParravon = ParravonBankCampaignBehavior.BankInstance.CalculateInterests();
                 if (InterestsParravon != 0)
                     result.Add(InterestsParravon, new TextObject("Banque de Parravon"));
+
+                if (ParravonBankCampaignBehavior.BankInstance.LoanAmount != 0)
+                    result.Add(-ParravonBankCampaignBehavior.BankInstance.CalculateLoanRefound(), new TextObject("Remboursement de prêt de Parravon"));
             }
 
 
@@ -164,9 +187,12 @@ namespace PrestigiousBank
             if (torLithanelBankCampaignBehavior != null)
             {
 
-                int InterestsTorLithanel = TorLithanelBankCampaignBehavior.TorLithanelBank.CalculateInterests();
+                int InterestsTorLithanel = TorLithanelBankCampaignBehavior.BankInstance.CalculateInterests();
                 if (InterestsTorLithanel != 0)
                     result.Add(InterestsTorLithanel, new TextObject("Banque de Tor Lithanel"));
+
+                if (TorLithanelBankCampaignBehavior.BankInstance.LoanAmount != 0)
+                    result.Add(-TorLithanelBankCampaignBehavior.BankInstance.CalculateLoanRefound(), new TextObject("Remboursement de prêt de Tor Lithanel"));
             }
 
             //Karak Izor
@@ -174,9 +200,12 @@ namespace PrestigiousBank
             if (KarakIzorBankCampaignBehavior != null)
             {
 
-                int InterestsKarakIzor = KarakIzorBankCampaignBehavior.BankKarakIzor.CalculateInterests();
+                int InterestsKarakIzor = KarakIzorBankCampaignBehavior.BankInstance.CalculateInterests();
                 if (InterestsKarakIzor != 0)
                     result.Add(InterestsKarakIzor, new TextObject("Banque de Karak Izor"));
+
+                if (KarakIzorBankCampaignBehavior.BankInstance.LoanAmount != 0)
+                    result.Add(-KarakIzorBankCampaignBehavior.BankInstance.CalculateLoanRefound(), new TextObject("Remboursement de prêt de Karak Izor"));
             }
 
 

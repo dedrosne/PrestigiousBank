@@ -826,7 +826,7 @@ namespace PrestigiousBank
 
                 if (_nulnFactory.SelectedWoodLevel == i)
                 {
-                    textObject = new TextObject($"[{textObject.Value}]");
+                    textObject = new TextObject($"[ {textObject.Value} ]");
                 }
                 GameTexts.SetVariable("NULNWOODPRODUCTIONTEXT"+i, textObject);
             }

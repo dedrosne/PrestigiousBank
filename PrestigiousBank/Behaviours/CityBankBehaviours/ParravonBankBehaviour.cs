@@ -29,7 +29,7 @@ namespace PrestigiousBank
         public static string townID = "town_comp_PA1";
         public static ParravonBank _bank= null;
 
-        public static ParravonBank ParravonBank
+        public static ParravonBank BankInstance
         {
             get
             {
@@ -83,21 +83,21 @@ namespace PrestigiousBank
 
         private void OnSessionLaunched(CampaignGameStarter campaignGameStarter)
         {
-            new ParravonBankMenu().RegisterBankMenu(campaignGameStarter, ParravonBank);
+            new ParravonBankMenu().RegisterBankMenu(campaignGameStarter, BankInstance);
         }
 
         private void DailyTickClan()
         {
             //Ajout de l'XP
-            Hero.MainHero.AddSkillXp(DefaultSkills.Leadership, ParravonBank.GetDailySkillXP());
+            Hero.MainHero.AddSkillXp(DefaultSkills.Leadership, BankInstance.GetDailySkillXP());
 
             //Ajout des Mercenaires
-            if (ParravonBank.CanRecruitMercenariesInThisBank) ParravonBank.ApplyRegenMercenariesPerDay();
+            if (BankInstance.CanRecruitMercenariesInThisBank) BankInstance.ApplyRegenMercenariesPerDay();
         }
 
         private void HourlyTickEvent()
         {
-            ParravonBank.ApplyDiamondLevelGoldTownIncrease();
+            BankInstance.ApplyDiamondLevelGoldTownIncrease();
         }
 
 

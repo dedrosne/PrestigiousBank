@@ -123,9 +123,9 @@ namespace PrestigiousBank
         {
             if (Hero.MainHero.Gold < amount) { return; }
 
-            KarakIzorBankCampaignBehavior.BankKarakIzor.OathgoldAccountSolde += amount;
+            KarakIzorBankCampaignBehavior.BankInstance.OathgoldAccountSolde += amount;
             Hero.MainHero.ChangeHeroGold(-amount);
-            InformationManager.DisplayMessage(new InformationMessage(amount+"{GOLD_ICON} investi.\nSermendors extraits journaliers : " + KarakIzorBankCampaignBehavior.BankKarakIzor.CalculateOathGoldGain(), Color.FromUint(0xFFBBAA00)));
+            InformationManager.DisplayMessage(new InformationMessage(amount+"{GOLD_ICON} investi.\nSermendors extraits journaliers : " + KarakIzorBankCampaignBehavior.BankInstance.CalculateOathGoldGain(), Color.FromUint(0xFFBBAA00)));
             GameMenu.SwitchToMenu(String.Format("{0}_bank_oathgold_account", _cityID));
             CreateOrUpdateGameMenuDesc(campaignGameStarter);
             SoundEvent.PlaySound2D(SoundEvent.GetEventIdFromString("event:/ui/notification/coins_negative"));

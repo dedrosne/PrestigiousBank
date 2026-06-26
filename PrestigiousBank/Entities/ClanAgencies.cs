@@ -80,7 +80,7 @@ namespace PrestigiousBank
         public bool DoDisplayOptionToBuyAgency()
         {
             if (NulnFactoryCampaignBehavior.NulnFactory.FactoryLevel > 0 || 
-                AltdorfBankCampaignBehavior.BankAltdorf.IsTeleportUnblocked || 
+                AltdorfBankCampaignBehavior.BankInstance.IsTeleportUnblocked || 
                 ClanHideoutCampaignBehavior.ClanHideout.LevelHideout > 0) 
                 return true;
 

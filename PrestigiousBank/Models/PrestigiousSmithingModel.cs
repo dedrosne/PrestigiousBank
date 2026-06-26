@@ -24,7 +24,7 @@ namespace PrestigiousBank
 
             if (KarakIzorBankCampaignBehavior != null)
             {
-                result = result + MathF.Floor(result * (KarakIzorBankCampaignBehavior.BankKarakIzor.ResearchPartFactorBought * KarakIzorBank.ResearchFactorGainPerPurchaseBought));
+                result = result + MathF.Floor(result * (KarakIzorBankCampaignBehavior.BankInstance.ResearchPartFactorBought * KarakIzorBank.ResearchFactorGainPerPurchaseBought));
             }
 
             return result;
@@ -38,7 +38,7 @@ namespace PrestigiousBank
 
             if (KarakIzorBankCampaignBehavior != null)
             {
-                result = result + MathF.Floor(result * (KarakIzorBankCampaignBehavior.BankKarakIzor.ResearchPartFactorBought * KarakIzorBank.ResearchFactorGainPerPurchaseBought));
+                result = result + MathF.Floor(result * (KarakIzorBankCampaignBehavior.BankInstance.ResearchPartFactorBought * KarakIzorBank.ResearchFactorGainPerPurchaseBought));
             }
 
             return result;

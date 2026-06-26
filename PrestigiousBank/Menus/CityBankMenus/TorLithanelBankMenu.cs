@@ -38,7 +38,7 @@ namespace PrestigiousBank
         public override void CallChildrenBankMenu(CampaignGameStarter campaignGameStarter, Bank Bank)
         {
 
-            // Bank Menu -> Prestigious Account
+            // Bank Menu -> Diplomat Account
             campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_menu", _cityID), String.Format("{0}_bank_diplomat_account", _cityID),
                 "Développer son réseau",
                 a => {
@@ -54,7 +54,7 @@ namespace PrestigiousBank
 
         }
 
-        #region Prestigious Account
+        #region Diplomacy Account
         private void RegisterDiplomatAccountMenuOptions(CampaignGameStarter campaignGameStarter)
         {
             int[] qties = { 100, 1000, 10000, 100000 };
@@ -99,9 +99,9 @@ namespace PrestigiousBank
         {
             if (Hero.MainHero.Gold < amount) { return; }
 
-            TorLithanelBankCampaignBehavior.TorLithanelBank.DiplomatAccountSolde += amount;
+            TorLithanelBankCampaignBehavior.BankInstance.DiplomatAccountSolde += amount;
             Hero.MainHero.ChangeHeroGold(-amount);
-            InformationManager.DisplayMessage(new InformationMessage(String.Format("{0} investi.\nNombre de diplomates : {1}", amount, TorLithanelBankCampaignBehavior.TorLithanelBank.CalculateResourceInterests()), Color.FromUint(0xFFBBAA00)));
+            InformationManager.DisplayMessage(new InformationMessage(String.Format("{0} investi.\nNombre de diplomates : {1}", amount, TorLithanelBankCampaignBehavior.BankInstance.CalculateResourceInterests()), Color.FromUint(0xFFBBAA00)));
             GameMenu.SwitchToMenu(String.Format("{0}_bank_diplomat_account", _cityID));
             CreateOrUpdateGameMenuDesc(campaignGameStarter);
             SoundEvent.PlaySound2D(SoundEvent.GetEventIdFromString("event:/ui/notification/coins_negative"));

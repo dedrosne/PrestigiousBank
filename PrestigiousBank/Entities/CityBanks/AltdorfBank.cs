@@ -60,7 +60,7 @@ namespace PrestigiousBank
 
             var lores = LoreObject.GetAll();
 
-            lores = lores.WhereQ(X => !Hero.MainHero.HasKnownLore(X.ID) && !X.DisabledForCultures.Contains("empire")).ToList();
+            lores = lores.WhereQ(X => !Hero.MainHero.HasKnownLore(X.ID) && !X.DisabledForCultures.Contains(Hero.MainHero.Culture.StringId)).ToList();
 
             foreach (var lore in lores)
             {
@@ -75,6 +75,7 @@ namespace PrestigiousBank
                 var newlore = (LoreObject)inquiryElements[0].Identifier;
 
                 Hero.MainHero.AddKnownLore(newlore.ID);
+                Hero.MainHero.AddAttribute("SpellCaster");
                 Hero.MainHero.ChangeHeroGold(-PriceNewMagicLore);
                 SoundEvent.PlaySound2D(SoundEvent.GetEventIdFromString("event:/ui/notification/coins_negative"));
 

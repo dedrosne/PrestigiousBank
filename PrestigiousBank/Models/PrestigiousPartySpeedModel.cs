@@ -20,7 +20,7 @@ namespace PrestigiousBank
 
             if (mobileParty.IsMainParty)
             {
-                int pegaseBought = ParravonBankCampaignBehavior.ParravonBank.PegaseBought;
+                int pegaseBought = ParravonBankCampaignBehavior.BankInstance.PegaseBought;
                 if (pegaseBought != 0)
                 {
                     number.Add(0.01f * pegaseBought, new TextObject("Pégases de Parravon"));

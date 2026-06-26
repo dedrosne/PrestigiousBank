@@ -29,7 +29,7 @@ namespace PrestigiousBank
         public static string townID = "town_comp_AL1";
         public static YnEdrylKoiranBank _bank= null;
 
-        public static YnEdrylKoiranBank YnEdrylKoiranBank
+        public static YnEdrylKoiranBank BankInstance
         {
             get
             {
@@ -83,24 +83,24 @@ namespace PrestigiousBank
 
         private void OnSessionLaunched(CampaignGameStarter campaignGameStarter)
         {
-            new YnEdrylKoiranBankMenu().RegisterBankMenu(campaignGameStarter, YnEdrylKoiranBank);
+            new YnEdrylKoiranBankMenu().RegisterBankMenu(campaignGameStarter, BankInstance);
         }
 
         private void DailyTickClan()
         {
             //Ajout de la ressource speciale
             if (Hero.MainHero.GetCultureSpecificCustomResource().StringId == "ForestHarmony")
-                Hero.MainHero.AddCultureSpecificCustomResource(YnEdrylKoiranBank.CalculateForestHarmonyInterests());
+                Hero.MainHero.AddCultureSpecificCustomResource(BankInstance.CalculateForestHarmonyInterests());
             //Ajout de l'XP
-            Hero.MainHero.AddSkillXp(DefaultSkills.Medicine, YnEdrylKoiranBank.GetDailySkillXP());
+            Hero.MainHero.AddSkillXp(DefaultSkills.Medicine, BankInstance.GetDailySkillXP());
 
             //Ajout des Mercenaires
-            if (YnEdrylKoiranBank.CanRecruitMercenariesInThisBank) YnEdrylKoiranBank.ApplyRegenMercenariesPerDay();
+            if (BankInstance.CanRecruitMercenariesInThisBank) BankInstance.ApplyRegenMercenariesPerDay();
         }
 
         private void HourlyTickEvent()
         {
-            YnEdrylKoiranBank.ApplyDiamondLevelGoldTownIncrease();
+            BankInstance.ApplyDiamondLevelGoldTownIncrease();
         }
 
 

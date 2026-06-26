@@ -26,6 +26,11 @@ namespace PrestigiousBank
         [SaveableProperty(1)]
         public int Solde { get; set; }
 
+        [SaveableProperty(20)]
+        public int LoanAmount { get; set; }
+
+        [SaveableProperty(30)]
+        public int LoanRefoundRate { get; set; }
 
         public Settlement _ville;
 
@@ -44,6 +49,7 @@ namespace PrestigiousBank
             ListUniteesRecrutables = null;
             Ville = ville;
             CanRecruitMercenariesInThisBank = false;
+            LoanRefoundRate = 5;
         }
 
         public float CalculateInterestRate()
@@ -106,6 +112,47 @@ namespace PrestigiousBank
                 if (currentgold < newGoldMaximum) Ville.Town.ChangeGold(1000+(newGoldMaximum-currentgold)/20);
             }
         }
+
+        #region loan
+
+        public int CalculateMaxLoanAmount()
+        {
+            //Max loan = 50k+20k*clanTier
+            return 50_000 + (20_000 * Clan.PlayerClan.Tier);
+        }
+
+        // Each day : 2% applied increased of amount, and then remove refound rate. Min 200 refound or total Player gold if not enough
+        public int CalculateLoanRefound(int tmpLoanAmout=-1, bool isEstimation=false)
+        {
+            if (tmpLoanAmout == -1) tmpLoanAmout = LoanAmount;
+            int refounded =Math.Max((int)(LoanRefoundRate*0.01f* tmpLoanAmout), 200);
+            if (!isEstimation) refounded = Math.Min(refounded, Hero.MainHero.Gold);
+            return refounded;
+        }
+
+        public void ApplyLoanRefound()
+        {
+            LoanAmount += (int)(LoanAmount * 0.02f);
+            LoanAmount -= CalculateLoanRefound();
+        }
+
+        public (int, int) EstimateTotalLoanCostAndDays()
+        {
+            float totalCost = 0;
+            int tempLoanAmount = LoanAmount;
+            int days = 0;
+            while (tempLoanAmount > 0 && days < 1000 && tempLoanAmount < 9_999_999)
+            {
+                totalCost += (int)(tempLoanAmount * 0.02f);
+                tempLoanAmount += (int)(tempLoanAmount * 0.02f);
+                int Refoundamount = CalculateLoanRefound(tempLoanAmount);
+                tempLoanAmount -= Refoundamount;
+                days++;
+            }
+            return ((int)totalCost, days);
+        }
+
+        #endregion
 
         #region Mercenaries
 

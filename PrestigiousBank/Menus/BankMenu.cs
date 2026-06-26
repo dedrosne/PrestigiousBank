@@ -1,4 +1,5 @@
 ﻿using Messages.FromClient.ToLobbyServer;
+using PrestigiousBank.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -119,6 +120,19 @@ namespace PrestigiousBank
                 null,
                 GameMenu.MenuOverlayType.SettlementWithCharacters);
 
+            (int totalCost, int nbDays) = _bank.EstimateTotalLoanCostAndDays();
+            //Loan Menu
+            campaignGameStarter.AddGameMenu(String.Format("{0}_bank_loan", _cityID),
+                String.Format("Max empruntable : {4}\nEmprunt actuel : {0}\nTaux de remboursement : {1}%/jour\nCoût total estimé : {2}\nNombre de jours estimé : {3}",
+                _bank.LoanAmount,
+                _bank.LoanRefoundRate,
+                nbDays > 999 || totalCost > 9_999_999 ? "∞" : totalCost.ToString(),
+                nbDays > 999 || totalCost > 9_999_999 ? "∞" : nbDays.ToString(),
+                _bank.CalculateMaxLoanAmount()),
+                null,
+                GameMenu.MenuOverlayType.SettlementWithCharacters);
+
+
             //Mercenary Menu
             GameTexts.SetVariable("MERC_REGEN_PRICE", 50_000 * _bank.RegenPerDayMercenaries);
             GameTexts.SetVariable("MERC_MAX_PRICE", 5000 * _bank.MaxMercenaries);
@@ -146,6 +160,20 @@ namespace PrestigiousBank
                 _ => GameMenu.SwitchToMenu(String.Format("{0}_bank_withdraw", _cityID)),
                 isLeave: false);
             RegisterWithdrawMenuOptions(campaignGameStarter);
+
+            // Empty space
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_account", _cityID), "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
+
+            //Emprunt
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_account", _cityID), String.Format("{0}_bank_loan", _cityID), "Emprunts",
+                a => { a.optionLeaveType = GameMenuOption.LeaveType.Bribe; return true; },
+                _ => GameMenu.SwitchToMenu(String.Format("{0}_bank_loan", _cityID)),
+                isLeave: false);
+            RegisterLoanMenuOptions(campaignGameStarter);
+
+            // Empty space
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_account", _cityID), "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
+
             // Compte -> BankMenu
             campaignGameStarter.AddGameMenuOption(String.Format("{0}_account", _cityID), String.Format("{0}_account_back", _cityID), "Retour",
                 a => { a.optionLeaveType = GameMenuOption.LeaveType.Leave; return true; },
@@ -278,6 +306,149 @@ namespace PrestigiousBank
             GameMenu.SwitchToMenu(String.Format("{0}_bank_withdraw", _cityID));
             CreateOrUpdateGameMenuDesc(campaignGameStarter);
             //Campaign.Current.CurrentMenuContext.Refresh();//Don't work to refresh
+            SoundEvent.PlaySound2D(SoundEvent.GetEventIdFromString("event:/ui/notification/coins_positive"));
+        }
+
+        #endregion
+
+        #region Loan
+        private void RegisterLoanMenuOptions(CampaignGameStarter campaignGameStarter)
+        {
+            int[] qties = { 1000, 10000, 100000 };
+            int i = 0;
+            foreach (int qty in qties)
+            {
+                MBTextManager.SetTextVariable("AMOUNT", qty);
+                campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_loan", _cityID),
+                    String.Format("{0}_bank_loan_{1}", _cityID, qty),
+                    "Emprunter " + qty + " {GOLD_ICON}",
+                    a =>
+                    {
+                        a.optionLeaveType = GameMenuOption.LeaveType.Trade;
+                        a.IsEnabled = qty + _bank.LoanAmount < _bank.CalculateMaxLoanAmount();
+                        a.Tooltip = a.IsEnabled ? null : new TextObject("Max Atteint", null);
+                        return true;
+                    },
+                    _ => Loan(qty, campaignGameStarter),
+                    isLeave: false);
+                i++;
+            }
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_loan", _cityID),
+                String.Format("{0}_bank_loan_max", _cityID),
+                "Emprunter le maximum",
+                a =>
+                {
+                    a.optionLeaveType = GameMenuOption.LeaveType.Trade;
+                    a.IsEnabled = _bank.LoanAmount < _bank.CalculateMaxLoanAmount();
+                    a.Tooltip = a.IsEnabled ? null : new TextObject("Max Atteint", null);
+                    return true;
+                },
+                _ => Loan(_bank.CalculateMaxLoanAmount() - _bank.LoanAmount, campaignGameStarter),
+                isLeave: false);
+
+            //EmptySpace
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_loan", _cityID), "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
+
+            //Refound rate options
+            var refoundRateText1 = new TextObject("{REFOUNDRATES1}");
+            var refoundRateText2 = new TextObject("{REFOUNDRATES2}");
+            var refoundRateText3 = new TextObject("{REFOUNDRATES3}");
+            var refoundRateText4 = new TextObject("{REFOUNDRATES4}");
+            var refoundRateText5 = new TextObject("{REFOUNDRATES5}");
+            SetLoanRefoundText();
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_loan", _cityID),
+                String.Format("{0}_bank_loan_refoundRate_{1}", _cityID, 1),
+                refoundRateText1.Value,
+                a => { a.IsEnabled = true; return true; },
+                _ => {
+                    _bank.LoanRefoundRate = 1;
+                    SetLoanRefoundText();
+                    GameMenu.SwitchToMenu(String.Format("{0}_bank_loan", _cityID));
+                    CreateOrUpdateGameMenuDesc(campaignGameStarter);
+                },
+                isLeave: false);
+
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_loan", _cityID),
+                String.Format("{0}_bank_loan_refoundRate_{1}", _cityID, 2),
+                refoundRateText2.Value,
+                a => { a.IsEnabled = true; return true; },
+                _ => {
+                    _bank.LoanRefoundRate = 2;
+                    SetLoanRefoundText();
+                    GameMenu.SwitchToMenu(String.Format("{0}_bank_loan", _cityID));
+                    CreateOrUpdateGameMenuDesc(campaignGameStarter);
+                },
+                isLeave: false);
+
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_loan", _cityID),
+                String.Format("{0}_bank_loan_refoundRate_{1}", _cityID, 3),
+                refoundRateText3.Value,
+                a => { a.IsEnabled = true; return true; }, 
+                _ => {
+                    _bank.LoanRefoundRate = 3;
+                    SetLoanRefoundText();
+                    GameMenu.SwitchToMenu(String.Format("{0}_bank_loan", _cityID));
+                    CreateOrUpdateGameMenuDesc(campaignGameStarter);
+                },
+                isLeave: false);
+
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_loan", _cityID),
+                String.Format("{0}_bank_loan_refoundRate_{1}", _cityID, 4),
+                refoundRateText4.Value,
+                a => { a.IsEnabled = true; return true; },
+                _ => {
+                    _bank.LoanRefoundRate = 4;
+                    SetLoanRefoundText();
+                    GameMenu.SwitchToMenu(String.Format("{0}_bank_loan", _cityID));
+                    CreateOrUpdateGameMenuDesc(campaignGameStarter);
+                },
+                isLeave: false);
+
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_loan", _cityID),
+                String.Format("{0}_bank_loan_refoundRate_{1}", _cityID, 5),
+                refoundRateText5.Value,
+                a => { a.IsEnabled = true; return true; },
+                _ => {
+                    _bank.LoanRefoundRate = 5;
+                    SetLoanRefoundText();
+                    GameMenu.SwitchToMenu(String.Format("{0}_bank_loan", _cityID));
+                    CreateOrUpdateGameMenuDesc(campaignGameStarter);
+                },
+                isLeave: false);
+
+            //EmptySpace
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_loan", _cityID), "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false, index: 998);
+
+            //Leave
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_loan", _cityID), String.Format("{0}_bank_loan_back", _cityID), "Retour",
+                a => { a.optionLeaveType = GameMenuOption.LeaveType.Leave; return true; },
+                _ => GameMenu.SwitchToMenu(String.Format("{0}_account", _cityID)),
+                isLeave: true, index: 999);
+
+        }
+
+        public void SetLoanRefoundText()
+        {
+            TextObject textObject;
+            for (var i = 1; i < 6; i++)
+            {
+                textObject = new TextObject("Rembourser " + i + "%/jour");
+
+                if (_bank.LoanRefoundRate == i)
+                {
+                    textObject = new TextObject($"[{textObject.Value}]");
+                }
+                GameTexts.SetVariable("REFOUNDRATES" + i, textObject);
+            }
+        }
+
+        private void Loan(int amount, CampaignGameStarter campaignGameStarter)
+        {
+            _bank.LoanAmount += amount;
+            Hero.MainHero.ChangeHeroGold(amount);
+            InformationManager.DisplayMessage(new InformationMessage(String.Format("Emprunt de {0} validé. Montant total de l'emprunt : {1}", amount, _bank.LoanAmount), Color.FromUint(0xFFBBAA00)));
+            GameMenu.SwitchToMenu(String.Format("{0}_bank_loan", _cityID));
+            CreateOrUpdateGameMenuDesc(campaignGameStarter);
             SoundEvent.PlaySound2D(SoundEvent.GetEventIdFromString("event:/ui/notification/coins_positive"));
         }
 

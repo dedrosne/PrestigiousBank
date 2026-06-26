@@ -6,6 +6,9 @@ Banque :
     - Calcul du taux (pourcentage/jour) = Prosperity(compris entre 0 et 10_000) / 50_000
         Exemple : Prosperité à 10_000 = 0.2%/jour
 
+- Loan : Max loan = 50k+20k*clanTier
+    Each day, 2% increased LoadAmount. Then Take amount set to refound
+
 - Niveau :
     - Bronze : argent déposé entre 0 et 49_999
     - Argent : argent déposé entre 50k et 149_999
@@ -40,7 +43,7 @@ Drakenhof :
 Couronne : 
     - Argent : Chevalerie : 10000=>1 Chevalerie/jour
     - Or : XP dans le skill Riding
-    - Mythril : 
+    - Mythril : 50_000 for +1 companion limit. Price increase +5000 each time
 
 
 Yn Edryl Koiran : 
@@ -51,7 +54,7 @@ Yn Edryl Koiran :
 
 
 Averheim :
-    - Argent : Augmenter HP de 1. prix : 2000 + 500*déjà acheté
+    - Argent : Augmenter HP de 1. prix : 2000 + 100*déjà acheté
     - Or : XP dans le skill athetics
     - 
 
@@ -65,6 +68,7 @@ Parravon :
 
 Tor Litharel :
     - Or : XP dans le skill Bow
+    - Silver : Council Favor : 10_000 pour 1
 
 /////////////////////////////Usine de Nuln
 
@@ -278,6 +282,7 @@ Temple de son Dieu/religion
     Pouvoir prier dans la ville
 
 Régénération (vampire ? 
+=> Get effects of the different PowerStones
 	(comme les trolls de TOR)
 
 Waldenhof : Acheter des collecteurs d'âmes
@@ -295,14 +300,11 @@ Or
 Effets Secondaires
 Hergig : Augmenter la fenêtre horaire d'attaque de Hideout
 
-
-Couronne : Augmenter le nombre de compagnions
 Averheim : HP des compagnions ?
 Eonir : Imposer guerre/Paix
 
-Diamant Middenheim : + de Party
+Diamant/Malepierre ? Middenheim : + de Party
 
-Emprunts
 
 PV du cheval
 Envoyer Or à un clan de son royaume=>Niveau Or ?
@@ -318,7 +320,7 @@ Bretonie : Villages/Agriculture => Une foi le village détenu, déposer des pris
 
 
 
-Tor Litharel : Council Favor : 10_000 pour 1
+
 
 
 
@@ -348,39 +350,6 @@ Comment faire techniquement ?  Campaign.Current.Models.MapVisibilityModel.GetPar
             }
         }
 
-///////CompanionLimit :--Impossible sans update du mod
-namespace TOR_Core.Models
-{
-    class TORClanTierModel : DefaultClanTierModel
-    {
-        public override int GetPartyLimitForTier(Clan clan, int clanTierToCheck)
-        {
-            // Patch AI clans to have unlimited parties so that new lords aren't
-            // spawned without a party.
-            return Clan.PlayerClan.Equals(clan)
-                ? base.GetPartyLimitForTier(clan, clanTierToCheck)
-                : 9999;
-        }
-
-
-        public override int GetCompanionLimit(Clan clan)
-        {
-            int companionLimit = base.GetCompanionLimit(clan);
-
-            if (clan != Clan.PlayerClan) return companionLimit;
-
-            if (Hero.MainHero.HasAnyCareer())
-            {
-                var explainedNumber = new ExplainedNumber();
-                CareerHelper.ApplyBasicCareerPassives(Hero.MainHero, ref explainedNumber, PassiveEffectType.CompanionLimit, false);
-                companionLimit += (int)explainedNumber.ResultNumber;
-            }
-
-            return companionLimit;
-
-        }
-    }
-}
 
 
 
@@ -427,3 +396,52 @@ using TaleWorlds.CampaignSystem.Actions;
  MobileParty leftParty = new MobileParty();
 leftParty.IgnoreByOtherPartiesTill(CampaignTime time)
 
+/////////////////////////////////////////////////////////////////
+
+Troll regen :
+            // Race-based innate abilities (apply to all agents of that race)
+            if ((agent.HasAttribute("TrollRegeneration")))
+            {
+                CareerHelper.AddDefaultPermanentMissionEffect(agent, "troll_regeneration");
+            }
+
+    <StatusEffectTemplate
+		id="troll_regeneration"
+		particle_id="none"
+		base_effect_value="1"
+		type="HealthOverTime">
+	</StatusEffectTemplate>
+
+StatusEffectMissionLogic : MissionLogic
+
+OnMissionTick(float dt)
+
+
+rivate static void AddMissionPermanentEffect(Agent agent, string effectID)
+        {
+            var template = TriggeredEffectManager.GetTemplateWithId(effectID);
+
+            if (template == null) return;
+
+            foreach (var effect in template.ImbuedStatusEffects)
+            {
+                agent.ApplyStatusEffect(effect, Agent.Main, 99999); //null protection is present deeper down the method chain
+            }
+
+            if (template != null && template.ScriptNameToTrigger != "none")
+            {
+                try
+                {
+                    var obj = Activator.CreateInstance(Type.GetType(template.ScriptNameToTrigger));
+                    if (obj is ITriggeredScript)
+                    {
+                        var script = obj as ITriggeredScript;
+                        script.OnTrigger(agent.Position, Agent.Main, [agent], 9999); //each script has a null protection in its OnTrigger to cover this case as well as others
+                    }
+                }
+                catch (Exception)
+                {
+                    TORCommon.Log("Tried to spawn TriggeredScript: " + template.ScriptNameToTrigger + ", but failed.", NLog.LogLevel.Error);
+                }
+            }
+        }

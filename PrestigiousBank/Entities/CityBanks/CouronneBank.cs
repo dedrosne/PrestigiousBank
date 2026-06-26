@@ -10,6 +10,9 @@ namespace PrestigiousBank
 {
     public class CouronneBank : Bank
     {
+        public static int FriendshipCost=50_000;
+        public static int FriendshipCostIncrease=5_000;
+
         [SaveableProperty(12)]
         public int ChivalryAccountSolde { get; set; }
 

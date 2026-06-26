@@ -60,8 +60,17 @@ namespace PrestigiousBank
                     return true;
                 },
                 _ => GameMenu.SwitchToMenu(String.Format("{0}_bank_chivalry_account", _cityID)),
-                isLeave: false, index: 2);
+                isLeave: false);
+
+            //Empty space
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_menu", _cityID), "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
+
             RegisterChivalryAccountMenuOptions(campaignGameStarter);
+            
+            //Empty space
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_menu", _cityID), "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
+
+            RegisterFriendshipMenuOptions(campaignGameStarter);
 
         }
 
@@ -115,9 +124,9 @@ namespace PrestigiousBank
         {
             if (Hero.MainHero.Gold < amount) { return; }
 
-            CouronneBankCampaignBehavior.BankCouronne.ChivalryAccountSolde += amount;
+            CouronneBankCampaignBehavior.BankInstance.ChivalryAccountSolde += amount;
             Hero.MainHero.ChangeHeroGold(-amount);
-            int chivalryInterests = CouronneBankCampaignBehavior.BankCouronne.CalculateChivalryInterests();
+            int chivalryInterests = CouronneBankCampaignBehavior.BankInstance.CalculateChivalryInterests();
             PrestigiousBank.LogMessage("Oeuvre de charité de "+amount+"{GOLD_ICON} .\nQuantité totale offerte : "+ chivalryInterests, 0xFFBBAA00);
             GameMenu.SwitchToMenu(String.Format("{0}_bank_chivalry_account", _cityID));
             CreateOrUpdateGameMenuDesc(campaignGameStarter);
@@ -126,9 +135,47 @@ namespace PrestigiousBank
 
         #endregion
 
+        #region Friendship
+
+        public void RegisterFriendshipMenuOptions(CampaignGameStarter campaignGameStarter)
+        {
+            // Bank Menu : Friendship
+            GameTexts.SetVariable("FRIENDSHIPCURRENTCOST", CouronneBank.FriendshipCost + ((CouronneBank)_bank).FriendshipQty * CouronneBank.FriendshipCostIncrease);
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_menu", _cityID), String.Format("{0}_bank_friendship", _cityID),
+                "[{FRIENDSHIPCURRENTCOST}{GOLD_ICON}] Acheter des amis",
+                a => {
+                    a.optionLeaveType = GameMenuOption.LeaveType.OrderTroopsToAttack;
+                    if (((CouronneBank)_bank).GetCustomerLevel() <= 3)
+                    {
+                        a.Tooltip = new TextObject("Niveau de client Mythril requis", null);
+                        a.IsEnabled = false;
+                    }
+                    else if (Hero.MainHero.Gold < CouronneBank.FriendshipCost + ((CouronneBank)_bank).FriendshipQty * CouronneBank.FriendshipCostIncrease)
+                    {
+                        a.Tooltip = new TextObject("Pas assez d'argent", null);
+                        a.IsEnabled = false;
+                    }
+                    else
+                    {
+                        a.Tooltip = new TextObject("+1 companion limit");
+                        a.IsEnabled = true;
+                    }
+                    return true;
+                },
+                _ =>
+                {
+                    Hero.MainHero.ChangeHeroGold(-CouronneBank.FriendshipCost + ((CouronneBank)_bank).FriendshipQty*CouronneBank.FriendshipCostIncrease);
+                    ((CouronneBank)_bank).FriendshipQty++;
+                    SoundEvent.PlaySound2D(SoundEvent.GetEventIdFromString("event:/ui/notification/coins_negative"));
+                    GameTexts.SetVariable("FRIENDSHIPCURRENTCOST", CouronneBank.FriendshipCost + ((CouronneBank)_bank).FriendshipQty * CouronneBank.FriendshipCostIncrease);
+                    GameMenu.SwitchToMenu(String.Format("{0}_bank_menu", _cityID));
+                },
+                isLeave: false);
+        }
+
+        #endregion
 
 
-        
 
     }
 }

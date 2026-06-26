@@ -27,7 +27,7 @@ namespace PrestigiousBank
                 Result = 1;
             else if (ynEdrylKoiranBankCampaignBehavior != null && party != null && party.LeaderHero != null && party.LeaderHero == Hero.MainHero && !character.IsUndead())
             {
-                Result = 1 - ((1 - Result) * (1 - (YnEdrylKoiranBankCampaignBehavior.YnEdrylKoiranBank.BlessingAmount / 100f)));
+                Result = 1 - ((1 - Result) * (1 - (YnEdrylKoiranBankCampaignBehavior.BankInstance.BlessingAmount / 100f)));
             }
 
             return Result;

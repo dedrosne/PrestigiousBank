@@ -24,10 +24,10 @@ namespace PrestigiousBank
                 //Middenheim
                 MiddenheimBankCampaignBehavior MiddenheimBankCampaignBehavior = Campaign.Current?.GetCampaignBehavior<MiddenheimBankCampaignBehavior>();
 
-                if (MiddenheimBankCampaignBehavior == null || MiddenheimBankCampaignBehavior.MiddenheimBank is null) return number;
+                if (MiddenheimBankCampaignBehavior == null || MiddenheimBankCampaignBehavior.BankInstance is null) return number;
 
 
-                number.Add(MiddenheimBankCampaignBehavior.MiddenheimBank.PartyHelperCount, new TextObject("Aides de camp de Middenheim"));
+                number.Add(MiddenheimBankCampaignBehavior.BankInstance.PartyHelperCount, new TextObject("Aides de camp de Middenheim"));
                 
             }
 

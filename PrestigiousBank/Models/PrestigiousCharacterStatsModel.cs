@@ -23,10 +23,10 @@ namespace PrestigiousBank
             {
                 //Middenheim
                 AverheimBankCampaignBehavior AverheimBankCampaignBehavior = Campaign.Current?.GetCampaignBehavior<AverheimBankCampaignBehavior>();
-                if (AverheimBankCampaignBehavior == null || AverheimBankCampaignBehavior.AverheimBank == null) return number;
+                if (AverheimBankCampaignBehavior == null || AverheimBankCampaignBehavior.BankInstance == null) return number;
 
 
-                number.Add(AverheimBankCampaignBehavior.AverheimBank.BlessingAmount, new TextObject("Bénédiction de Sigmar"));
+                number.Add(AverheimBankCampaignBehavior.BankInstance.BlessingAmount, new TextObject("Bénédiction de Sigmar"));
             }
             return number;
         }

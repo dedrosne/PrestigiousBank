@@ -29,7 +29,7 @@ namespace PrestigiousBank
         public static string townID = "town_comp_ML1";
         public static MiddenheimBank _bank= null;
 
-        public static MiddenheimBank MiddenheimBank
+        public static MiddenheimBank BankInstance
         {
             get
             {
@@ -83,21 +83,21 @@ namespace PrestigiousBank
 
         private void OnSessionLaunched(CampaignGameStarter campaignGameStarter)
         {
-            new MiddenheimBankMenu().RegisterBankMenu(campaignGameStarter, MiddenheimBank);
+            new MiddenheimBankMenu().RegisterBankMenu(campaignGameStarter, BankInstance);
         }
 
         private void DailyTickClan()
         {
             //Ajout de l'XP
-            Hero.MainHero.AddSkillXp(DefaultSkills.Tactics, MiddenheimBank.GetDailySkillXP());
+            Hero.MainHero.AddSkillXp(DefaultSkills.Tactics, BankInstance.GetDailySkillXP());
 
             //Ajout des Mercenaires
-            if (MiddenheimBank.CanRecruitMercenariesInThisBank) MiddenheimBank.ApplyRegenMercenariesPerDay();
+            if (BankInstance.CanRecruitMercenariesInThisBank) BankInstance.ApplyRegenMercenariesPerDay();
         }
 
         private void HourlyTickEvent()
         {
-            MiddenheimBank.ApplyDiamondLevelGoldTownIncrease();
+            BankInstance.ApplyDiamondLevelGoldTownIncrease();
         }
 
 

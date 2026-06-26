@@ -102,7 +102,9 @@ namespace PrestigiousBank
                     if (((AltdorfBank)_bank).GetCustomerLevel() <= 5) a.Tooltip = new TextObject("Niveau de client Malepierre requis", null);
                     else if (Hero.MainHero.Gold < AltdorfBank.PriceNewMagicLore) a.Tooltip = new TextObject("Pas assez d'or", null);
                     a.IsEnabled = ((AltdorfBank)_bank).GetCustomerLevel() > 5 && Hero.MainHero.Gold >= AltdorfBank.PriceNewMagicLore;
-                    return !LoreObject.GetAll().WhereQ(X => !Hero.MainHero.HasKnownLore(X.ID)).ToList().IsEmpty();
+                    
+                    //Return : Does hero has at least 1 lore unkown
+                    return !LoreObject.GetAll().WhereQ(X => !Hero.MainHero.HasKnownLore(X.ID) && !X.DisabledForCultures.Contains(Hero.MainHero.Culture.StringId)).ToList().IsEmpty();
                 },
                 _ =>
                 {
@@ -160,9 +162,9 @@ namespace PrestigiousBank
         {
             if (Hero.MainHero.Gold < amount) { return; }
 
-            AltdorfBankCampaignBehavior.BankAltdorf.PrestigiousAccountSolde += amount;
+            AltdorfBankCampaignBehavior.BankInstance.PrestigiousAccountSolde += amount;
             Hero.MainHero.ChangeHeroGold(-amount);
-            InformationManager.DisplayMessage(new InformationMessage(String.Format("Cadeau de {0} accepté.\nNombre de corrompus : {1}", amount, AltdorfBankCampaignBehavior.BankAltdorf.CalculatePrestigiousInterests()), Color.FromUint(0xFFBBAA00)));
+            InformationManager.DisplayMessage(new InformationMessage(String.Format("Cadeau de {0} accepté.\nNombre de corrompus : {1}", amount, AltdorfBankCampaignBehavior.BankInstance.CalculatePrestigiousInterests()), Color.FromUint(0xFFBBAA00)));
             GameMenu.SwitchToMenu(String.Format("{0}_bank_prestigious_account", _cityID));
             CreateOrUpdateGameMenuDesc(campaignGameStarter);
             SoundEvent.PlaySound2D(SoundEvent.GetEventIdFromString("event:/ui/notification/coins_negative"));

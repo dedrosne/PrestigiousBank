@@ -273,6 +273,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Behaviours\CityBankBehaviours\TestBankBehaviour.cs" />
+    <Compile Include="Behaviours\CityBankBehaviours\BankBehaviour.cs" />
     <Compile Include="Behaviours\LastStandBehaviour.cs" />
     <Compile Include="Behaviours\CityBankBehaviours\KarakIzorBankBehaviour.cs" />
     <Compile Include="Behaviours\CityBankBehaviours\AverheimBankBehaviour.cs" />
@@ -306,6 +308,7 @@
     <Compile Include="Entities\LastStands.cs" />
     <Compile Include="Entities\NulnFactory.cs" />
     <Compile Include="Entities\Saveable\BankSaveableTypeDefiner.cs" />
+    <Compile Include="Harmony\CouronneBankMaxCompanionPatch.cs" />
     <Compile Include="Harmony\MaxStaminaPatch.cs" />
     <Compile Include="Harmony\AltdorfBankMaxWindsPatch.cs" />
     <Compile Include="Menus\CityBankMenus\KarakIzorBankMenu.cs" />
