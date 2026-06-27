@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.CharacterDevelopment;
 using TaleWorlds.CampaignSystem.Encounters;
 using TaleWorlds.CampaignSystem.GameMenus;
 using TaleWorlds.CampaignSystem.Settlements;
@@ -39,19 +40,19 @@ namespace PrestigiousBank
             CreateOrUpdateGameMenuDesc(campaignGameStarter);
             //Town -> BankMenu
             campaignGameStarter.AddGameMenuOption("town",
-                                                  String.Format("{0}_bank_menu", _cityID),
-                                                  String.Format("Banque de {0}", _cityName),
-                                                  args =>
-                                                  {
-                                                      args.optionLeaveType = GameMenuOption.LeaveType.OpenStash;
-                                                      if (Settlement.CurrentSettlement.Town.StringId == _cityID) return true;
-                                                      else return false;
-                                                  },
-                                                  _ => { GameMenu.SwitchToMenu(String.Format("{0}_bank_menu", _cityID));
-                                                      CreateOrUpdateGameMenuDesc(campaignGameStarter);
-                                                  },
-                                                  isLeave: false,
-                                                  _optionBankIndex);
+                String.Format("{0}_bank_menu", _cityID),
+                String.Format("Banque de {0}", _cityName),
+                args =>
+                {
+                    args.optionLeaveType = GameMenuOption.LeaveType.OpenStash;
+                    if (Settlement.CurrentSettlement.Town.StringId == _cityID) return true;
+                    else return false;
+                },
+                _ => { GameMenu.SwitchToMenu(String.Format("{0}_bank_menu", _cityID));
+                    CreateOrUpdateGameMenuDesc(campaignGameStarter);
+                },
+                isLeave: false,
+                _optionBankIndex);
 
 
 
@@ -123,15 +124,18 @@ namespace PrestigiousBank
             (int totalCost, int nbDays) = _bank.EstimateTotalLoanCostAndDays();
             //Loan Menu
             campaignGameStarter.AddGameMenu(String.Format("{0}_bank_loan", _cityID),
-                String.Format("Max empruntable : {4}\nEmprunt actuel : {0}\nTaux de remboursement : {1}%/jour\nCoût total estimé : {2}\nNombre de jours estimé : {3}",
+                String.Format("Max empruntable : {4}\nEmprunt actuel : {0}\nTaux de remboursement : {1}%/jour\nCoût total estimé : {2}\nNombre de jours estimé : {3}\nLoad Rate : {5}%",
                 _bank.LoanAmount,
                 _bank.LoanRefoundRate,
                 nbDays > 999 || totalCost > 9_999_999 ? "∞" : totalCost.ToString(),
                 nbDays > 999 || totalCost > 9_999_999 ? "∞" : nbDays.ToString(),
-                _bank.CalculateMaxLoanAmount()),
+                _bank.CalculateMaxLoanAmount(),
+                (_bank.LoanRentRate * 100f).ToString("G3")),
                 null,
                 GameMenu.MenuOverlayType.SettlementWithCharacters);
 
+            TextObject textObject = new TextObject((int)(_bank.LoanAmount * 1.05));
+            GameTexts.SetVariable("REFOUNDALLVALUE", textObject);
 
             //Mercenary Menu
             GameTexts.SetVariable("MERC_REGEN_PRICE", 50_000 * _bank.RegenPerDayMercenaries);
@@ -417,6 +421,56 @@ namespace PrestigiousBank
                 isLeave: false);
 
             //EmptySpace
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_loan", _cityID), "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
+
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_loan", _cityID),
+                String.Format("{0}_bank_loan_refound1000", _cityID),
+                "[" + 1050 + "{GOLD_ICON}]Refound immediatly 1000{GOLD_ICON}",
+                a => {
+                    a.IsEnabled = Hero.MainHero.Gold >= 1000 * 1.05;
+                    a.Tooltip = Hero.MainHero.Gold >= 1000 * 1.05 ? new TextObject("fee: 5%") : new TextObject("Pas assez d'or", null);
+                    return true;
+                },
+                _ => {
+                    Hero.MainHero.ChangeHeroGold(-(int)(1000 * 1.05));
+                    _bank.LoanAmount -= (int)(1000);
+                    GameMenu.SwitchToMenu(String.Format("{0}_bank_loan", _cityID));
+                    CreateOrUpdateGameMenuDesc(campaignGameStarter);
+                },
+                isLeave: false);
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_loan", _cityID),
+                String.Format("{0}_bank_loan_refound10000", _cityID),
+                "[" + 10500 + "{GOLD_ICON}]Refound immediatly 10000{GOLD_ICON}",
+                a => {
+                    a.IsEnabled = Hero.MainHero.Gold >= 10000*1.05;
+                    a.Tooltip = Hero.MainHero.Gold >= 10000*1.05 ? new TextObject("fee: 5%") : new TextObject("Pas assez d'or", null);
+                    return true;
+                },
+                _ => {
+                    Hero.MainHero.ChangeHeroGold(-(int)(10000*1.05));
+                    _bank.LoanAmount -= (int)(10000);
+                    GameMenu.SwitchToMenu(String.Format("{0}_bank_loan", _cityID));
+                    CreateOrUpdateGameMenuDesc(campaignGameStarter);
+                },
+                isLeave: false);
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_loan", _cityID),
+                String.Format("{0}_bank_loan_refoundALL", _cityID),
+                "[{REFOUNDALLVALUE}{GOLD_ICON}]Refound all",
+                a => {
+                    a.IsEnabled = Hero.MainHero.Gold >= (int)(_bank.LoanAmount * 1.05);
+                    a.Tooltip = Hero.MainHero.Gold >= (int)(_bank.LoanAmount * 1.05) ? new TextObject("fee: 5%") : new TextObject("Pas assez d'or", null);
+                    return true;
+                },
+                _ => {
+                    Hero.MainHero.ChangeHeroGold(-(int)(_bank.LoanAmount * 1.05));
+                    _bank.LoanAmount -= (int)(_bank.LoanAmount);
+                    GameMenu.SwitchToMenu(String.Format("{0}_bank_loan", _cityID));
+                    CreateOrUpdateGameMenuDesc(campaignGameStarter);
+                },
+                isLeave: false);
+
+
+            //EmptySpace
             campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_loan", _cityID), "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false, index: 998);
 
             //Leave
@@ -441,6 +495,7 @@ namespace PrestigiousBank
                 GameTexts.SetVariable("REFOUNDRATES" + i, textObject);
             }
         }
+
 
         private void Loan(int amount, CampaignGameStarter campaignGameStarter)
         {

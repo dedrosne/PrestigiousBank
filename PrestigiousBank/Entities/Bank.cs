@@ -34,6 +34,14 @@ namespace PrestigiousBank
 
         public Settlement _ville;
 
+        public float LoanRentRate
+        {
+            get
+            {
+                return _ville != null ? (0.015f - _ville.Town.Prosperity * 0.000001f) : 0.01f;
+            }
+        }
+
         public Settlement Ville
         {
             get { return _ville; }
@@ -126,13 +134,13 @@ namespace PrestigiousBank
         {
             if (tmpLoanAmout == -1) tmpLoanAmout = LoanAmount;
             int refounded =Math.Max((int)(LoanRefoundRate*0.01f* tmpLoanAmout), 200);
-            if (!isEstimation) refounded = Math.Min(refounded, Hero.MainHero.Gold);
+            if (!isEstimation) refounded = Math.Min(Math.Min(refounded, Hero.MainHero.Gold), LoanAmount);
             return refounded;
         }
 
         public void ApplyLoanRefound()
         {
-            LoanAmount += (int)(LoanAmount * 0.02f);
+            LoanAmount += (int)(LoanAmount * LoanRentRate);
             LoanAmount -= CalculateLoanRefound();
         }
 
@@ -143,9 +151,9 @@ namespace PrestigiousBank
             int days = 0;
             while (tempLoanAmount > 0 && days < 1000 && tempLoanAmount < 9_999_999)
             {
-                totalCost += (int)(tempLoanAmount * 0.02f);
-                tempLoanAmount += (int)(tempLoanAmount * 0.02f);
-                int Refoundamount = CalculateLoanRefound(tempLoanAmount);
+                totalCost += (int)(tempLoanAmount * LoanRentRate);
+                tempLoanAmount += (int)(tempLoanAmount * LoanRentRate);
+                int Refoundamount = CalculateLoanRefound(tempLoanAmount, true);
                 tempLoanAmount -= Refoundamount;
                 days++;
             }

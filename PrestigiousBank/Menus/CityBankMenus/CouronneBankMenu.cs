@@ -42,7 +42,7 @@ namespace PrestigiousBank
                 "Financer des ONG de charité",
                 a => {
                     a.optionLeaveType = GameMenuOption.LeaveType.Escape;
-                    if (Hero.MainHero.GetCultureSpecificCustomResource().Name.Value != "Chivalry")
+                    if (Hero.MainHero.GetCultureSpecificCustomResource().StringId != "Chivalry")
                     {
                         a.Tooltip = new TextObject("Culture Bretonienne requise", null);
                         a.IsEnabled = false;

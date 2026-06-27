@@ -84,7 +84,7 @@ namespace PrestigiousBank
             {
                 int InterestsAltdorfBank = AltdorfBankCampaignBehavior.BankInstance.CalculateInterests();
                 
-                if (AltdorfBankCampaignBehavior.BankInstance.LoanAmount != 0) 
+                if (AltdorfBankCampaignBehavior.BankInstance.LoanAmount > 0) 
                     result.Add(-AltdorfBankCampaignBehavior.BankInstance.CalculateLoanRefound(), new TextObject("Remboursement de prêt d'Altdorf"));
 
                 if (InterestsAltdorfBank != 0)
@@ -106,7 +106,7 @@ namespace PrestigiousBank
                 if (InterestsDrakenhoffBank != 0)
                     result.Add(InterestsDrakenhoffBank, new TextObject("Banque de Drakenhof"));
 
-                if (DrakenhofBankCampaignBehavior.BankInstance.LoanAmount != 0)
+                if (DrakenhofBankCampaignBehavior.BankInstance.LoanAmount > 0)
                     result.Add(-DrakenhofBankCampaignBehavior.BankInstance.CalculateLoanRefound(), new TextObject("Remboursement de prêt de Drakenhof"));
             }
 
@@ -122,7 +122,7 @@ namespace PrestigiousBank
                 int IshaBlessingUpkeep = YnEdrylKoiranBankCampaignBehavior.BankInstance.CalculateBlessingUpkeep();
                 if (IshaBlessingUpkeep != 0) result.Add(-IshaBlessingUpkeep, new TextObject("Bénédiction d'Isha"));
 
-                if (YnEdrylKoiranBankCampaignBehavior.BankInstance.LoanAmount != 0)
+                if (YnEdrylKoiranBankCampaignBehavior.BankInstance.LoanAmount > 0)
                     result.Add(-YnEdrylKoiranBankCampaignBehavior.BankInstance.CalculateLoanRefound(), new TextObject("Remboursement de prêt d'Yn Edryl Koiran"));
             }
 
@@ -136,7 +136,7 @@ namespace PrestigiousBank
                 if (InterestsCouronne != 0)
                     result.Add(InterestsCouronne, new TextObject("Banque de Couronne"));
 
-                if (CouronneBankCampaignBehavior.BankInstance.LoanAmount != 0)
+                if (CouronneBankCampaignBehavior.BankInstance.LoanAmount > 0)
                     result.Add(-CouronneBankCampaignBehavior.BankInstance.CalculateLoanRefound(), new TextObject("Remboursement de prêt de Couronne"));
             }
 
@@ -149,7 +149,7 @@ namespace PrestigiousBank
                 if (InterestsAverheim != 0)
                     result.Add(InterestsAverheim, new TextObject("Banque d'Averheim"));
 
-                if (AverheimBankCampaignBehavior.BankInstance.LoanAmount != 0)
+                if (AverheimBankCampaignBehavior.BankInstance.LoanAmount > 0)
                     result.Add(-AverheimBankCampaignBehavior.BankInstance.CalculateLoanRefound(), new TextObject("Remboursement de prêt d'Averheim"));
             }
 
@@ -164,7 +164,7 @@ namespace PrestigiousBank
                 int PartyHelperUpkeep = MiddenheimBankCampaignBehavior.BankInstance.CalculatePartyHelperUpkeep();
                 if (PartyHelperUpkeep != 0) result.Add(-PartyHelperUpkeep, new TextObject("Aides de camp de Middenheim"));
 
-                if (MiddenheimBankCampaignBehavior.BankInstance.LoanAmount != 0)
+                if (MiddenheimBankCampaignBehavior.BankInstance.LoanAmount > 0)
                     result.Add(-MiddenheimBankCampaignBehavior.BankInstance.CalculateLoanRefound(), new TextObject("Remboursement de prêt de Middenheim"));
             }
 
@@ -177,7 +177,7 @@ namespace PrestigiousBank
                 if (InterestsParravon != 0)
                     result.Add(InterestsParravon, new TextObject("Banque de Parravon"));
 
-                if (ParravonBankCampaignBehavior.BankInstance.LoanAmount != 0)
+                if (ParravonBankCampaignBehavior.BankInstance.LoanAmount > 0)
                     result.Add(-ParravonBankCampaignBehavior.BankInstance.CalculateLoanRefound(), new TextObject("Remboursement de prêt de Parravon"));
             }
 
@@ -191,7 +191,7 @@ namespace PrestigiousBank
                 if (InterestsTorLithanel != 0)
                     result.Add(InterestsTorLithanel, new TextObject("Banque de Tor Lithanel"));
 
-                if (TorLithanelBankCampaignBehavior.BankInstance.LoanAmount != 0)
+                if (TorLithanelBankCampaignBehavior.BankInstance.LoanAmount > 0)
                     result.Add(-TorLithanelBankCampaignBehavior.BankInstance.CalculateLoanRefound(), new TextObject("Remboursement de prêt de Tor Lithanel"));
             }
 
@@ -204,7 +204,7 @@ namespace PrestigiousBank
                 if (InterestsKarakIzor != 0)
                     result.Add(InterestsKarakIzor, new TextObject("Banque de Karak Izor"));
 
-                if (KarakIzorBankCampaignBehavior.BankInstance.LoanAmount != 0)
+                if (KarakIzorBankCampaignBehavior.BankInstance.LoanAmount > 0)
                     result.Add(-KarakIzorBankCampaignBehavior.BankInstance.CalculateLoanRefound(), new TextObject("Remboursement de prêt de Karak Izor"));
             }
 

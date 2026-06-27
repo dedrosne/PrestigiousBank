@@ -7,7 +7,11 @@ Banque :
         Exemple : Prosperité à 10_000 = 0.2%/jour
 
 - Loan : Max loan = 50k+20k*clanTier
-    Each day, 2% increased LoadAmount. Then Take amount set to refound
+    Each day, loadRate increased LoadAmount. Then Take amount set to refound. LoadRate depends of the Prosperity of the city where the bank is located.
+        10_000 = 0.5%/jour
+        5_000 = 1%/jour
+        0 = 1.5%jour
+
 
 - Niveau :
     - Bronze : argent déposé entre 0 et 49_999
@@ -289,7 +293,7 @@ Waldenhof : Acheter des collecteurs d'âmes
     - Acheter une crypte
 Crypte vampire : Collecteur d'âmes=>Batailles à moins de Xmètres 
 
-
++ prisoners limit
 
 Or
     - Trade : Marieembourg
@@ -445,3 +449,48 @@ rivate static void AddMissionPermanentEffect(Agent agent, string effectID)
                 }
             }
         }
+
+        ////////////////////////////////////////////////////////////////
+PerResetRelatedPatch
+            //why do prayers need to be removed rather than also unuseable (if that's what happens)?
+            if (hero.IsPriest())
+            {
+                var prayers = CareerHelper.GetPriestPrayerList(hero);
+
+                var rank = 0;
+
+                if (perk == TORPerks.Faith.NovicePrayers)
+                {
+                    rank = 2;
+
+Hero Extensio,
+
+                public static bool IsPriest(this Hero hero)
+        {
+            if (hero?.GetExtendedInfo() is not HeroExtendedInfo info) return false;
+            var heroAttributes = info.AllAttributes;
+            var priestAttributes = new[]{
+                "Priest",
+                "PriestLady",
+                "PriestSigmar",
+                "PriestUlric",
+                "PriestShallya"};
+
+
+                CareerHelper :
+        public static List<(string PrayerID, int Rank)> GetPriestPrayerList(Hero priestHero)
+        {
+            List<(string PrayerID, int Rank)> prayers = new();
+            var info = priestHero?.GetExtendedInfo();
+            if (info == null) return prayers;
+            var godAttribute = info.AllAttributes.Where(x => x.StartsWith("Priest") && !x.Equals("Priest")).FirstOrDefault(); //Priest attributes have 3 categories : "Priest" (sigmar and ulric careers only), "Priest(God)" (all priest careers), or "PriestTrainer" (spell trainers, for equipment blessings I believe).
+            if (godAttribute == null) return prayers;
+
+            if (godAttribute == "PriestSigmar")
+            {
+                prayers.Add(("HealingHand", 2));
+                prayers.Add(("ArmourOfRighteousness", 3));
+                prayers.Add(("Vanquish", 3));
+                prayers.Add(("CometOfSigmar", 4));
+                return prayers;
+            }

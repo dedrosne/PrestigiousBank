@@ -100,6 +100,14 @@ namespace PrestigiousBank
 
         private void HourlyTickEvent()
         {
+            var time = Campaign.CurrentTime;
+            if ((int)time % 24 == 14)
+            {
+                if (BankInstance.LoanAmount > 0)
+                {
+                    BankInstance.ApplyLoanRefound();
+                }
+            }
             BankInstance.ApplyDiamondLevelGoldTownIncrease();
         }
 

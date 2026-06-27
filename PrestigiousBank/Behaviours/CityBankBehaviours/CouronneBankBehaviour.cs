@@ -27,7 +27,6 @@ namespace PrestigiousBank
     {
         public static string _CouronneTownID = "town_comp_CO1";
         public static CouronneBank _bankCouronne = null;
-        //public static string BankMenuLinkText = "<a style=\"Link.Settlement\" href=\"event:Concept-str_game_objects_simple_bank\"><b>" + PrestigiousBank.Config.BankName + "</b></a>";
 
         public static CouronneBank BankInstance
         {
@@ -35,7 +34,8 @@ namespace PrestigiousBank
             {
                 if (_bankCouronne == null)
                 {
-                    if (Town.AllTowns != null) {
+                    if (Town.AllTowns != null)
+                    {
                         foreach (var town in Town.AllTowns)
                         {
                             if (town.StringId == _CouronneTownID)
@@ -43,7 +43,7 @@ namespace PrestigiousBank
                                 _bankCouronne = new CouronneBank(town.Settlement);
                                 break;
                             }
-                                
+
                         }
 
                     }
@@ -72,11 +72,6 @@ namespace PrestigiousBank
 
         public CouronneBankCampaignBehavior() : base()
         {
-            //MBTextManager.SetTextVariable("Birke_Bank_Encyclopedia_Main", PrestigiousBank.Config.BankName);
-            //bankAltdorf = bankAltdorf;
-
-            //_bankTrait = Game.Current.ObjectManager.RegisterPresumedObject<TraitObject>(new TraitObject("bank"));
-            //_bankTrait.Initialize(new TextObject(GameTexts.FindText("str_trait_bankName").ToString()), new TextObject(GameTexts.FindText("str_trait_bankDescription").ToString()), false, 0, 4);
         }
 
         public override void RegisterEvents()
@@ -93,7 +88,7 @@ namespace PrestigiousBank
 
         private void DailyTickClan()
         {
-            //Ajout de l'énergie noire
+            //Ajout de la chivalrie
             if (Hero.MainHero.GetCultureSpecificCustomResource().StringId == "Chivalry")
                 Hero.MainHero.AddCultureSpecificCustomResource(BankInstance.CalculateChivalryInterests());
             //Ajout de l'XP
@@ -105,6 +100,14 @@ namespace PrestigiousBank
 
         private void HourlyTickEvent()
         {
+            var time = Campaign.CurrentTime;
+            if ((int)time % 24 == 14)
+            {
+                if (BankInstance.LoanAmount > 0)
+                {
+                    BankInstance.ApplyLoanRefound();
+                }
+            }
             BankInstance.ApplyDiamondLevelGoldTownIncrease();
         }
 
