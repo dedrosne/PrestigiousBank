@@ -19,7 +19,10 @@ namespace PrestigiousBank
     {
         public static void Postfix(ref int __result)
         {
-            __result+=10; // Increase the max companion limit by 10.
+            CouronneBankCampaignBehavior CouronneBankCampaignBehavior = Campaign.Current?.GetCampaignBehavior<CouronneBankCampaignBehavior>();
+
+            if (CouronneBankCampaignBehavior != null)
+                __result +=CouronneBankCampaignBehavior.BankInstance.FriendshipQty; // Increase the max companion limit by 10.
 
 
         }

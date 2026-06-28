@@ -31,7 +31,11 @@ namespace PrestigiousBank
         {
             base.CreateOrUpdateGameMenuDesc(campaignGameStarter);
 
-           
+            //Diplomat Account Menu
+            campaignGameStarter.AddGameMenu(String.Format("{0}_bank_diplomat_account", _cityID),
+                String.Format("Fortune investie : {0}\nDiplomates en exercices : {1}", ((TorLithanelBank)_bank).DiplomatAccountSolde, ((TorLithanelBank)_bank).CalculateResourceInterests()),
+                null,
+                GameMenu.MenuOverlayType.SettlementWithCharacters);
 
         }
 

@@ -51,14 +51,10 @@ namespace PrestigiousBank
         {
             ExplainedNumber result = base.CalculateClanGoldChange(clan, includeDescriptions, applyWithdrawals, includeDetails);
 
-            //ExplainedNumber result = new TORClanFinanceModel().CalculateClanGoldChange(clan, includeDescriptions, applyWithdrawals, includeDetails);
-
             try
             {
-                // Rendimentos de poupança
                 AddBankInterestToExplainedNumber(clan, ref result, includeDescriptions, includeDetails);
-                // Visualização das parcelas de empréstimos (somente detalhado)
-                //AddLoanPreviewVisual(clan, ref result, includeDescriptions, includeDetails);
+                //AddLoanRefoundToExplainedNumber(clan, ref result, includeDescriptions, includeDetails);
             }
             catch (Exception ex)
             {
@@ -69,7 +65,7 @@ namespace PrestigiousBank
             return result;
         }
 
-            private static void AddBankInterestToExplainedNumber(Clan clan, ref ExplainedNumber result, bool includeDescriptions, bool includeDetails)
+        private static void AddBankInterestToExplainedNumber(Clan clan, ref ExplainedNumber result, bool includeDescriptions, bool includeDetails)
         {
             if (clan == null || clan.Leader == null || clan != Clan.PlayerClan)
                 return;
@@ -253,5 +249,36 @@ namespace PrestigiousBank
             }
 
         }
+
+        //private static void AddLoanRefoundToExplainedNumber(Clan clan, ref ExplainedNumber result, bool includeDescriptions, bool includeDetails)
+        //{
+        //    if (clan == null || clan.Leader == null || clan != Clan.PlayerClan)
+        //        return;
+
+        //    var hero = Hero.MainHero;
+        //    if (hero == null || string.IsNullOrEmpty(hero.StringId))
+        //        return;
+
+
+        //    //Altdorf
+        //    AltdorfBankCampaignBehavior AltdorfBankBehavior = Campaign.Current?.GetCampaignBehavior<AltdorfBankCampaignBehavior>();
+        //    if (AltdorfBankBehavior != null && AltdorfBankCampaignBehavior.BankInstance.LoanAmount > 0)
+        //    {
+        //        result.Add(-AltdorfBankCampaignBehavior.BankInstance.CalculateLoanRefound(tmpLoanAmout:-1,isEstimation: false,result.RoundedResultNumber), new TextObject("Altdorf Loan Refound"));
+        //    }
+
+        //    //Drakenhof
+        //    DrakenhofBankCampaignBehavior DrakenhofBankBehavior = Campaign.Current?.GetCampaignBehavior<DrakenhofBankCampaignBehavior>();
+        //    if (DrakenhofBankBehavior != null && DrakenhofBankCampaignBehavior.BankInstance.LoanAmount > 0)
+        //    {
+        //        result.Add(-DrakenhofBankCampaignBehavior.BankInstance.CalculateLoanRefound(), new TextObject("Remboursement de prêt de Drakenhof"));
+        //    }
+        //    //YnEdrylKoiran
+        //    YnEdrylKoiranBankCampaignBehavior ynEdrylKoiranBankCampaignBehavior = Campaign.Current?.GetCampaignBehavior<YnEdrylKoiranBankCampaignBehavior>();
+        //    if (ynEdrylKoiranBankCampaignBehavior != null && YnEdrylKoiranBankCampaignBehavior.BankInstance.LoanAmount > 0)
+        //    {
+        //        result.Add(-YnEdrylKoiranBankCampaignBehavior.BankInstance.CalculateLoanRefound(), new TextObject("Remboursement de prêt d'Yn Edryl Koiran"));
+        //    }
+
     }
 }

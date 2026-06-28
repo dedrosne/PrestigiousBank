@@ -324,7 +324,7 @@ Bretonie : Villages/Agriculture => Une foi le village détenu, déposer des pris
 
 
 
-
+Combat movement Speed
 
 
 
@@ -451,6 +451,9 @@ rivate static void AddMissionPermanentEffect(Agent agent, string effectID)
         }
 
         ////////////////////////////////////////////////////////////////
+        Get access to prayers :
+
+
 PerResetRelatedPatch
             //why do prayers need to be removed rather than also unuseable (if that's what happens)?
             if (hero.IsPriest())

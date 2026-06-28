@@ -21,6 +21,7 @@ using TaleWorlds.Localization;
 using TaleWorlds.ScreenSystem;
 using TOR_Core.Extensions;
 using TOR_Core.CharacterDevelopment;
+using TaleWorlds.CampaignSystem.GameComponents;
 
 namespace PrestigiousBank
 {
@@ -79,6 +80,7 @@ namespace PrestigiousBank
             CampaignEvents.OnSessionLaunchedEvent.AddNonSerializedListener((object)this, new Action<CampaignGameStarter>(this.OnSessionLaunched));
             CampaignEvents.DailyTickEvent.AddNonSerializedListener(this, this.DailyTickClan);
             CampaignEvents.HourlyTickEvent.AddNonSerializedListener(this, this.HourlyTickEvent);
+            //CampaignEvents.DailyTickClanEvent.AddNonSerializedListener(this, this.DailyTickClan);
         }
 
         private void OnSessionLaunched(CampaignGameStarter campaignGameStarter)

@@ -91,7 +91,7 @@ namespace PrestigiousBank
         private void DailyTickClan()
         {
             //Ajout du prestige
-            if (Hero.MainHero.GetCultureSpecificCustomResource().StringId == "CouncilFavor")
+             if (Hero.MainHero.GetCultureSpecificCustomResource().StringId == "CouncilFavor")
                 
                 Hero.MainHero.AddCultureSpecificCustomResource(BankInstance.CalculateResourceInterests());
             //Ajout de l'XP

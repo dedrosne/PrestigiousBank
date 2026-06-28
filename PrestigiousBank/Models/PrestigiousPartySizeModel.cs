@@ -37,6 +37,7 @@ namespace PrestigiousBank
                            
                 //Last Stand : Infinite number of troops
                 if (party != PartyBase.MainParty && party != null 
+                    && party.MapFaction != null //Contains the culture
                     && party.Culture != null 
                     && Campaign.Current?.GetCampaignBehavior<LastStandCampaignBehavior>() != null)
                 {
