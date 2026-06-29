@@ -258,9 +258,10 @@ Level 5 25=>50
 
 Hideout :
 
-Permets à sesd caravanes qui passent de récupérer automatiquement le butin de la planque si voulu, et le vendre
+Permets à ses caravanes qui passent de récupérer automatiquement le butin de la planque si voulu, et le vendre
 Level 3 : Débloque Faux monayer de l'usine de Nuln
 Recruitment rate of prisoners (comme 2eme perk de leadership)
+Recruter des mercenaires même si pas allié de la faction
 
 
     
@@ -315,7 +316,7 @@ Envoyer Or à un clan de son royaume=>Niveau Or ?
 
 Altdorf : possibilité d'imposer la paix entre factions de l'empire + imposer guerre contre faction hors empire contre 1000 de prestige
 
-Capturé = On perd tout son argent
+Capturé = perdre tout son argent
 
 
 	

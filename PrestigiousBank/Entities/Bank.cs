@@ -12,6 +12,7 @@ using TaleWorlds.CampaignSystem.ViewModelCollection.Encyclopedia.List;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.LinQuick;
+using TaleWorlds.Localization;
 using TaleWorlds.ObjectSystem;
 using TaleWorlds.SaveSystem;
 using TOR_Core.BattleMechanics.StatusEffect;
@@ -273,7 +274,7 @@ namespace PrestigiousBank
             AddMercenaryToPlayerParty(characterObject);
             Hero.MainHero.ChangeHeroGold(-GetRecruitmentCostMercenaries(characterObject));
             SoundEvent.PlaySound2D(SoundEvent.GetEventIdFromString("event:/ui/notification/coins_negative"));
-
+            UpdateMercenariesMenuTexts();
         }
 
         public void InitMercenariesVariables()
@@ -306,7 +307,17 @@ namespace PrestigiousBank
             {
                 ListUniteesRecrutables.ForEach(i => { i.NbRecrutable = Math.Min(i.NbRecrutable + RegenPerDayMercenaries,MaxMercenaries); });
             }
+            UpdateMercenariesMenuTexts();
         }
+
+        public void UpdateMercenariesMenuTexts()
+        {
+            foreach(UniteeRecrutable unit in ListUniteesRecrutables)
+            {
+                GameTexts.SetVariable("NBMERCAVAILABLE" + unit.IdString, new TextObject(unit.NbRecrutable.ToString()));
+            }
+        }
+
         #endregion
     }
 }

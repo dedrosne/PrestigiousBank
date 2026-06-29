@@ -573,7 +573,7 @@ namespace PrestigiousBank
                     var unit = Bank.GetUnitPerStringID(unitString.IdString);
                     campaignGameStarter.AddGameMenuOption(String.Format("{0}_mercenaries", _cityID),
                         String.Format("{0}_mercenaries_{1}", _cityID, unitString.IdString),
-                        "["+(int)unitString.NbRecrutable+ "]["+ Bank.GetRecruitmentCostMercenaries(unit) +"{GOLD_ICON}] Recruter " + unit.Name.Value,
+                        "[{NBMERCAVAILABLE" + unitString.IdString + "}]["+ Bank.GetRecruitmentCostMercenaries(unit) +"{GOLD_ICON}] Recruter " + unit.Name.Value,
                         a =>
                         {
                             a.optionLeaveType = GameMenuOption.LeaveType.DonateTroops;
@@ -618,10 +618,6 @@ namespace PrestigiousBank
                 isLeave: true, index: 999);
         }
 
-        public void UpdateMercGateTexts()
-        {
-
-        }
         #endregion
     }
 }
