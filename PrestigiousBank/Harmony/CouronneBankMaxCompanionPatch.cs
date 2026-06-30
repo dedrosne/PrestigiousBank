@@ -14,7 +14,6 @@ using TOR_Core.Models;
 
 namespace PrestigiousBank
 {
-    [HarmonyPatch(typeof(CraftingCampaignBehavior), "GetMaxHeroCraftingStamina")]
     public class MaxCompanionPatch
     {
         public static void Postfix(ref int __result)

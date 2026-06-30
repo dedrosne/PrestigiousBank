@@ -2,19 +2,23 @@
 using System;
 using System.Collections.Generic;
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.ComponentInterfaces;
 using TaleWorlds.CampaignSystem.GameComponents;
 using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
+using TOR_Core.BattleMechanics.AI.CommonAIFunctions;
 using TOR_Core.Models;
 
 
 namespace PrestigiousBank
 {
-    public class PrestigiousCapitalProtectionModel : DefaultTargetScoreCalculatingModel
+    public class PrestigiousCapitalProtectionModel : TargetScoreCalculatingModel
     {
+        TargetScoreCalculatingModel _previousModel;
+
         //Clé = Settlement.StringId, value = Kingdom.StringId
         public static Dictionary<string, string> CapitalPerKingdom = new Dictionary<string, string>
         {
@@ -78,11 +82,42 @@ namespace PrestigiousBank
             //Manque Aqyutaine et lesss spouilleux chaosssssssssssssssss
         };
 
-public override float GetTargetScoreForFaction(Settlement targetSettlement, Army.ArmyTypes missionType, MobileParty mobileParty, float ourStrength)
+        public override float TravelingToAssignmentFactor => _previousModel.TravelingToAssignmentFactor;
+
+        public override float BesiegingFactor => _previousModel.BesiegingFactor;
+
+        public override float AssaultingTownFactor => _previousModel.AssaultingTownFactor;
+
+        public override float RaidingFactor => _previousModel.RaidingFactor;
+
+        public override float DefendingFactor => _previousModel.DefendingFactor;
+
+        public PrestigiousCapitalProtectionModel(TargetScoreCalculatingModel previousModel)
+        {
+            _previousModel = previousModel;
+            if (previousModel == null) _previousModel = new DefaultTargetScoreCalculatingModel();
+        }
+
+        public override float GetTargetScoreForFaction(Settlement targetSettlement, Army.ArmyTypes missionType, MobileParty mobileParty, float ourStrength)
         {
             if (PrestigiousBank.isCapitalProtectionActive && missionType == Army.ArmyTypes.Besieger && CapitalPerKingdom.ContainsKey(targetSettlement.StringId) && CapitalPerKingdom[targetSettlement.StringId] == targetSettlement.OwnerClan.Kingdom.StringId) {
                 return 0f; }
-            return base.GetTargetScoreForFaction(targetSettlement, missionType, mobileParty, ourStrength);
+            return _previousModel.GetTargetScoreForFaction(targetSettlement, missionType, mobileParty, ourStrength);
+        }
+
+        public override float GetPatrollingFactor(bool isNavalPatrolling)
+        {
+            return _previousModel.GetPatrollingFactor(isNavalPatrolling);
+        }
+
+        public override float CalculatePatrollingScoreForSettlement(Settlement settlement, bool isFromPort, MobileParty mobileParty)
+        {
+            return _previousModel.CalculatePatrollingScoreForSettlement(settlement, isFromPort, mobileParty);
+        }
+
+        public override float CurrentObjectiveValue(MobileParty mobileParty)
+        {
+            return _previousModel.CurrentObjectiveValue(mobileParty);
         }
     }
 }

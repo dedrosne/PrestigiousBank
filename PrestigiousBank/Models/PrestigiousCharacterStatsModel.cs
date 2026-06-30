@@ -6,18 +6,32 @@ using TaleWorlds.Core;
 using TOR_Core.Models;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
+using TaleWorlds.CampaignSystem.ComponentInterfaces;
 
 
 namespace PrestigiousBank
 {
-    public class PrestigiousCharacterStatsModel: TORCharacterStatsModel
+    public class PrestigiousCharacterStatsModel: CharacterStatsModel
     {
+        CharacterStatsModel _previousModel;
 
+        public override int MaxCharacterTier => _previousModel.MaxCharacterTier;
+
+        public PrestigiousCharacterStatsModel(CharacterStatsModel previousModel)
+        {
+            _previousModel = previousModel;
+            if (previousModel == null) _previousModel = new DefaultCharacterStatsModel();
+        }
+
+        public override int GetTier(CharacterObject character)
+        {
+            return _previousModel.GetTier(character);
+        }
 
         public override ExplainedNumber MaxHitpoints(CharacterObject character, bool includeDescriptions = false)
         {
             
-            var number = base.MaxHitpoints(character, includeDescriptions);
+            var number = _previousModel.MaxHitpoints(character, includeDescriptions);
 
             if (character.IsHero && character.HeroObject == Hero.MainHero)
             {
@@ -31,5 +45,9 @@ namespace PrestigiousBank
             return number;
         }
 
+        public override int WoundedHitPointLimit(Hero hero)
+        {
+            return _previousModel.WoundedHitPointLimit(hero);
+        }
     }
 }

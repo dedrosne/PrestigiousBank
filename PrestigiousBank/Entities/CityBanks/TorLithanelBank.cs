@@ -24,7 +24,8 @@ namespace PrestigiousBank
             InitMercenariesUnitFromListString(new List<string> { 
                 "tor_eo_queens_guard_halberd",
                 "tor_eo_queens_guard_sword",
-                "tor_eo_envoy_guard" });
+                "tor_eo_envoy_guard",
+            "tor_he_white_lion_chrace"});
 
             //Eonir Tor Lithanel Guar, Enonir Cityborn Militia, White lion of chrace, see elf sentinel
             SortAndCleanMercenaryUnitList();

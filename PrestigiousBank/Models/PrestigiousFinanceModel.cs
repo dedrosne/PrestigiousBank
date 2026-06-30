@@ -1,7 +1,11 @@
 ﻿using PrestigiousBank;
 using System;
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.ComponentInterfaces;
 using TaleWorlds.CampaignSystem.GameComponents;
+using TaleWorlds.CampaignSystem.Party;
+using TaleWorlds.CampaignSystem.Settlements;
+using TaleWorlds.CampaignSystem.Settlements.Workshops;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
@@ -11,8 +15,17 @@ using static TaleWorlds.CampaignSystem.CampaignBehaviors.LordConversationsCampai
 
 namespace PrestigiousBank
 {
-    public class PrestigiousFinanceModel: TORClanFinanceModel
+    public class PrestigiousFinanceModel: ClanFinanceModel
     {
+        ClanFinanceModel _previousModel;
+
+        public override int PartyGoldLowerThreshold => _previousModel.PartyGoldLowerThreshold;
+
+        public PrestigiousFinanceModel(ClanFinanceModel previousModel)
+        {
+            _previousModel = previousModel;
+            if (previousModel == null) _previousModel = new DefaultClanFinanceModel();
+        }
 
         // =========================================================
         // Detailed Income (Expected Gold Change)
@@ -23,8 +36,7 @@ namespace PrestigiousBank
             bool applyWithdrawals = false,
             bool includeDetails = false)
         {
-            ExplainedNumber result = base.CalculateClanIncome(clan, includeDescriptions, applyWithdrawals, includeDetails);
-            //var result = new TOR_Core.Models.TORClanFinanceModel().CalculateClanIncome(clan, includeDescriptions, applyWithdrawals, includeDetails);
+            ExplainedNumber result = _previousModel.CalculateClanIncome(clan, includeDescriptions, applyWithdrawals, includeDetails);
 
             if (clan.StringId == "player_faction")
             {
@@ -49,7 +61,7 @@ namespace PrestigiousBank
             bool applyWithdrawals = false,
             bool includeDetails = false)
         {
-            ExplainedNumber result = base.CalculateClanGoldChange(clan, includeDescriptions, applyWithdrawals, includeDetails);
+            ExplainedNumber result = _previousModel.CalculateClanGoldChange(clan, includeDescriptions, applyWithdrawals, includeDetails);
 
             try
             {
@@ -248,6 +260,46 @@ namespace PrestigiousBank
                 }
             }
 
+        }
+
+        public override ExplainedNumber CalculateClanExpenses(Clan clan, bool includeDescriptions = false, bool applyWithdrawals = false, bool includeDetails = false)
+        {
+            return _previousModel.CalculateClanExpenses(clan, includeDescriptions, applyWithdrawals, includeDetails);
+        }
+
+        public override ExplainedNumber CalculateTownIncomeFromTariffs(Clan clan, Town town, bool applyWithdrawals = false)
+        {
+            return _previousModel.CalculateTownIncomeFromTariffs(clan, town, applyWithdrawals);
+        }
+
+        public override int CalculateTownIncomeFromProjects(Town town)
+        {
+            return _previousModel.CalculateTownIncomeFromProjects(town);
+        }
+
+        public override int CalculateNotableDailyGoldChange(Hero hero, bool applyWithdrawals)
+        {
+            return _previousModel.CalculateNotableDailyGoldChange(hero, applyWithdrawals);
+        }
+
+        public override int CalculateVillageIncome(Clan clan, Village village, bool applyWithdrawals = false)
+        {
+            return _previousModel.CalculateVillageIncome(clan, village, applyWithdrawals);
+        }
+
+        public override int CalculateOwnerIncomeFromCaravan(MobileParty caravan)
+        {
+            return _previousModel.CalculateOwnerIncomeFromCaravan(caravan);
+        }
+
+        public override int CalculateOwnerIncomeFromWorkshop(Workshop workshop)
+        {
+            return _previousModel.CalculateOwnerIncomeFromWorkshop(workshop);
+        }
+
+        public override float RevenueSmoothenFraction()
+        {
+            return _previousModel.RevenueSmoothenFraction();
         }
 
         //private static void AddLoanRefoundToExplainedNumber(Clan clan, ref ExplainedNumber result, bool includeDescriptions, bool includeDetails)

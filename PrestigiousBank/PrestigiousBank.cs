@@ -87,13 +87,26 @@ namespace PrestigiousBank
                 // ============================================================
                 // Core models and processors
                 // ============================================================
-                starter.AddModel((ClanFinanceModel)new PrestigiousFinanceModel());
-                starter.AddModel((PartyHealingModel)new PrestigiousPartyHealingModel());
-                starter.AddModel((CharacterStatsModel)new PrestigiousCharacterStatsModel());
-                starter.AddModel((PartySizeLimitModel)new PrestigiousPartySizeModel());
-                starter.AddModel((TargetScoreCalculatingModel)new PrestigiousCapitalProtectionModel());
-                starter.AddModel((PartySpeedModel)new PrestigiousPartySpeedModel());
-                starter.AddModel((HideoutModel) new PrestigiousHideoutModel());
+                var currentFinanceModel = GetGameModel<ClanFinanceModel>(starter);
+                starter.AddModel((ClanFinanceModel)new PrestigiousFinanceModel(currentFinanceModel));
+
+                var currentPartyHealingModel = GetGameModel<PartyHealingModel>(starter);
+                starter.AddModel((PartyHealingModel)new PrestigiousPartyHealingModel(currentPartyHealingModel));
+
+                var currentCharacterStatsModel = GetGameModel<CharacterStatsModel>(starter);
+                starter.AddModel((CharacterStatsModel)new PrestigiousCharacterStatsModel(currentCharacterStatsModel));
+
+                var currentPartySizeModel = GetGameModel<PartySizeLimitModel>(starter);
+                starter.AddModel((PartySizeLimitModel)new PrestigiousPartySizeModel(currentPartySizeModel));
+
+                var currentTargetScoreModel = GetGameModel<TargetScoreCalculatingModel>(starter);
+                starter.AddModel((TargetScoreCalculatingModel)new PrestigiousCapitalProtectionModel(currentTargetScoreModel));
+
+                var currentPartySpeedModel = GetGameModel<PartySpeedModel>(starter);
+                starter.AddModel((PartySpeedModel)new PrestigiousPartySpeedModel(currentPartySpeedModel));
+
+                var currentHideoutModel = GetGameModel<HideoutModel>(starter);
+                starter.AddModel((HideoutModel) new PrestigiousHideoutModel(currentHideoutModel));
 
 
                 // ============================================================
@@ -201,32 +214,44 @@ namespace PrestigiousBank
             base.OnCampaignStart(game, starterObject);
         }
 
-
-/*        public override void OnGameLoaded(Game game, object initializerObject)
+        private T GetGameModel<T>(IGameStarter gameStarterObject) where T : GameModel
         {
-            base.OnGameLoaded(game, initializerObject);
+            var models = gameStarterObject.Models.ToArray();
 
-            try
+            for (int index = models.Length - 1; index >= 0; --index)
             {
-                var saldoItem = Game.Current.ObjectManager.GetObjectTypeList<ItemObject>().Where(x => x.StringId == "bank_account_saldo").FirstOrDefault();
-                if (saldoItem != null)
-                {
-                    Game.Current.ObjectManager.UnregisterObject(saldoItem);
-                }
-
-                var noOfDaysItem = Game.Current.ObjectManager.GetObjectTypeList<ItemObject>().Where(x => x.StringId == "bank_account_DaysSinceLastPayment").FirstOrDefault();
-                if (noOfDaysItem != null)
-                {
-                    Game.Current.ObjectManager.UnregisterObject(noOfDaysItem);
-                }
+                if (models[index] is T gameModel1)
+                    return gameModel1;
             }
-            catch
-            {
+            return default;
+        }
 
-            }
-        }*/
 
-         
+        /*        public override void OnGameLoaded(Game game, object initializerObject)
+                {
+                    base.OnGameLoaded(game, initializerObject);
+
+                    try
+                    {
+                        var saldoItem = Game.Current.ObjectManager.GetObjectTypeList<ItemObject>().Where(x => x.StringId == "bank_account_saldo").FirstOrDefault();
+                        if (saldoItem != null)
+                        {
+                            Game.Current.ObjectManager.UnregisterObject(saldoItem);
+                        }
+
+                        var noOfDaysItem = Game.Current.ObjectManager.GetObjectTypeList<ItemObject>().Where(x => x.StringId == "bank_account_DaysSinceLastPayment").FirstOrDefault();
+                        if (noOfDaysItem != null)
+                        {
+                            Game.Current.ObjectManager.UnregisterObject(noOfDaysItem);
+                        }
+                    }
+                    catch
+                    {
+
+                    }
+                }*/
+
+
         public static void LogMessage(string message, UInt32 color = 0xFFBBAA00)
         {
             InformationManager.DisplayMessage(new InformationMessage(message, Color.FromUint(color)));

@@ -1,9 +1,14 @@
 ﻿using PrestigiousBank;
 using PrestigiousBank.Entities;
 using System;
+using System.Collections.Generic;
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.ComponentInterfaces;
 using TaleWorlds.CampaignSystem.GameComponents;
+using TaleWorlds.CampaignSystem.Naval;
 using TaleWorlds.CampaignSystem.Party;
+using TaleWorlds.CampaignSystem.Roster;
+using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
@@ -13,12 +18,56 @@ using static TaleWorlds.CampaignSystem.CampaignBehaviors.LordConversationsCampai
 
 namespace PrestigiousBank
 {
-    public class PrestigiousPartySizeModel : TORPartySizeModel
+    public class PrestigiousPartySizeModel : PartySizeLimitModel
     {
+        PartySizeLimitModel _previousModel;
+
+        public override int MinimumNumberOfVillagersAtVillagerParty => _previousModel.MinimumNumberOfVillagersAtVillagerParty;
+
+        public PrestigiousPartySizeModel(PartySizeLimitModel previousModel)
+        {
+            _previousModel = previousModel;
+            if (previousModel == null) _previousModel = new DefaultPartySizeLimitModel();
+        }
+
+        public override ExplainedNumber CalculateGarrisonPartySizeLimit(Settlement settlement, bool includeDescriptions = false)
+        {
+            return _previousModel.CalculateGarrisonPartySizeLimit(settlement, includeDescriptions);
+        }
+
+        public override TroopRoster FindAppropriateInitialRosterForMobileParty(MobileParty party, PartyTemplateObject partyTemplate)
+        {
+            return _previousModel.FindAppropriateInitialRosterForMobileParty(party, partyTemplate);
+        }
+
+        public override List<Ship> FindAppropriateInitialShipsForMobileParty(MobileParty party, PartyTemplateObject partyTemplate)
+        {
+            return _previousModel.FindAppropriateInitialShipsForMobileParty(party, partyTemplate);
+        }
+
+        public override int GetAssumedPartySizeForLordParty(Hero leaderHero, IFaction partyMapFaction, Clan actualClan)
+        {
+            return _previousModel.GetAssumedPartySizeForLordParty(leaderHero, partyMapFaction, actualClan);
+        }
+
+        public override int GetClanTierPartySizeEffectForHero(Hero hero)
+        {
+            return _previousModel.GetClanTierPartySizeEffectForHero(hero);
+        }
+
+        public override int GetIdealVillagerPartySize(Village village)
+        {
+            return _previousModel.GetIdealVillagerPartySize(village);
+        }
+
+        public override int GetNextClanTierPartySizeEffectChangeForHero(Hero hero)
+        {
+            return _previousModel.GetNextClanTierPartySizeEffectChangeForHero(hero);
+        }
 
         public override ExplainedNumber GetPartyMemberSizeLimit(PartyBase party, bool includeDescriptions = false)
         {
-            ExplainedNumber number = base.GetPartyMemberSizeLimit(party, includeDescriptions);
+            ExplainedNumber number = _previousModel.GetPartyMemberSizeLimit(party, includeDescriptions);
             if (party == PartyBase.MainParty)
             {
                 //Middenheim
@@ -52,6 +101,11 @@ namespace PrestigiousBank
             }
 
             return number;
+        }
+
+        public override ExplainedNumber GetPartyPrisonerSizeLimit(PartyBase party, bool includeDescriptions = false)
+        {
+            return _previousModel.GetPartyPrisonerSizeLimit(party, includeDescriptions);
         }
     }
 }
