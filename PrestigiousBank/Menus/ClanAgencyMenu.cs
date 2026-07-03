@@ -83,7 +83,9 @@ namespace PrestigiousBank
                                                         if (currentAgency == null || currentAgency.LevelAgency == 0) return false;
                                                         else return true;
                                                     },
-                                                    _ => { GameMenu.SwitchToMenu("clanAgency"); CreateOrUpdateGameMenuDesc(campaignGameStarter);
+                                                    _ => {
+                                                        CreateOrUpdateGameMenuDesc(campaignGameStarter); 
+                                                        GameMenu.SwitchToMenu("clanAgency"); 
                                                     },
                                                     isLeave: false,
                                                     index: 1);

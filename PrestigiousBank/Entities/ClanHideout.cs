@@ -51,6 +51,9 @@ namespace PrestigiousBank
         [SaveableProperty(11)]
         public int Casino_PreviousBenefits { get; set; }
 
+        [SaveableProperty(12)]
+        public int PrisonerMaxLimitBought { get; set; }
+
         public static int HideoutLevelPrice = 50_000;
         public static float GangStrenghtUpkeep = 0.1f;
         public static int Racketeering_LevelPrice = 10_000;
@@ -64,6 +67,8 @@ namespace PrestigiousBank
         public static int Casino_IncreaseCost = 1000;
         public static int Casino_IncreaseMinValue = -20;
         public static int Casino_IncreaseMaxValue = 24;
+
+        public static int PrisonerMaxLimitPrice = 5_000;
 
         public static int Hideout_CostPerUnitRecruitTier = 10;
         public static int Hideout_UnblockSecretEntrancePrice = 30_000;

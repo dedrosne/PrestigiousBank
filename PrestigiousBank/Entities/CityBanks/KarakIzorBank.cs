@@ -43,7 +43,7 @@ namespace PrestigiousBank
         {
         }
 
-        protected override void InitMercenariesUnits()
+        public override void InitMercenariesUnits()
         {
             InitMercenariesUnitFromListString(new List<string>
             {

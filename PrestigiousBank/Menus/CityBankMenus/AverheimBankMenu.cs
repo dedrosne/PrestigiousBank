@@ -32,14 +32,14 @@ namespace PrestigiousBank
                 ((AverheimBank)_bank).BlessingAmount,
                 null,
                 GameMenu.MenuOverlayType.SettlementWithCharacters);
-
+            GameTexts.SetVariable("AVERHEIM_EXCELLENCE_PRICE", ((AverheimBank)_bank).CalculatePriceAdditionnalMaxSkillIncrease());
         }
 
         public override void CallChildrenBankMenu(CampaignGameStarter campaignGameStarter, Bank Bank)
         {
             //Bank Menu -> Sigmar Blessings
             campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_menu", _cityID), String.Format("{0}_bank_sigmarBlessings", _cityID),
-                "Bénédictions de Sigmar",
+                "Sigmar's blessings",
                 a =>
                 {
                     a.optionLeaveType = GameMenuOption.LeaveType.DefendAction;
@@ -50,6 +50,43 @@ namespace PrestigiousBank
                 _ => GameMenu.SwitchToMenu(String.Format("{0}_bank_sigmarBlessings", _cityID)),
                 isLeave: false, index: 3);
             RegisterSigmarBlessingMenuOptions(campaignGameStarter);
+
+            //EmptySapces
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_menu", _cityID), "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);
+
+
+            //Sigmar Excellence training
+            GameTexts.SetVariable("AVERHEIM_EXCELLENCE_PRICE", ((AverheimBank)_bank).CalculatePriceAdditionnalMaxSkillIncrease());
+            campaignGameStarter.AddGameMenuOption(String.Format("{0}_bank_menu", _cityID), String.Format("{0}_bank_sigmarBlessings", _cityID),
+                "[{AVERHEIM_EXCELLENCE_PRICE}{GOLD_ICON}] Sigmar Excellence training",
+                a =>
+                {
+                    a.optionLeaveType = GameMenuOption.LeaveType.DefendAction;
+                    if (_bank.GetCustomerLevel() < 4)
+                    {
+                        a.Tooltip = new TextObject("Mythril customer level required", null);
+                        a.IsEnabled = false;
+                    }
+                    else if (Hero.MainHero.Gold < ((AverheimBank)_bank).CalculatePriceAdditionnalMaxSkillIncrease())
+                    {
+                        a.Tooltip = new TextObject("Not enough {GOLD_ICON}", null);
+                        a.IsEnabled = false;
+                    }
+                    else
+                    {
+                        a.Tooltip = new TextObject(((AverheimBank)_bank).CalculatePriceAdditionnalMaxSkillIncrease() + "{GOLD_ICON}", null);
+                        a.IsEnabled = true;
+                    }
+                    return true;
+                },
+                _ =>
+                {
+                    Hero.MainHero.ChangeHeroGold(-((AverheimBank)_bank).CalculatePriceAdditionnalMaxSkillIncrease());
+                    ((AverheimBank)_bank).MaxSkillIncreaseBought += 1;
+                    CreateOrUpdateGameMenuDesc(campaignGameStarter);
+                    GameMenu.SwitchToMenu(String.Format("{0}_bank_menu", _cityID));
+                },
+                isLeave: false);
 
         }
 

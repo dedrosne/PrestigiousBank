@@ -325,6 +325,7 @@
     <Compile Include="Menus\ClanHideoutMenu.cs" />
     <Compile Include="Menus\NulnFactoryMenu.cs" />
     <Compile Include="Models\HideoutModel.cs" />
+    <Compile Include="Models\PrestigiousCharacterDevelopmentModel.cs" />
     <Compile Include="Models\PrestigiousPartyHealingModel.cs" />
     <Compile Include="Models\PrestigiousCapitalProtectionModel.cs" />
     <Compile Include="Models\PrestigiousSmithingModel.cs" />

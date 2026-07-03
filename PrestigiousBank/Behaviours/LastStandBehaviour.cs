@@ -9,6 +9,7 @@ using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Actions;
 using TaleWorlds.CampaignSystem.CharacterDevelopment;
 using TaleWorlds.CampaignSystem.Extensions;
+using TaleWorlds.CampaignSystem.GameComponents;
 using TaleWorlds.CampaignSystem.GameMenus;
 using TaleWorlds.CampaignSystem.MapEvents;
 using TaleWorlds.CampaignSystem.MapNotificationTypes;
@@ -130,7 +131,6 @@ namespace PrestigiousBank
 
                 //MobileParty.CreateParty(culture.ToString() + "_lastStand", comp);
             //}
-            
             
         }
 

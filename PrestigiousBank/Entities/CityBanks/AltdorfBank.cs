@@ -9,6 +9,7 @@ using TaleWorlds.Engine;
 using TaleWorlds.LinQuick;
 using TaleWorlds.SaveSystem;
 using TOR_Core.AbilitySystem.Spells;
+using TOR_Core.CharacterDevelopment;
 using TOR_Core.Extensions;
 using TOR_Core.Utilities;
 
@@ -75,13 +76,21 @@ namespace PrestigiousBank
                 var newlore = (LoreObject)inquiryElements[0].Identifier;
 
                 Hero.MainHero.AddKnownLore(newlore.ID);
-                Hero.MainHero.AddAttribute("SpellCaster");
+                if (!Hero.MainHero.HasAttribute("SpellCaster")) {
+                    Hero.MainHero.AddAttribute("SpellCaster");
+                    Hero.MainHero.SetSpellCastingLevel(SpellCastingLevel.Minor); }
+
+                if (Hero.MainHero.GetPerkValue(TORPerks.Spellcraft.EntrySpells)) Hero.MainHero.SetSpellCastingLevel(SpellCastingLevel.Entry);
+                if (Hero.MainHero.GetPerkValue(TORPerks.Spellcraft.AdeptSpells)) Hero.MainHero.SetSpellCastingLevel(SpellCastingLevel.Adept);
+                if (Hero.MainHero.GetPerkValue(TORPerks.Spellcraft.MasterSpells)) Hero.MainHero.SetSpellCastingLevel(SpellCastingLevel.Master);
+
+
                 Hero.MainHero.ChangeHeroGold(-PriceNewMagicLore);
                 SoundEvent.PlaySound2D(SoundEvent.GetEventIdFromString("event:/ui/notification/coins_negative"));
 
             }
         }
-        protected override void InitMercenariesUnits()
+        public override void InitMercenariesUnits()
         {
             InitMercenariesUnitFromListString(new List<string>
             {

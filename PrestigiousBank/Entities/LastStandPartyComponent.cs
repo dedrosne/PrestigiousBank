@@ -101,31 +101,31 @@ namespace PrestigiousBank.Entities
 
         public static Dictionary<string, List<(string Id, int MinCount, int MaxCount)>> TroopsPerCulture = new Dictionary<string, List<(string Id, int MinCount, int MaxCount)>>
         {
-            {TORConstants.Cultures.EMPIRE.ToString(), new List<(string, int, int)> { 
+            {TORConstants.Cultures.EMPIRE, new List<(string, int, int)> { 
                 ("empire_recruit", 10, 20), 
                 ("empire_militia", 5, 10) } },
-            {TORConstants.Cultures.DAWI.ToString(), new List<(string, int, int)> { 
+            {TORConstants.Cultures.DAWI, new List<(string, int, int)> { 
                 ("desert_bandits", 10, 20), 
                 ("desert_bandits", 5, 10) } },
-            {TORConstants.Cultures.BRETONNIA.ToString(), new List<(string, int, int)> { 
+            {TORConstants.Cultures.BRETONNIA, new List<(string, int, int)> { 
                 ("vlandia_recruit", 10, 20), 
                 ("vlandia_militia", 5, 10) } },
-            {TORConstants.Cultures.SYLVANIA.ToString(), new List<(string, int, int)> { 
+            {TORConstants.Cultures.SYLVANIA, new List<(string, int, int)> { 
                 ("khuzait_recruit", 10, 20), 
                 ("khuzait_militia", 5, 10) } },
-            {TORConstants.Cultures.MOUSILLON.ToString(), new List<(string, int, int)> { 
+            {TORConstants.Cultures.MOUSILLON, new List<(string, int, int)> { 
                 ("mousillon_recruit", 10, 20), 
                 ("mousillon_militia", 5, 10) } },
-            {TORConstants.Cultures.GREENSKIN.ToString(), new List<(string, int, int)> { 
+            {TORConstants.Cultures.GREENSKIN, new List<(string, int, int)> { 
                 ("battania_recruit", 10, 20), 
                 ("battania_militia", 5, 10) } },
-            {TORConstants.Cultures.EONIR.ToString(), new List<(string, int  , int)> { 
+            {TORConstants.Cultures.EONIR, new List<(string, int  , int)> { 
                 ("druchii_recruit", 10, 20), 
                 ("druchii_militia", 5, 10) } },
-            {TORConstants.Cultures.ASRAI.ToString(), new List<(string, int, int)> { 
+            {TORConstants.Cultures.ASRAI, new List<(string, int, int)> { 
                 ("steppe_bandits", 10, 20), 
                 ("steppe_bandits", 5, 10) } },
-            {TORConstants.Cultures.CHAOS.ToString(), new List<(string, int, int)> { 
+            {TORConstants.Cultures.CHAOS, new List<(string, int, int)> { 
                 ("chaos_culture_recruit", 10, 20), 
                 ("chaos_culture_militia", 5, 10) } }
         };

@@ -82,7 +82,7 @@ namespace PrestigiousBank
                 campaignGameStarter.AddBehavior(new KarakIzorBankCampaignBehavior());
                 campaignGameStarter.AddBehavior(new ClanAgenciesBehaviour());
                 campaignGameStarter.AddBehavior(new LastStandCampaignBehavior());
-                //campaignGameStarter.AddBehavior(new ClanHideoutCampaignBehavior());
+                campaignGameStarter.AddBehavior(new ClanHideoutCampaignBehavior());
 
                 // ============================================================
                 // Core models and processors
@@ -107,6 +107,9 @@ namespace PrestigiousBank
 
                 var currentHideoutModel = GetGameModel<HideoutModel>(starter);
                 starter.AddModel((HideoutModel) new PrestigiousHideoutModel(currentHideoutModel));
+
+                var currentCharacterDevelopmentModel = GetGameModel<CharacterDevelopmentModel>(starter);
+                starter.AddModel((CharacterDevelopmentModel)new PrestigiousCharacterDevelopmentModel(currentCharacterDevelopmentModel));
 
 
                 // ============================================================

@@ -316,6 +316,40 @@ namespace PrestigiousBank
                 },
                 isLeave: false, index: 15);
 
+            //EmptySpaces
+            campaignGameStarter.AddGameMenuOption("clanHideoutMenu", "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false, index: 16);
+
+            //clanHideoutMenu -> Max Prisoner Limit
+            campaignGameStarter.AddGameMenuOption("clanHideoutMenu", "clanHideout_MaxPrisonerLimit", "[" + ClanHideout.PrisonerMaxLimitPrice + "{GOLD_ICON}] Improve jailer techniques",
+                a =>
+                {
+                    a.optionLeaveType = GameMenuOption.LeaveType.ForceToGiveGoods;
+                    if (_clanHideout.LevelHideout < 3)
+                    {
+                        a.Tooltip = new TextObject("Clan Niveau 3 nécessaire");
+                        a.IsEnabled = false;
+                    }
+                    else if (Hero.MainHero.Gold < ClanHideout.PrisonerMaxLimitPrice)
+                    {
+                        a.Tooltip = new TextObject("Not enough {GOLD_ICON}");
+                        a.IsEnabled = false;
+                    }
+                    else
+                    {
+                        a.IsEnabled = true;
+                        a.Tooltip = new TextObject("+1 Max Prisoner limit");
+                    }
+                    return true;
+                },
+                _ =>
+                {
+                    _clanHideout.PrisonerMaxLimitBought += 1;
+                    Hero.MainHero.ChangeHeroGold(-ClanHideout.PrisonerMaxLimitPrice);
+                    CreateOrUpdateGameMenuDesc(campaignGameStarter);
+                    GameMenu.SwitchToMenu("clanHideoutMenu");
+                },
+                isLeave: false, index: 17);
+
             //EmptySpace
             campaignGameStarter.AddGameMenuOption("clanHideoutMenu", "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false, index: 20);
 

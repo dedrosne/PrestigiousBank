@@ -138,14 +138,16 @@ namespace PrestigiousBank
             GameTexts.SetVariable("REFOUNDALLVALUE", textObject);
 
             //Mercenary Menu
-            GameTexts.SetVariable("MERC_REGEN_PRICE", 50_000 * _bank.RegenPerDayMercenaries);
-            GameTexts.SetVariable("MERC_MAX_PRICE", 5000 * _bank.MaxMercenaries);
-            campaignGameStarter.AddGameMenu(String.Format("{0}_mercenaries", _cityID),
-                "Recruter des Mercenaires\nTaux de recrutement : "+_bank.RegenPerDayMercenaries+"/jour",
-                null,
-                GameMenu.MenuOverlayType.SettlementWithCharacters);
-
-
+            if (_bank.CanRecruitMercenariesInThisBank)
+            {
+                GameTexts.SetVariable("MERC_REGEN_PRICE", 50_000 * _bank.RegenPerDayMercenaries);
+                GameTexts.SetVariable("MERC_MAX_PRICE", 5000 * _bank.MaxMercenaries);
+                campaignGameStarter.AddGameMenu(String.Format("{0}_mercenaries", _cityID),
+                    "Recruter des Mercenaires\nTaux de recrutement : " + _bank.RegenPerDayMercenaries + "/jour",
+                    null,
+                    GameMenu.MenuOverlayType.SettlementWithCharacters);
+                _bank.UpdateMercenariesMenuTexts();
+            }
         }
 
 

@@ -11,10 +11,10 @@ namespace PrestigiousBank
 {
     public class DrakenhofBank : Bank
     {
-        public static int PricePerAttributePoint = 60_000;
-        public static int PricePerFocusPoint = 50_000;
-        public static int PricePerCompanionAttributePoint = 30_000;
-        public static int PricePerCompanionFocusPoint = 25_000;
+        public static int PricePerAttributePoint = 30_000;
+        public static int PricePerFocusPoint = 25_000;
+        public static int PricePerCompanionAttributePoint = 15_000;
+        public static int PricePerCompanionFocusPoint = 10_000;
 
         [SaveableProperty(12)]
         public int DarkEnergyAccountSolde { get; set; }

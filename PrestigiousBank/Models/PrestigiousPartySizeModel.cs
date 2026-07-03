@@ -105,7 +105,17 @@ namespace PrestigiousBank
 
         public override ExplainedNumber GetPartyPrisonerSizeLimit(PartyBase party, bool includeDescriptions = false)
         {
-            return _previousModel.GetPartyPrisonerSizeLimit(party, includeDescriptions);
+            var result = _previousModel.GetPartyPrisonerSizeLimit(party, includeDescriptions);
+
+            //ClanHideout
+            ClanHideoutCampaignBehavior clanHideoutCampaignBehavior = Campaign.Current?.GetCampaignBehavior<ClanHideoutCampaignBehavior>();
+
+            if (clanHideoutCampaignBehavior != null && ClanHideoutCampaignBehavior.ClanHideout != null && party == PartyBase.MainParty && ClanHideoutCampaignBehavior.ClanHideout.PrisonerMaxLimitBought > 0)
+            {
+                result.Add(ClanHideoutCampaignBehavior.ClanHideout.PrisonerMaxLimitBought, new TextObject("Clan Hideout"));
+            }
+
+            return result;
         }
     }
 }

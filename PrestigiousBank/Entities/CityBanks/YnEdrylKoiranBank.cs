@@ -35,7 +35,7 @@ namespace PrestigiousBank
             return BlessingAmount * BlessingAmount;
         }
 
-        protected override void InitMercenariesUnits()
+        public override void InitMercenariesUnits()
         {
             InitMercenariesUnitFromListString(new List<string> { 
                 "tor_we_treeman", 

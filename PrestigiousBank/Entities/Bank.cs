@@ -285,7 +285,7 @@ namespace PrestigiousBank
             InitMercenariesUnits();
         }
 
-        protected virtual void InitMercenariesUnits()
+        public virtual void InitMercenariesUnits()
         {
 
         }
@@ -314,7 +314,7 @@ namespace PrestigiousBank
         {
             foreach(UniteeRecrutable unit in ListUniteesRecrutables)
             {
-                GameTexts.SetVariable("NBMERCAVAILABLE" + unit.IdString, new TextObject(unit.NbRecrutable.ToString()));
+                GameTexts.SetVariable("NBMERCAVAILABLE" + unit.IdString, new TextObject(unit.NbRecrutable.ToString("G2")));
             }
         }
 

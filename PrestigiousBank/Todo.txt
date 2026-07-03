@@ -60,7 +60,7 @@ Yn Edryl Koiran :
 Averheim :
     - Argent : Augmenter HP de 1. prix : 2000 + 100*déjà acheté
     - Or : XP dans le skill athetics
-    - 
+    - Mythril : +1 Skill Limit => 10_000. Price increase+500 for each bought.
 
 Middenheim :
     - Argent : Augmenter le PartySize de 1. Prix : 2000 + Entretien : 
@@ -186,6 +186,9 @@ Une fois débloqué, peut recruter dans les hideout sur la carte dans la party o
 
 Level 2 :
 Porte dérobée : Permet d'entrer dans la ville même si en guerre
+
+Level 3 : Increase prisoner limit : 5000💲=>1
+
 Level 4 : Casino :
     Chaque jour gagne des golds entre -2000*level-5*GangStrenght et +2400*level+5*GangStrenght
 
@@ -236,6 +239,11 @@ Pas de morts si la puissance estimée du joueur est plus de 3 fois supérieur à
 ######################################################
 #Todo
 ##########################################################
+
+
+Bordeleaux : 
+Insured Caravans.
+Assurance renouvelée chaque fois que la caravane passe dans une ville avec agence
 
 Usine de Nuln :
 
@@ -294,7 +302,6 @@ Waldenhof : Acheter des collecteurs d'âmes
     - Acheter une crypte
 Crypte vampire : Collecteur d'âmes=>Batailles à moins de Xmètres 
 
-+ prisoners limit
 
 Or
     - Trade : Marieembourg

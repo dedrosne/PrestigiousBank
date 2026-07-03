@@ -52,6 +52,19 @@ namespace PrestigiousBank
             return result;
         }
 
+        public override ExplainedNumber CalculateClanExpenses(Clan clan, bool includeDescriptions = false, bool applyWithdrawals = false, bool includeDetails = false)
+        {
+            ExplainedNumber result = _previousModel.CalculateClanExpenses(clan, includeDescriptions, applyWithdrawals, includeDetails);
+
+            if (clan.StringId == "player_faction")
+            {
+                AddLoanRefoundToExplainedNumber(clan, ref result, includeDescriptions, includeDetails);
+            }
+
+
+            return result;
+        }
+
         // =========================================================
         // Consolidated result (Summary of Expected Gold Change)
         // =========================================================
@@ -66,7 +79,7 @@ namespace PrestigiousBank
             try
             {
                 AddBankInterestToExplainedNumber(clan, ref result, includeDescriptions, includeDetails);
-                //AddLoanRefoundToExplainedNumber(clan, ref result, includeDescriptions, includeDetails);
+                AddLoanRefoundToExplainedNumber(clan, ref result, includeDescriptions, includeDetails);
             }
             catch (Exception ex)
             {
@@ -86,17 +99,16 @@ namespace PrestigiousBank
             if (hero == null || string.IsNullOrEmpty(hero.StringId))
                 return;
 
+            ExplainedNumber goldChange = new ExplainedNumber(0f, includeDetails, null);
+
             //Altdorf
             AltdorfBankCampaignBehavior AltdorfBankBehavior = Campaign.Current?.GetCampaignBehavior<AltdorfBankCampaignBehavior>();
             if (AltdorfBankBehavior != null)
             {
                 int InterestsAltdorfBank = AltdorfBankCampaignBehavior.BankInstance.CalculateInterests();
                 
-                if (AltdorfBankCampaignBehavior.BankInstance.LoanAmount > 0) 
-                    result.Add(-AltdorfBankCampaignBehavior.BankInstance.CalculateLoanRefound(), new TextObject("Remboursement de prêt d'Altdorf"));
-
                 if (InterestsAltdorfBank != 0)
-                    result.Add(InterestsAltdorfBank, new TextObject("Banque d'Altdorf"));
+                    goldChange.Add(InterestsAltdorfBank, new TextObject("Banque d'Altdorf"));
 
                 if (AltdorfBankCampaignBehavior.BankInstance.ChanelerNumber != 0)
                 {
@@ -112,10 +124,7 @@ namespace PrestigiousBank
 
                 int InterestsDrakenhoffBank = DrakenhofBankCampaignBehavior.BankInstance.CalculateInterests();
                 if (InterestsDrakenhoffBank != 0)
-                    result.Add(InterestsDrakenhoffBank, new TextObject("Banque de Drakenhof"));
-
-                if (DrakenhofBankCampaignBehavior.BankInstance.LoanAmount > 0)
-                    result.Add(-DrakenhofBankCampaignBehavior.BankInstance.CalculateLoanRefound(), new TextObject("Remboursement de prêt de Drakenhof"));
+                    goldChange.Add(InterestsDrakenhoffBank, new TextObject("Banque de Drakenhof"));
             }
 
             //YnEdrylKoiran
@@ -125,13 +134,10 @@ namespace PrestigiousBank
             {
                 int InterestsYnEdrylKoiran = YnEdrylKoiranBankCampaignBehavior.BankInstance.CalculateInterests();
                 if (InterestsYnEdrylKoiran != 0)
-                    result.Add(InterestsYnEdrylKoiran, new TextObject("Banque d'Yn Edryl Koiran"));
+                    goldChange.Add(InterestsYnEdrylKoiran, new TextObject("Banque d'Yn Edryl Koiran"));
 
                 int IshaBlessingUpkeep = YnEdrylKoiranBankCampaignBehavior.BankInstance.CalculateBlessingUpkeep();
                 if (IshaBlessingUpkeep != 0) result.Add(-IshaBlessingUpkeep, new TextObject("Bénédiction d'Isha"));
-
-                if (YnEdrylKoiranBankCampaignBehavior.BankInstance.LoanAmount > 0)
-                    result.Add(-YnEdrylKoiranBankCampaignBehavior.BankInstance.CalculateLoanRefound(), new TextObject("Remboursement de prêt d'Yn Edryl Koiran"));
             }
 
 
@@ -142,10 +148,7 @@ namespace PrestigiousBank
             {
                 int InterestsCouronne = CouronneBankCampaignBehavior.BankInstance.CalculateInterests();
                 if (InterestsCouronne != 0)
-                    result.Add(InterestsCouronne, new TextObject("Banque de Couronne"));
-
-                if (CouronneBankCampaignBehavior.BankInstance.LoanAmount > 0)
-                    result.Add(-CouronneBankCampaignBehavior.BankInstance.CalculateLoanRefound(), new TextObject("Remboursement de prêt de Couronne"));
+                    goldChange.Add(InterestsCouronne, new TextObject("Banque de Couronne"));
             }
 
             //Averheim
@@ -155,10 +158,7 @@ namespace PrestigiousBank
             {
                 int InterestsAverheim = AverheimBankCampaignBehavior.BankInstance.CalculateInterests();
                 if (InterestsAverheim != 0)
-                    result.Add(InterestsAverheim, new TextObject("Banque d'Averheim"));
-
-                if (AverheimBankCampaignBehavior.BankInstance.LoanAmount > 0)
-                    result.Add(-AverheimBankCampaignBehavior.BankInstance.CalculateLoanRefound(), new TextObject("Remboursement de prêt d'Averheim"));
+                    goldChange.Add(InterestsAverheim, new TextObject("Banque d'Averheim"));
             }
 
             //Middenheim
@@ -167,13 +167,10 @@ namespace PrestigiousBank
             {
                 int InterestsMiddenheim = MiddenheimBankCampaignBehavior.BankInstance.CalculateInterests();
                 if (InterestsMiddenheim != 0)
-                    result.Add(InterestsMiddenheim, new TextObject("Banque de Middenheim"));
+                    goldChange.Add(InterestsMiddenheim, new TextObject("Banque de Middenheim"));
 
                 int PartyHelperUpkeep = MiddenheimBankCampaignBehavior.BankInstance.CalculatePartyHelperUpkeep();
                 if (PartyHelperUpkeep != 0) result.Add(-PartyHelperUpkeep, new TextObject("Aides de camp de Middenheim"));
-
-                if (MiddenheimBankCampaignBehavior.BankInstance.LoanAmount > 0)
-                    result.Add(-MiddenheimBankCampaignBehavior.BankInstance.CalculateLoanRefound(), new TextObject("Remboursement de prêt de Middenheim"));
             }
 
 
@@ -183,10 +180,7 @@ namespace PrestigiousBank
             {
                 int InterestsParravon = ParravonBankCampaignBehavior.BankInstance.CalculateInterests();
                 if (InterestsParravon != 0)
-                    result.Add(InterestsParravon, new TextObject("Banque de Parravon"));
-
-                if (ParravonBankCampaignBehavior.BankInstance.LoanAmount > 0)
-                    result.Add(-ParravonBankCampaignBehavior.BankInstance.CalculateLoanRefound(), new TextObject("Remboursement de prêt de Parravon"));
+                    goldChange.Add(InterestsParravon, new TextObject("Banque de Parravon"));
             }
 
 
@@ -194,13 +188,9 @@ namespace PrestigiousBank
             TorLithanelBankCampaignBehavior torLithanelBankCampaignBehavior = Campaign.Current?.GetCampaignBehavior<TorLithanelBankCampaignBehavior>();
             if (torLithanelBankCampaignBehavior != null)
             {
-
                 int InterestsTorLithanel = TorLithanelBankCampaignBehavior.BankInstance.CalculateInterests();
                 if (InterestsTorLithanel != 0)
-                    result.Add(InterestsTorLithanel, new TextObject("Banque de Tor Lithanel"));
-
-                if (TorLithanelBankCampaignBehavior.BankInstance.LoanAmount > 0)
-                    result.Add(-TorLithanelBankCampaignBehavior.BankInstance.CalculateLoanRefound(), new TextObject("Remboursement de prêt de Tor Lithanel"));
+                    goldChange.Add(InterestsTorLithanel, new TextObject("Banque de Tor Lithanel"));
             }
 
             //Karak Izor
@@ -210,10 +200,17 @@ namespace PrestigiousBank
 
                 int InterestsKarakIzor = KarakIzorBankCampaignBehavior.BankInstance.CalculateInterests();
                 if (InterestsKarakIzor != 0)
-                    result.Add(InterestsKarakIzor, new TextObject("Banque de Karak Izor"));
+                    goldChange.Add(InterestsKarakIzor, new TextObject("Banque de Karak Izor"));
+            }
 
-                if (KarakIzorBankCampaignBehavior.BankInstance.LoanAmount > 0)
-                    result.Add(-KarakIzorBankCampaignBehavior.BankInstance.CalculateLoanRefound(), new TextObject("Remboursement de prêt de Karak Izor"));
+
+            if (!includeDetails)
+            {
+                result.Add(goldChange.ResultNumber, new TextObject("Bank Interests"));
+            }
+            else
+            {
+                result.AddFromExplainedNumber(goldChange, new TextObject("Bank Interests"));
             }
 
 
@@ -260,12 +257,108 @@ namespace PrestigiousBank
                 }
             }
 
+
         }
 
-        public override ExplainedNumber CalculateClanExpenses(Clan clan, bool includeDescriptions = false, bool applyWithdrawals = false, bool includeDetails = false)
+
+        private void AddLoanRefoundToExplainedNumber(Clan clan, ref ExplainedNumber result, bool includeDescriptions, bool includeDetails)
         {
-            return _previousModel.CalculateClanExpenses(clan, includeDescriptions, applyWithdrawals, includeDetails);
+            ExplainedNumber goldChange = new ExplainedNumber(0f, includeDescriptions, null);
+            //Altdorf
+            AltdorfBankCampaignBehavior AltdorfBankBehavior = Campaign.Current?.GetCampaignBehavior<AltdorfBankCampaignBehavior>();
+            if (AltdorfBankBehavior != null)
+            {
+                if (AltdorfBankCampaignBehavior.BankInstance.LoanAmount > 0)
+                    goldChange.Add(-AltdorfBankCampaignBehavior.BankInstance.CalculateLoanRefound(), new TextObject("Altdorf loan refound"));
+            }
+
+            //Drakenhof
+            DrakenhofBankCampaignBehavior DrakenhofBankBehavior = Campaign.Current?.GetCampaignBehavior<DrakenhofBankCampaignBehavior>();
+            if (DrakenhofBankBehavior != null)
+            {
+                if (DrakenhofBankCampaignBehavior.BankInstance.LoanAmount > 0)
+                    goldChange.Add(-DrakenhofBankCampaignBehavior.BankInstance.CalculateLoanRefound(), new TextObject("Drakenhof loan refound"));
+            }
+
+            //YnEdrylKoiran
+            YnEdrylKoiranBankCampaignBehavior ynEdrylKoiranBankCampaignBehavior = Campaign.Current?.GetCampaignBehavior<YnEdrylKoiranBankCampaignBehavior>();
+            if (ynEdrylKoiranBankCampaignBehavior != null)
+            {
+                if (YnEdrylKoiranBankCampaignBehavior.BankInstance.LoanAmount > 0)
+                    goldChange.Add(-YnEdrylKoiranBankCampaignBehavior.BankInstance.CalculateLoanRefound(), new TextObject("Yn Edryl Koiran loan refound"));
+            }
+
+
+            //Couronne
+            CouronneBankCampaignBehavior CouronneBankCampaignBehavior = Campaign.Current?.GetCampaignBehavior<CouronneBankCampaignBehavior>();
+            if (CouronneBankCampaignBehavior != null)
+            {
+                if (CouronneBankCampaignBehavior.BankInstance.LoanAmount > 0)
+                    goldChange.Add(-CouronneBankCampaignBehavior.BankInstance.CalculateLoanRefound(), new TextObject("Couronne loan refound"));
+            }
+
+            //Averheim
+            AverheimBankCampaignBehavior AverheimBankCampaignBehavior = Campaign.Current?.GetCampaignBehavior<AverheimBankCampaignBehavior>();
+            if (AverheimBankCampaignBehavior != null)
+            {
+                if (AverheimBankCampaignBehavior.BankInstance.LoanAmount > 0)
+                    goldChange.Add(-AverheimBankCampaignBehavior.BankInstance.CalculateLoanRefound(), new TextObject("Averheim loan refound"));
+            }
+
+            //Middenheim
+            MiddenheimBankCampaignBehavior MiddenheimBankCampaignBehavior = Campaign.Current?.GetCampaignBehavior<MiddenheimBankCampaignBehavior>();
+            if (MiddenheimBankCampaignBehavior != null)
+            {
+                if (MiddenheimBankCampaignBehavior.BankInstance.LoanAmount > 0)
+                    goldChange.Add(-MiddenheimBankCampaignBehavior.BankInstance.CalculateLoanRefound(), new TextObject("Middenheim loan refound"));
+            }
+
+
+            //Parravon
+            ParravonBankCampaignBehavior ParravonBankCampaignBehavior = Campaign.Current?.GetCampaignBehavior<ParravonBankCampaignBehavior>();
+            if (ParravonBankCampaignBehavior != null)
+            {
+                if (ParravonBankCampaignBehavior.BankInstance.LoanAmount > 0)
+                    goldChange.Add(-ParravonBankCampaignBehavior.BankInstance.CalculateLoanRefound(), new TextObject("Parravon loan refound"));
+            }
+
+
+            //Tor Lithanel
+            TorLithanelBankCampaignBehavior torLithanelBankCampaignBehavior = Campaign.Current?.GetCampaignBehavior<TorLithanelBankCampaignBehavior>();
+            if (torLithanelBankCampaignBehavior != null)
+            {
+                if (TorLithanelBankCampaignBehavior.BankInstance.LoanAmount > 0)
+                    goldChange.Add(-TorLithanelBankCampaignBehavior.BankInstance.CalculateLoanRefound(), new TextObject("Tor Lithanel loan refound"));
+            }
+
+            //Karak Izor
+            KarakIzorBankCampaignBehavior KarakIzorBankCampaignBehavior = Campaign.Current?.GetCampaignBehavior<KarakIzorBankCampaignBehavior>();
+            if (KarakIzorBankCampaignBehavior != null)
+            {
+                if (KarakIzorBankCampaignBehavior.BankInstance.LoanAmount > 0)
+                    goldChange.Add(-KarakIzorBankCampaignBehavior.BankInstance.CalculateLoanRefound(), new TextObject("Karak Izor loan refound"));
+            }
+
+            if (!includeDetails)
+            {
+                result.Add(goldChange.ResultNumber, new TextObject("Loan Refounds"));
+            }
+            else
+            {
+                result.AddFromExplainedNumber(goldChange, new TextObject("Loan Refounds"));
+            }
         }
+
+
+
+
+
+
+
+
+
+
+
 
         public override ExplainedNumber CalculateTownIncomeFromTariffs(Clan clan, Town town, bool applyWithdrawals = false)
         {

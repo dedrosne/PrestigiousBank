@@ -151,13 +151,17 @@ namespace PrestigiousBank
                     NulnFactory.GetItemStash().Remove(new ItemRosterElement(DefaultItems.IronIngot4, NulnFactory.priceMortar_ironIngots));
                     SoundEvent.PlaySound2D(SoundEvent.GetEventIdFromString("event:/ui/notification/coins_negative"));
                 },
-                isLeave: false, index: 3);
+                isLeave: false);
             //Canon
             campaignGameStarter.AddGameMenuOption("nulnFactory_menu", "nulnFactory_menu_build_canon", 
                 "["+NulnFactory.priceCanon_gold+ "{GOLD_ICON}]["+NulnFactory.priceCanon_ironIngots+" lingots de fer] Construire un canon",
                 a => { a.optionLeaveType = GameMenuOption.LeaveType.Craft;
-                    
-                    if (Hero.MainHero.Gold < NulnFactory.priceCanon_gold)
+                    if (NulnFactory.NbHoursRemainingToBuildCanon > 0)
+                    {
+                        a.IsEnabled = false;
+                        a.Tooltip = new TextObject("Un canon est déjà en cours de production.\nNombre de jours restants : " + ((int)(NulnFactory.NbHoursRemainingToBuildCanon / 24) + 1));
+                    }
+                    else if (Hero.MainHero.Gold < NulnFactory.priceCanon_gold)
                     {
                         a.IsEnabled = false;
                         a.Tooltip = new TextObject("Pas assez d'or");
@@ -167,11 +171,7 @@ namespace PrestigiousBank
                         a.IsEnabled = false;
                         a.Tooltip = new TextObject("Pas assez de lingots de fer");
                     }
-                    else if (NulnFactory.NbHoursRemainingToBuildCanon > 0)
-                    {
-                        a.IsEnabled = false;
-                        a.Tooltip = new TextObject("Un canon est déjà en cours de production.\nNombre de jours restants : " + (int)(NulnFactory.NbHoursRemainingToBuildCanon / 24)+1);
-                    }
+
                         return NulnFactory.FactoryLevel >= 4; },
                 _ =>
                 {
@@ -180,7 +180,7 @@ namespace PrestigiousBank
                     NulnFactory.GetItemStash().Remove(new ItemRosterElement(DefaultItems.IronIngot4, NulnFactory.priceCanon_ironIngots));
                     SoundEvent.PlaySound2D(SoundEvent.GetEventIdFromString("event:/ui/notification/coins_negative"));
                 },
-                isLeave: false, index: 3);
+                isLeave: false);
 
             //EmptySpaces
             campaignGameStarter.AddGameMenuOption("nulnFactory_menu", "emptySpace", "", a => { a.IsEnabled = false; return true; }, null, isLeave: false);

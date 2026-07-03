@@ -5,22 +5,28 @@ using System.Linq;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.SaveSystem;
+using TOR_Core.BattleMechanics.StatusEffect;
 
 namespace PrestigiousBank
 {
     public class AverheimBank : Bank
     {
+        public static int InitialPricePerHP = 2000;
+        public static int PriceIncreasePerHP = 100;
         //  1  Blessing = 1HP
         [SaveableProperty(12)]
         public int BlessingAmount { get; set; }
 
-        public static int InitialPricePerHP = 2000;
-        public static int PriceIncreasePerHP = 100;
+        public static int InitialPricePerMaxSkillIncrease = 10_000;
+        public static int PriceIncreasePerMaxSkillIncrease = 500;
 
+        [SaveableProperty(13)]
+        public int MaxSkillIncreaseBought { get; set; }
 
         public AverheimBank(Settlement ville) : base(ville)
         {
             BlessingAmount = 0;
+            MaxSkillIncreaseBought = 0;
         }
 
         public int CalculatePriceAdditionnalHP()
@@ -29,7 +35,7 @@ namespace PrestigiousBank
         }
 
         
-        protected override void InitMercenariesUnits()
+        public override void InitMercenariesUnits()
         {
             InitMercenariesUnitFromListString(new List<string>
             {
@@ -44,6 +50,11 @@ namespace PrestigiousBank
             });
 
             SortAndCleanMercenaryUnitList();
+        }
+
+        public int CalculatePriceAdditionnalMaxSkillIncrease()
+        {
+            return InitialPricePerMaxSkillIncrease + PriceIncreasePerMaxSkillIncrease * MaxSkillIncreaseBought;
         }
 
     }

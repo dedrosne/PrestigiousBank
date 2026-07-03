@@ -28,7 +28,7 @@ namespace PrestigiousBank
             return PartyHelperCount * (PartyHelperCount + 1) / 2 + (InitialPartyHelperUpkeep-1)*PartyHelperCount;
         }
 
-        protected override void InitMercenariesUnits()
+        public override void InitMercenariesUnits()
         {
             InitMercenariesUnitFromListString(new List<string> {
                 "tor_empire_whitewolf_knight",

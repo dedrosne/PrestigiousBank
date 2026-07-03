@@ -19,7 +19,7 @@ namespace PrestigiousBank
         }
 
 
-        protected override void InitMercenariesUnits()
+        public override void InitMercenariesUnits()
         {
             InitMercenariesUnitFromListString(new List<string> { 
                 "tor_eo_queens_guard_halberd",
